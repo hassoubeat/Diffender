@@ -1,0 +1,32 @@
+@import 'styles/constant';
+
+.resultProgressChart {  
+  .title {
+    color: $MAIN_COLOR;
+    font-size: 18px;
+  }
+
+  .content {
+    display: flex;
+    align-items: center;
+
+    .detail {
+      text-align: justify;
+
+      .type {
+        min-width: 4em;
+        display: inline-block;
+      }
+
+      :global .SUCCESS {
+        color: $MAIN_COLOR;
+      }
+      :global .ERROR {
+        color: $ERROR_COLOR;
+      }
+      :global .WAIT {
+        color: $LINK_COLOR;
+      }
+    }
+  }
+}

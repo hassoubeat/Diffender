@@ -1,0 +1,72 @@
+@import 'styles/constant';
+
+.projectList {
+  padding: 8px;
+
+  .searchBox {
+    border: 2px solid $LINE_COLOR;
+    font-size: 20px;
+    width: 70%;
+    max-width: 400px;
+    margin: 5px 0px;
+  }
+
+  @include mq(sp) {
+    .searchBox {
+      width: 100%;
+    }
+  }
+
+  .projectItem {
+    position: relative;
+    padding: 8px 20px 8px 8px;
+    border-bottom: 1px solid $LINE_COLOR; 
+
+    &:after {
+      position: absolute;
+      top: 50%;
+      right: 0px;
+      margin-top: -12px;
+      color: $LINK_COLOR;
+      white-space: pre-wrap;
+      content: " > ";
+    }
+
+    &:hover {
+      background-color: #F4F4F4;
+    }
+
+    .main {
+      display: flex;
+
+      .title {
+        color: $LINK_COLOR;
+        flex: 1 1 0;
+      }
+    }
+
+    .description {
+      font-size: 12px;
+      color: $PLANE_TEXT_COLOR;
+    }
+
+    .actions {
+      text-align: right;
+
+      :global .draggable {
+        color: $MAIN_COLOR;
+        padding: 0 10px;
+        cursor: grab;
+  
+        &:active {
+          cursor: grabbing;
+        }
+      }
+    }
+  }
+
+  .projectName {
+    color: $MAIN_COLOR;
+  }
+}
+

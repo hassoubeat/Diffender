@@ -1,0 +1,39 @@
+@import 'styles/constant';
+
+.resultForm {
+  padding: 8px;
+
+  .inputArea {
+    margin: 10px 0;
+
+    .inputItem {
+      margin: 15px 0;
+
+      .inputLabel {
+        color: $MAIN_COLOR;
+      }
+
+      .inputText {
+        font-size: 18px;
+        padding: 5px;
+        width: 100%;
+      }
+    }
+
+    .actionArea {
+      text-align: right;
+
+      .postButton {
+        color: $LINK_COLOR;
+        cursor: pointer;
+        margin: 0 10px;
+      }
+  
+      .deleteButton {
+        color: $WARNING_TEXT_COLOR;
+        cursor: pointer;
+        margin: 0 10px;
+      }
+    }
+  }
+}

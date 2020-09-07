@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './index.scss';
 import App from './App';
-import store from './app/store';
+import store from 'app/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
+
+console.log(`Welcome to ${process.env.REACT_APP_PROJECT_NAME}(${process.env.REACT_APP_ENV})`)
 
 ReactDOM.render(
   <React.StrictMode>

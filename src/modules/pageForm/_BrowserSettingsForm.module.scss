@@ -1,0 +1,21 @@
+@import 'styles/constant';
+
+.browserSettingsForm {
+  background-color: #F2FAED;
+  border-radius: 12px;
+  padding: 8px;
+  margin: 10px 0;
+
+  .inputItem {
+
+    .inputLabel {
+      color: $MAIN_COLOR;
+    }
+
+    .inputText, .inputSelect {
+      font-size: 18px;
+      padding: 5px;
+      width: 100%;
+    }
+  }
+}

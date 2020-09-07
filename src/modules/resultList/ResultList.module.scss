@@ -1,0 +1,87 @@
+@import 'styles/constant';
+
+.resultList {
+  padding: 8px;
+
+  .actionArea {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+
+    :global .button{
+      &:local.diffRequestButton {
+        margin: 2px 4px;
+        color: $WHITE_TEXT_COLOR;
+        background-color: $MAIN_COLOR;
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+
+    .searchBox {
+      border: 2px solid $LINE_COLOR;
+      font-size: 20px;
+      width: 70%;
+      max-width: 400px;
+      margin: 5px 0px;
+    }
+  
+    @include mq(sp) {
+      .searchBox {
+        width: 100%;
+      }
+    }
+
+    .filter {
+      color: $MAIN_COLOR;
+      margin: 6px 10px;
+      font-size: 18px;
+    }
+  }
+
+  .resultItem {
+    position: relative;
+    padding: 8px 25px;
+    border-bottom: 1px solid $LINE_COLOR; 
+
+    &:before {
+      position: absolute;
+      top: 50%;
+      left: 0px;
+      margin-top: -12px;
+      color: $MAIN_COLOR;
+      white-space: pre-wrap;
+    }
+
+    // TODO 暫定版。最終的にはSVGアイコンでSSとDIFFを表現する
+    &:global.SS:before {
+      content: " S ";
+    }
+    &:global.DIFF:before {
+      content: " D ";
+    }
+
+    &:after {
+      position: absolute;
+      top: 50%;
+      right: 0px;
+      margin-top: -12px;
+      color: $LINK_COLOR;
+      white-space: pre-wrap;
+      content: " > ";
+    }
+
+    &:hover {
+      background-color: #F4F4F4;
+    }
+
+    .createDate {
+      font-size: 12px;
+      color: $PLANE_TEXT_COLOR;
+    }
+  }
+}
+

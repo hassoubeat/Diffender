@@ -1,0 +1,32 @@
+@import 'styles/constant';
+
+.resultInfo {
+  padding: 8px;
+
+  .sctionTitle {
+    padding: 4px 0px;
+    font-size: 18px;
+    color: $MAIN_COLOR;
+    border-bottom: 1px solid $LINE_COLOR;
+  }
+
+  .chartArea {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 10px 0px;
+
+    .chart {
+      padding: 20px;
+      box-sizing: border-box;
+      border: 5px solid $WHITE_COLOR;
+      border-radius: 12px;
+      background-color: $LIGHT_GREEN_COLOR;
+    }
+
+    @include mq(sp) {
+      .chart {
+        width: 100%;
+      }
+    }
+  }
+}

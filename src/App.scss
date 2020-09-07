@@ -1,0 +1,143 @@
+// fontawesomeライブラリをインポート
+@import '~@fortawesome/fontawesome-free/css/all.min.css';
+// izitoastライブラリをインポート
+@import '~izitoast/dist/css/iziToast.css';
+
+@import 'styles/constant';
+
+body {
+  color: $PLANE_TEXT_COLOR;
+}
+
+a {
+  color: $LINK_COLOR;
+  text-decoration: none;
+}
+
+hr {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: $LINE_COLOR;
+  border: 0;
+  margin: 0px;
+}
+
+// テキストボックス、セレクタの設定
+input[type='text'], select {
+  color: $PLANE_TEXT_COLOR;
+  box-sizing: border-box;
+  border: 1px solid $LINE_COLOR;
+  border-radius: 10px;
+  font-size: 16px;
+  padding: 2px 8px;
+  box-shadow: none;
+
+  &::placeholder {
+    color: $PLACE_HOLDER_COLOR;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 1pt 1pt $MAIN_COLOR;
+  }
+}
+
+// チェックボックスの設定
+input[type='checkbox'] {
+  border: 2px solid $LINE_COLOR;
+  border-radius: 50%;
+  margin: 4px;
+  cursor: pointer;
+}
+
+// 汎用ボタンの設定
+.button {
+  font-size: 14px;
+  color: $PLANE_TEXT_COLOR;
+  padding: 5px 10px;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:hover {
+    box-shadow: 0 0 1pt 1pt $MAIN_COLOR;
+  }
+}
+
+// 画面右下に固定したボタンの設定
+.fixLowerRightButton {
+  background-color: $SUB_COLOR;
+  color: $WHITE_TEXT_COLOR;
+  font-size: 36px;
+  width: 50px;
+  height: 50px;
+  line-height: 45px;
+  border-radius: 50%;
+  border: 1px solid $SUB_COLOR;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  text-align:center;
+  cursor: pointer;
+  z-index: $FIX_LOWER_RIGHT_BUTTON_ZINDEX;
+
+  &:hover {
+    border-color: $MAIN_COLOR;
+  }
+}
+
+// モーダル関連の設定
+.modalOverray {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background: $OVERLAY_COLOR;
+  z-index: $MODAL_OVERRAY_ZINDEX;
+}
+
+.modalContent {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  right: 40px;
+  bottom: 40px;
+  border: 1px solid rgb(204, 204, 204);
+  background: white;
+  overflow: auto;
+  border-radius: 4px;
+  outline: none;
+  padding: 20px;
+
+  .modalTitle {
+    font-size: 22px;
+    color: $MAIN_COLOR;
+  }
+
+  .modalSupportMessage {
+    font-size: 14px;
+    color: $PLANE_TEXT_COLOR;
+  }
+}
+
+.closeModalButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: $PLANE_TEXT_COLOR;
+  font-size: 20px;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 50%;
+  white-space: pre-wrap;
+  text-align: center;
+  cursor: pointer;
+}
