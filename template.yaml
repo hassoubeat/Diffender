@@ -1,0 +1,178 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+# 共通設定
+Globals:
+  Function:
+    Timeout: 30
+    Environment:
+      Variables:
+        DIFFENDER_DYNAMODB_TABLE_NAME: !Ref DiffenderDynamoDB
+        DIFFENDER_S3_BUCKET_NAME: !Ref DiffenderS3
+        TZ: 'Asia/Tokyo'
+
+Parameters:
+  Env: # prod: 本番環境、stg: 検品環境、 local: ローカル開発環境
+    Type: String
+    AllowedValues:
+      - prod
+      - stg
+      - local
+    Default: local
+
+Resources:
+  # Projectsの一覧取得
+  GetProjectListFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/GetProjectListFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /projects
+            Method: get
+            
+  DiffenderApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref Env
+      Cors:
+        AllowOrigin: "'*'"
+        AllowHeaders: "'*'"
+
+  # 本アプリで利用するS3バケット
+  DiffenderS3:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: !Sub "${Env}-diffender"
+      AccessControl: PublicRead
+  DiffenderS3Policy:
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      Bucket: !Ref DiffenderS3
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject
+            Effect: "Allow"
+            Principal: "*"
+            Resource: !Sub arn:aws:s3:::${DiffenderS3}/*
+
+  # 本アプリで利用するDynamoDB
+  DiffenderDynamoDB:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${Env}-diffender"
+      # 属性の定義
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: createDtUnix
+          AttributeType: N
+        - AttributeName: projectTieUserId
+          AttributeType: S
+        - AttributeName: resultTieUserId
+          AttributeType: S
+        - AttributeName: parentProjectId
+          AttributeType: S
+        - AttributeName: parentResultId
+          AttributeType: S
+        - AttributeName: relateProjectId
+          AttributeType: S
+      # プライマリキープライマリキー、レンジキーの指定
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      # GSIの定義
+      GlobalSecondaryIndexes:
+        # ユーザIDでプロジェクト一覧を検索するためのGSI
+        - IndexName: ProjectsByUserIdSearchIndex
+          KeySchema:
+            - AttributeName: projectTieUserId
+              KeyType: HASH
+            - AttributeName: createDtUnix
+              KeyType: RANGE
+          # 射影設定
+          Projection:
+            # 射影する属性の指定
+            ProjectionType: ALL
+          # GSIのスループットの指定
+          ProvisionedThroughput:
+            ReadCapacityUnits: 2
+            WriteCapacityUnits: 2
+        # ユーザIDでリザルト一覧を検索するためのGSI
+        - IndexName: ResultsByUserIdSearchIndex
+          KeySchema:
+            - AttributeName: resultTieUserId
+              KeyType: HASH
+            - AttributeName: createDtUnix
+              KeyType: RANGE
+          # 射影設定
+          Projection:
+            # 射影する属性の指定
+            ProjectionType: ALL
+          # GSIのスループットの指定
+          ProvisionedThroughput:
+            ReadCapacityUnits: 2
+            WriteCapacityUnits: 2
+        # ProjectIdでページ一覧を検索するためのGSI
+        - IndexName: PagesByProjectIdSearchIndex
+          KeySchema:
+            - AttributeName: parentProjectId
+              KeyType: HASH
+            - AttributeName: createDtUnix
+              KeyType: RANGE
+          # 射影設定
+          Projection:
+            # 射影する属性の指定
+            ProjectionType: ALL
+          # GSIのスループットの指定
+          ProvisionedThroughput:
+            ReadCapacityUnits: 2
+            WriteCapacityUnits: 2
+        # ResultIdで結果一覧を検索するためのGSI
+        - IndexName: ResultItemsByResultIdSearchIndex
+          KeySchema:
+            - AttributeName: parentResultId
+              KeyType: HASH
+            - AttributeName: createDtUnix
+              KeyType: RANGE
+          # 射影設定
+          Projection:
+            # 射影する属性の指定
+            ProjectionType: ALL
+          # GSIのスループットの指定
+          ProvisionedThroughput:
+            ReadCapacityUnits: 2
+            WriteCapacityUnits: 2
+        # ProjectIdでリザルト一覧を検索するためのGSI
+        - IndexName: ResultsByProjectIdSearchIndex
+          KeySchema:
+            - AttributeName: relateProjectId
+              KeyType: HASH
+            - AttributeName: createDtUnix
+              KeyType: RANGE
+          # 射影設定
+          Projection:
+            # 射影する属性の指定
+            ProjectionType: ALL
+          # GSIのスループットの指定
+          ProvisionedThroughput:
+            ReadCapacityUnits: 2
+            WriteCapacityUnits: 2
+      # スループットの指定
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+
+Outputs:
+  GetProjectListFunction:
+    Description: "Access Command"
+    Value: !Sub "curl https://${DiffenderApi}.execute-api.${AWS::Region}.amazonaws.com/${Env}/projects"
