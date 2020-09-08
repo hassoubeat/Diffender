@@ -5,6 +5,8 @@ Transform: AWS::Serverless-2016-10-31
 Globals:
   Function:
     Timeout: 30
+    Layers:
+      - !Ref MyLibLayer
     Environment:
       Variables:
         DIFFENDER_DYNAMODB_TABLE_NAME: !Ref DiffenderDynamoDB
@@ -38,6 +40,16 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /projects
             Method: get
+    
+  # 自前で実装した共通ライブラリのレイヤー
+  MyLibLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: 'lambda/layer/my-lib'
+      CompatibleRuntimes:
+        - nodejs12.x
+    Metadata:
+      BuildMethod: nodejs12.x
             
   DiffenderApi:
     Type: AWS::Serverless::Api
