@@ -1,0 +1,20 @@
+@import 'styles/constant';
+
+.main {
+  margin-left: $SIDEBAR_WIDTH;
+  transition: transform 0.3s ease-in-out, margin 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+@include mq(sp) {
+  .main {
+    margin-left: 0;
+  }
+}
+
+// サイドバーが非表示の時
+:global .AppSidebarHidden {
+  :local .main {
+    margin-left: 0;
+  }
+}

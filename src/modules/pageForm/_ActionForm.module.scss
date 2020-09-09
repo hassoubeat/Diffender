@@ -1,0 +1,43 @@
+@import 'styles/constant';
+
+.actionForm {
+  margin: 10px 0px;
+
+  .noActionListMessage {
+    color: $MAIN_COLOR;
+  }
+
+  .actionList {
+  }
+
+  .actionCreater {
+    position: relative;
+    margin: 5px 15px 15px 0px;
+    padding: 8px;
+    border: 2px solid $DARK_GRAY_COLOR;
+    border-radius: 8px;
+    background-color: $WHITE_COLOR;
+
+    &:after {
+      position: absolute;
+      top: 0;
+      right: -15px;
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      border-radius: 50%;
+      margin-top: -12px;
+      color: $WHITE_TEXT_COLOR;
+      background-color: $SUB_COLOR;
+      white-space: pre-wrap;
+      content: " ＋ ";
+    }
+
+    .button {
+      margin: 0px 10px;
+      color: $LINK_COLOR;
+      cursor: pointer;
+    }
+  }
+}

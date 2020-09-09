@@ -1,0 +1,26 @@
+@import 'styles/constant';
+
+.breadcrumbs {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 8px;
+  border-bottom: 1px solid $LINE_COLOR, ;
+
+  .breadcrumb {
+    font-size: 20px;
+
+    &::after {
+      white-space: pre-wrap;
+      content: " > ";
+      color: $SUB_TEXT_COLOR;
+    }
+  }
+
+  // 最後のパンくずには ">" を表示しない
+  :last-child {
+    &::after {
+      content: none;
+    }
+  }
+}

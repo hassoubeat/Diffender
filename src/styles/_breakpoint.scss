@@ -1,0 +1,14 @@
+// ブレークポイントを定義するSCSS
+@import './_length';
+
+$BREAK_POINTS: (
+  'sp': 'screen and (max-width: #{$SP_BREAKPOINT_WIDTH})',
+  'pc': 'screen and (min-width: #{$PC_BREAKPOINT_WIDTH})'
+) !default;
+
+// @mixinの定義
+@mixin mq($breakpoint: pc) {
+  @media #{map-get($BREAK_POINTS, $breakpoint)} {
+    @content;
+  }
+}

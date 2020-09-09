@@ -1,0 +1,19 @@
+{
+  "InitInputData": [
+    { 
+      "id": "project-1",
+      "projectTieUserId": "1d300296-7e68-4b33-ae21-921d2d05975f",
+      "createDtUnix": 1599544395895
+    },
+    { 
+      "id": "project-2",
+      "projectTieUserId": "1d300296-7e68-4b33-ae21-921d2d05975f",
+      "createDtUnix": 1599544395896
+    },
+    { 
+      "id": "project-3",
+      "projectTieUserId": "Google_102689441030795088402",
+      "createDtUnix": 1599544395897
+    }
+  ]
+}

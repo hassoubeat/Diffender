@@ -1,0 +1,16 @@
+@import 'styles/constant';
+
+.notFound {
+  padding: 8px;
+  text-align: center;
+
+  .title {
+    font-size: 40px;
+    color: $MAIN_COLOR;
+    margin: 10px;
+  }
+
+  .description {
+    margin: 10px;
+  }
+}

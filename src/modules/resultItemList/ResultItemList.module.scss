@@ -1,0 +1,84 @@
+@import 'styles/constant';
+
+.resultItemList {
+  padding: 8px;
+
+  .searchBox {
+    border: 2px solid $LINE_COLOR;
+    font-size: 20px;
+    width: 70%;
+    max-width: 400px;
+    margin: 5px 0px;
+  }
+
+  @include mq(sp) {
+    .searchBox {
+      width: 100%;
+    }
+  }
+
+  .filter {
+    display: flex;
+    flex-wrap: wrap;
+
+    .success{
+      color: $MAIN_COLOR;
+    }
+
+    .error {
+      color: $ERROR_COLOR;
+    }
+
+    .wait {
+      color: $LINK_COLOR;
+    }
+  }
+
+  .resultItem {
+    position: relative;
+    padding: 8px 30px;
+    border-bottom: 1px solid $LINE_COLOR; 
+
+    &:before {
+      position: absolute;
+      top: 50%;
+      left: 0px;
+      margin-top: -12px;
+      white-space: pre-wrap;
+    }
+
+    // TODO 暫定版。最終的にはSVGアイコンで表現する
+    &:global.SUCCESS:before {
+      color: $MAIN_COLOR;
+      content: " S ";
+    }
+    &:global.ERROR:before {
+      color: $ERROR_COLOR;
+      content: " E ";
+    }
+    &:global.WAIT:before {
+      color: $LINK_COLOR;
+      content: " W ";
+    }
+
+    &:after {
+      position: absolute;
+      top: 50%;
+      right: 0px;
+      margin-top: -12px;
+      color: $LINK_COLOR;
+      white-space: pre-wrap;
+      content: " > ";
+    }
+
+    &:hover {
+      background-color: #F4F4F4;
+    }
+
+    .createDate {
+      font-size: 12px;
+      color: $PLANE_TEXT_COLOR;
+    }
+  }
+}
+

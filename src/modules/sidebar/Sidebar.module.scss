@@ -1,0 +1,60 @@
+@import 'styles/constant';
+
+.sideBar {
+  position: fixed;
+  top: 0;
+  left: 0;  
+  width: $SIDEBAR_WIDTH;
+  min-height: 100vh;
+  background-color: $MAIN_COLOR;
+  transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
+  z-index: $SIDEBAR_ZINDEX;
+
+  &Menu {
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+  }
+  
+  &Item {
+    color:$WHITE_TEXT_COLOR;
+    padding: 8px;
+    font-size: 18px;
+
+    a {
+      color: white;
+    }
+    
+    &.brand {
+      font-family: 'Nunito';
+      font-size: 48px;
+      text-align: center;
+    }
+  }
+
+  &Toggle {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    padding: 15px;
+    z-index: $SIDEBAR_TOGGLE_ZINDEX;
+  }
+}
+
+.sideBarOverlay {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background: $OVERLAY_COLOR;
+  z-index: $SIDEBAR_OVERRAY_ZINDEX;
+}
+
+// サイドバーが非表示の時
+:global .AppSidebarHidden {
+  :local .sideBar {
+    transform: translate(-$SIDEBAR_WIDTH, 0);
+  }
+}
+

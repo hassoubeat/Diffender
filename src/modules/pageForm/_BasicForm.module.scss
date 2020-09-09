@@ -1,0 +1,17 @@
+@import 'styles/constant';
+
+.basicForm {
+  .inputItem {
+    margin: 15px 0;
+
+    .inputLabel {
+      color: $MAIN_COLOR;
+    }
+
+    .inputText, .inputSelect {
+      font-size: 18px;
+      padding: 5px;
+      width: 100%;
+    }
+  }
+}
