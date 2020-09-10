@@ -25,7 +25,7 @@ export async function signUp (email, password, attributes, successCallback, erro
     if(successCallback) successCallback(result);
     return result;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     if(errorCallback) errorCallback(error);
   }
 };
@@ -41,7 +41,7 @@ export async function confirmSignUp (email, verifyCode, successCallback, errorCa
     if(successCallback) successCallback(result);
     return result;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     if(errorCallback) errorCallback(error);
   }
 };
@@ -54,7 +54,7 @@ export async function resendSignUp (email, successCallback, errorCallback) {
     if(successCallback) successCallback(result);
     return result;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     if(errorCallback) errorCallback(error);
   }
 };
@@ -70,7 +70,7 @@ export async function signIn (email, password, successCallback, errorCallback) {
     if(successCallback) successCallback(result);
     return result;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     if(errorCallback) errorCallback(error);
   }
 };
@@ -83,7 +83,7 @@ export async function federationSignIn (federationProvider, successCallback, err
     if(successCallback) successCallback(result);
     return result;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     if(errorCallback) errorCallback(error);
   }
 };
@@ -95,7 +95,7 @@ export async function signOut (successCallback, errorCallback) {
     result = await Auth.signOut();
     if(successCallback) successCallback(result);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     if(errorCallback) errorCallback(error);
   }
 };
@@ -113,7 +113,7 @@ export async function changePassword (user, oldPassword, newPassword, successCal
     if(successCallback) successCallback(result);
     return result;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     if(errorCallback) errorCallback(error);
   }
 };
