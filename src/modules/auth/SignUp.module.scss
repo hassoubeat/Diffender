@@ -1,0 +1,28 @@
+.signUp {
+
+  .inputItem {
+    margin: 15px 0px;
+
+    .inputLabel {
+      color: dark-gray;
+    }
+
+    .inputText {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #E8E8E8;
+      border-radius: 10px;
+      font-size: 16px;
+      padding: 2px 8px;
+      box-shadow: none;
+    }
+
+  }
+
+  .inputButton {
+    padding: 8px;
+    border-radius: 8px;
+    border:none;
+    cursor: pointer;
+  }
+}
