@@ -65,9 +65,16 @@ export default function SignIn(props = null) {
             signIn(userId, password, signInSuccessCallback, signInErrorCallback)
           }}>サインイン</button>
           <div className={styles.actions}>
-            <Link to={'/signUp'}>
-              新しいアカウントを作成
-            </Link>
+            <div className={styles.action}>
+              <Link to={'/signUp'}>
+                新しいアカウントを作成
+              </Link>
+            </div>
+            <div className={styles.action}>
+              <Link to={'/passwordRemind'}>
+                パスワードを忘れた場合
+              </Link>
+            </div>
           </div>
         </div>
       </div>
