@@ -1,0 +1,43 @@
+@import 'styles/constant';
+
+.divideForm {
+  display: flex;
+  height: 100vh;
+  background-color: $LIGHT_GRAY_COLOR;
+
+  .block {
+    width: 50%;
+    padding: 5% 0;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    overflow:hidden;
+    box-sizing: border-box;
+
+    &.appInfo {
+      .title {
+        font-family: 'Nunito';
+        font-size: 60px;
+        text-align: center;
+        color: $MAIN_COLOR;
+      }
+  
+      .description {
+        max-width: 70%;
+        font-size: 30px;
+        color: $BLACK_TEXT_COLOR;
+      }
+  
+      .detail {
+        max-width: 90%;
+        text-align: center;
+        box-shadow: 0px 3px 6px #70707070;
+        margin-top: 20px;
+  
+        .image {
+          width: 100%;
+        }
+      }
+    }
+  }  
+}

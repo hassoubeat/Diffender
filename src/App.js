@@ -14,6 +14,7 @@ import queryString from 'query-string';
 import './App.scss';
 import AuthCheck from 'modules/auth/AuthCheck';
 import UnAuthCheck from 'modules/auth/UnAuthCheck';
+import DivideForm from 'modules/auth/DivideForm';
 import SignUp from 'modules/auth/SignUp';
 import Code from 'modules/auth/Code';
 import SignIn from 'modules/auth/SignIn';
@@ -73,7 +74,9 @@ function App() {
           <Route exact path="/404" component={NotFound404} />
           <Route exact path="/signUp" render={ () => (
             <UnAuthCheck>
-              <SignUp/>
+              <DivideForm>
+                <SignUp/>
+              </DivideForm>
             </UnAuthCheck>
           )} />
           <Route exact path="/code" render={ ({location}) => (

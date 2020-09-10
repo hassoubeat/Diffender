@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import { signUp } from 'lib/auth/cognitoAuth';
 import styles from './SignUp.module.scss';
 
@@ -15,28 +16,44 @@ export default function SignUp(props = null) {
   return (
     <React.Fragment>
       <div className={styles.signUp}>
-        <h4>SignUp</h4>
-        <div className={styles.inputItem}>
-          <div className={styles.inputLabel}>
-            ユーザID(メールアドレス)
+        <div className={styles.formArea}>
+          <div className={styles.title}>
+            新規ユーザ作成
           </div>
-          <input className={styles.inputText} type="text" onChange={ (e) => setUserId(e.target.value) } value={userId} /> 
-        </div>
-        <div className={styles.inputItem}>
-          <div className={styles.inputLabel}>
-            パスワード
+          <div className={styles.inputItem}>
+            <div className={styles.inputLabel}>
+              ユーザID(メールアドレス)
+            </div>
+            <input className={styles.inputText} type="text" onChange={ (e) => setUserId(e.target.value) } value={userId} /> 
           </div>
-          <input className={styles.inputText} type="password" onChange={ (e) => setPassword(e.target.value) } value={password} />
-        </div>
-        <div className={styles.inputItem}>
-          <div className={styles.inputLabel}>
-            ユーザ名
+          <div className={styles.inputItem}>
+            <div className={styles.inputLabel}>
+              パスワード
+            </div>
+            <input className={styles.inputText} type="password" onChange={ (e) => setPassword(e.target.value) } value={password} />
           </div>
-          <input className={styles.inputText} type="text" onChange={ (e) => setNickname(e.target.value) } value={nickname} />
+          <div className={styles.inputItem}>
+            <div className={styles.inputLabel}>
+              ユーザ名
+            </div>
+            <input className={styles.inputText} type="text" onChange={ (e) => setNickname(e.target.value) } value={nickname} />
+          </div>
+          <button className={styles.inputButton} onClick={ async () => { 
+            signUp(userId, password, { nickname:nickname } , successCallback, errorCallback)
+          }}>サインアップ</button>
+          <div className={styles.actions}>
+            <div className={styles.action}>
+              <Link to={'/signIn'}>
+                サインイン画面に戻る
+              </Link>
+            </div>
+            <div className={styles.action}>
+              <Link to={'/code'}>
+                認証コードの入力
+              </Link>
+            </div>
+          </div>
         </div>
-        <button className={styles.inputButton} onClick={ async () => { 
-          signUp(userId, password, { nickname:nickname } , successCallback, errorCallback)
-        }}>サインアップ</button>
       </div>
     </React.Fragment>
   );
