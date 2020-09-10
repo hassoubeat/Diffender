@@ -3,23 +3,30 @@ import { createSlice } from '@reduxjs/toolkit';
 export const userSlice = createSlice({
   name: 'user',
   initialState: {
-    loginUser: {
-      isLogin: true,
-      name: "nanashi"
-    },
+    isInitialize: true,
+    isLogin: false,
+    currentUser: {},
   },
   reducers: {
-    setLoginUser: (state, action) => {
-      state.loginUser = action.payload;
+    setIsInitialize: (state, action) => {
+      state.isInitialize = action.payload;
+    },
+    setIsLogin: (state, action) => {
+      state.isLogin = action.payload;
+    },
+    setCurrentUser: (state, action) => {
+      state.currentUser = action.payload;
     }
   },
 });
 
 // ActionCreaterのエクスポート
-export const { setLoginUser } = userSlice.actions;
+export const { setIsInitialize, setIsLogin, setCurrentUser } = userSlice.actions;
 
 // ステートをuseSelectorフックから呼び出し可能に
-export const selectLoginUser = (state) => state.user.loginUser;
+export const selectIsInitialize = (state) => state.user.isInitialize;
+export const selectIsLogin = (state) => state.user.isLogin;
+export const selectCurrentUser = (state) => state.user.currentUser;
 
 // Reducerのエクスポート
 export default userSlice.reducer;
