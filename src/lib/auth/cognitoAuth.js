@@ -34,17 +34,17 @@ export async function signUp (email, password, attributes, successCallback, erro
 export async function confirmSignUp (email, verifyCode, successCallback, errorCallback) {
   let result = "";
   try {
-    result = await Auth.confirmSignUp({
-      username: email,
-      code: verifyCode
-    });
+    result = await Auth.confirmSignUp(
+      email,
+      verifyCode
+    );
     if(successCallback) successCallback(result);
     return result;
   } catch (error) {
     console.log(error);
     if(errorCallback) errorCallback(error);
   }
-}
+};
 
 // 認証コードの再送信
 export async function resendSignUp (email, successCallback, errorCallback) {
@@ -57,7 +57,7 @@ export async function resendSignUp (email, successCallback, errorCallback) {
     console.log(error);
     if(errorCallback) errorCallback(error);
   }
-}
+};
 
 // サインイン
 export async function signIn (email, password, successCallback, errorCallback) {
@@ -90,14 +90,20 @@ export async function federationSignIn (federationProvider, successCallback, err
 
 // サインアウト
 export async function signOut (successCallback, errorCallback) {
+  let result = "";
   try {
-    await Auth.signOut();
+    result = await Auth.signOut();
     if(successCallback) successCallback(result);
   } catch (error) {
     console.log(error);
     if(errorCallback) errorCallback(error);
   }
-}
+};
+
+// 現在のユーザ取得
+export async function getCurrentUser() {
+  return await Auth.currentAuthenticatedUser();
+};
 
 // Password変更
 export async function changePassword (user, oldPassword, newPassword, successCallback, errorCallback) {
