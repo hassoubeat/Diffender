@@ -1,29 +1,69 @@
+@import 'styles/constant';
+
 .signIn {
+  width:100vw;
+  height:100vh;
+  overflow:hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  flex-wrap: wrap;
+  background: url('/img/bgSignInPortrait.png') no-repeat top center;
+  background-size: auto 100vh;
+  box-sizing: border-box;
 
-  .inputItem {
-    margin: 15px 0px;
+  .formArea {
+    background-color: rgba(255, 255, 255, 0.8);;
+    box-shadow: 0px 3px 6px #70707070;
+    border-radius: 20px;
+    min-width: 700px;
+    padding: 10px;
+    box-sizing: border-box;
 
-    .inputLabel {
-      color: dark-gray;
+    .title {
+      font-family: 'Nunito';
+      font-size: 60px;
+      text-align: center;
+      color: $MAIN_COLOR;
     }
 
-    .inputText {
-      width: 100%;
-      box-sizing: border-box;
-      border: 1px solid #E8E8E8;
-      border-radius: 10px;
-      font-size: 16px;
-      padding: 2px 8px;
-      box-shadow: none;
+    .inputItem {
+      margin: 15px 0px;
+  
+      .inputText {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #E8E8E8;
+        border-radius: 10px;
+        font-size: 24px;
+        padding: 2px 8px;
+      }
+  
+    }
+  
+    .inputButton {
+      font-size: 14px;
+      color: $WHITE_COLOR;
+      display: block;
+      margin: auto;
+      background-color: $MAIN_COLOR;
+      padding: 8px;
+      border-radius: 8px;
+      border:none;
+      cursor: pointer;
+      text-align: center;
     }
 
+    .actions {
+      text-align: right;
+      margin-top: 15px;
+    }
   }
 
-  .inputButton {
-    margin: 0 8px;
-    padding: 8px;
-    border-radius: 8px;
-    border:none;
-    cursor: pointer;
+  @include mq(sp) {
+    .formArea {
+      min-width: 95%;
+    }
   }
 }

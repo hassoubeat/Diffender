@@ -11,6 +11,7 @@ import {
 import { getCurrentUser } from 'lib/auth/cognitoAuth'
 import queryString from 'query-string';
 
+import './App.scss';
 import AuthCheck from 'modules/auth/AuthCheck';
 import UnAuthCheck from 'modules/auth/UnAuthCheck';
 import SignUp from 'modules/auth/SignUp';
@@ -19,7 +20,7 @@ import SignIn from 'modules/auth/SignIn';
 import Sidebar from 'modules/sidebar/Sidebar';
 import Main from 'modules/main/Main';
 import NotFound404 from 'modules/notFound/NotFound';
-import './App.scss';
+
 
 function App() {
   const dispatch = useDispatch();

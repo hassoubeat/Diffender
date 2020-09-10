@@ -24,7 +24,7 @@ hr {
 }
 
 // テキストボックス、セレクタの設定
-input[type='text'], select {
+input[type='text'], input[type='password'] , select {
   color: $PLANE_TEXT_COLOR;
   box-sizing: border-box;
   border: 1px solid $LINE_COLOR;
