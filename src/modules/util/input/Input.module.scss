@@ -1,0 +1,38 @@
+@import 'styles/constant';
+
+.inputItem {
+  margin: 15px 0px;
+
+  .inputLabel {
+    margin-bottom: 5px;
+  }
+
+  .inputText {
+    width: 100%;
+    color: $PLANE_TEXT_COLOR;
+    font-size: 20px;
+    border: 1px solid $LINE_COLOR;
+    border-radius: 10px;
+    box-sizing: border-box;
+    padding: 2px 8px;
+    box-shadow: none;
+
+    &::placeholder {
+      color: $PLACE_HOLDER_COLOR;
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 1pt 1pt $MAIN_COLOR;
+    }
+
+    &.error {
+      box-shadow: 0 0 1pt 1pt $ERROR_COLOR;
+    }
+  }
+
+  .errorMessage {
+    color: $ERROR_COLOR;
+  }
+}
+
