@@ -6,6 +6,7 @@ export default function Input(props = null) {
   const label = props.label || "Lable";
   const placeholder = props.placeholder || "";
   const type = props.type || "text";
+  const name = props.name || "";
   const value = props.value || "";
   const onChangeFunc = props.onChangeFunc;
   const errorMessages = props.errorMessages || [];
@@ -27,6 +28,7 @@ export default function Input(props = null) {
         <input 
           className={`${styles.inputText} ${inputClass} ${isError() && styles.error}`} 
           type={type} 
+          name={name} 
           placeholder={placeholder} 
           onChange={ (e) => onChangeFunc(e) } 
           value={value}
