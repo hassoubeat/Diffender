@@ -2,6 +2,7 @@
 
 .divideForm {
   display: flex;
+  flex-wrap: wrap;
   height: 100vh;
   background-color: $LIGHT_GRAY_COLOR;
 
@@ -39,5 +40,31 @@
         }
       }
     }
-  }  
+
+    @include mq(sp) {
+      &.appInfo {
+        display: none;
+      }
+    }
+
+    .spTitle {
+      display: none;
+      font-family: 'Nunito';
+      font-size: 60px;
+      text-align: center;
+      color: $MAIN_COLOR;
+    }
+
+    @include mq(sp) {
+      .spTitle {
+        display: block;
+      }
+    }
+  }
+
+  @include mq(sp) {
+    .block {
+      width: 100%;
+    }
+  }
 }

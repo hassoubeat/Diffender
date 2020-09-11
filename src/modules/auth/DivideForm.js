@@ -19,6 +19,9 @@ export default function DivideForm(props = null) {
           </div>
         </div>
         <div className={styles.block}>
+          <div className={styles.spTitle}>
+            {process.env.REACT_APP_PROJECT_NAME}
+          </div>
           {props.children}
         </div>
       </div>
