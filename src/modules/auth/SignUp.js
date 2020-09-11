@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { signUp } from 'lib/auth/cognitoAuth';
 import UtilInput from 'modules/util/input/Input';
+import * as userValid from 'lib/validation/userValidation';
 import styles from './SignUp.module.scss';
 
 export default function SignUp(props = null) {
@@ -10,10 +11,39 @@ export default function SignUp(props = null) {
   const errorCallback = props.errorCallback;
 
   // Stateの定義
-  const [userId, setUserId] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [nickname, setNickname] = useState("");
+  const [user, setUser] = useState({
+    userId: "",
+    password: "",
+    confirmPassword: "",
+    nickname: ""
+  });
+  const [errors, setErrors] = useState({
+    userId: [],
+    password: [],
+    confirmPassword: [],
+    nickname: []
+  });
+
+  const handleChange = (event) => {
+    const inputType = event.target.name;
+    const value = event.target.value;
+    
+    // エラーメッセージを初期化
+    errors[inputType] = [];
+    setErrors(Object.assign({}, errors));
+
+    // 入力値のセット
+    user[inputType] = value;
+    setUser(Object.assign({}, user));
+
+    // バリデーション
+    try {
+      userValid.valid(inputType, user);
+    } catch (error) {
+      errors[inputType].push(error.message);
+      setErrors(Object.assign({}, errors));
+    }
+  }
 
   return (
     <React.Fragment>
@@ -26,37 +56,41 @@ export default function SignUp(props = null) {
             label="ユーザID(メールアドレス)" 
             placeholder="user@example.com" 
             type="text" 
-            value={userId} 
-            onChangeFunc={(e) => {setUserId(e.target.value)} } 
+            name="userId" 
+            value={ user.userId } 
+            onChangeFunc={(e) => {handleChange(e)} } 
             inputClass={styles.test} 
-            errorMessages={["test"]}
+            errorMessages={ errors.userId }
           />
-          <div className={styles.inputItem}>
-            <div className={styles.inputLabel}>
-              ユーザID(メールアドレス)
-            </div>
-            <input className={styles.inputText} type="text" placeholder="user@example.com" onChange={ (e) => setUserId(e.target.value) } value={userId}  /> 
-          </div>
-          <div className={styles.inputItem}>
-            <div className={styles.inputLabel}>
-              パスワード
-            </div>
-            <input className={styles.inputText} type="password" onChange={ (e) => setPassword(e.target.value) } value={password} />
-          </div>
-          <div className={styles.inputItem}>
-            <div className={styles.inputLabel}>
-              パスワード(再入力)
-            </div>
-            <input className={styles.inputText} type="password" onChange={ (e) => setConfirmPassword(e.target.value) } value={confirmPassword} />
-          </div>
-          <div className={styles.inputItem}>
-            <div className={styles.inputLabel}>
-              ユーザ名
-            </div>
-            <input className={styles.inputText} type="text" onChange={ (e) => setNickname(e.target.value) } value={nickname} />
-          </div>
+          <UtilInput 
+            label="パスワード" 
+            type="password" 
+            name="password" 
+            value={ user.password } 
+            onChangeFunc={(e) => {handleChange(e)} } 
+            inputClass={styles.test} 
+            errorMessages={ errors.password }
+          />
+          <UtilInput 
+            label="パスワード(確認)" 
+            type="password" 
+            name="confirmPassword" 
+            value={ user.confirmPassword } 
+            onChangeFunc={(e) => {handleChange(e)} } 
+            inputClass={styles.test} 
+            errorMessages={ errors.confirmPassword }
+          />
+          <UtilInput 
+            label="ユーザ名" 
+            type="text" 
+            name="nickname" 
+            value={ user.nickname } 
+            onChangeFunc={(e) => {handleChange(e)} } 
+            inputClass={styles.test} 
+            errorMessages={ errors.nickname }
+          />
           <button className={styles.inputButton} onClick={ async () => { 
-            signUp(userId, password, { nickname:nickname } , successCallback, errorCallback)
+            signUp(user.userId, user.password, { nickname: user.nickname } , successCallback, errorCallback)
           }}>サインアップ</button>
           <div className={styles.actions}>
             <div className={styles.action}>

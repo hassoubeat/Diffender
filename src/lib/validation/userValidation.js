@@ -67,16 +67,16 @@ export function nicknameValid(nickname, validErrorMessage) {
 }
 
 // バリデーションタイプを選択
-export function valid(validationType, value) {
+export function valid(validationType, user) {
   switch(validationType) {
     case USER_ID:
-      return userIdValid(value);
+      return userIdValid(user.userId);
     case PASSWORD:
-      return passwordValid(value);
+      return passwordValid(user.password);
     case CONFIRM_PASSWORD:
-      return confirmPasswordValid(value);
+      return confirmPasswordValid(user.password, user.confirmPassword);
     case NICKNAME:
-      return nicknameValid(value);
+      return nicknameValid(user.nickname);
     default:
       throw new Error("該当するバリデーションが存在しません");
   }
