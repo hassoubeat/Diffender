@@ -47,7 +47,12 @@ export async function confirmSignUp (email, verifyCode, successCallback, errorCa
     return result;
   } catch (error) {
     console.error(error);
-    if(errorCallback) errorCallback(error);
+
+    if(errorCallback) {
+      errorCallback(error);
+    } else {
+      throw error;
+    }
   }
 };
 
@@ -60,7 +65,12 @@ export async function resendSignUp (email, successCallback, errorCallback) {
     return result;
   } catch (error) {
     console.error(error);
-    if(errorCallback) errorCallback(error);
+    
+    if(errorCallback) {
+      errorCallback(error);
+    } else {
+      throw error;
+    }
   }
 };
 
