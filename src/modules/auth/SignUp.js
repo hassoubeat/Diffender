@@ -3,12 +3,11 @@ import { Link, useHistory } from 'react-router-dom';
 import { signUp } from 'lib/auth/cognitoAuth';
 import UtilInput from 'modules/util/input/Input';
 import * as userValid from 'lib/validation/userValidation';
+import * as toast from 'lib/util/toast';
 import styles from './SignUp.module.scss';
 
 export default function SignUp(props = null) {
-  // propsの展開
-  const successCallback = props.successCallback;
-  const errorCallback = props.errorCallback;
+  const history = useHistory();
 
   // Stateの定義
   const [user, setUser] = useState({
@@ -50,11 +49,36 @@ export default function SignUp(props = null) {
   const isSignUp = () => {
     // エラーが存在する場合にTrue
     let isErrors = false;
-    Object.values(errors).map( errorMessages => {
+    Object.values(errors).forEach( errorMessages => {
       if (errorMessages.length > 0) isErrors = true;
-    })
+    });
 
     return !isErrors;
+  }
+
+  // サインアップボタン押下時のイベント
+  const handleSignUp = async () => {
+
+    try {
+      const result = await signUp(
+        user.userId,
+        user.password,
+        { 
+          nickname: user.nickname
+        }
+      );
+      toast.successToast({
+        message: '入力したメールアドレス宛に確認コードを送信しました',
+      });
+      history.push(`/code?userId=${result.user.username}`);
+    } catch(error) {
+      let message = "サインアップに失敗しました"
+      if(error.code === "UsernameExistsException") message = "既にサインアップ済みのユーザです";
+      if(error.code === "InvalidPasswordException") message = "パスワードのフォーマットが正しくありません";
+      toast.errorToast({
+        message: message
+      });
+    }
   }
 
   return (
@@ -101,10 +125,7 @@ export default function SignUp(props = null) {
             inputClass={styles.test} 
             errorMessages={ errors.nickname }
           />
-          <button className={styles.inputButton} disabled={!isSignUp()}
-            onClick={ async () => { 
-              signUp(user.userId, user.password, { nickname: user.nickname } , successCallback, errorCallback)
-            }
+          <button className={styles.inputButton} disabled={!isSignUp()} onClick={ async () => { handleSignUp() }
           }>サインアップ</button>
           <div className={styles.actions}>
             <div className={styles.action}>
