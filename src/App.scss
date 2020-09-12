@@ -70,6 +70,12 @@ input[type='checkbox'] {
   }
 }
 
+// リンクボタンの設定
+.linkButton {
+  color: $LINK_COLOR;
+  cursor: pointer;
+}
+
 // 画面右下に固定したボタンの設定
 .fixLowerRightButton {
   background-color: $SUB_COLOR;
