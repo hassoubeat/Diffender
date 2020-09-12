@@ -17,6 +17,10 @@ describe('Userのバリデーション処理 正常系のテスト群', () => {
   test('ユーザ名のバリデーションテスト', async () => {
     userValid.nicknameValid("user");
   });
+
+  test('認証コードのバリデーションテスト', async () => {
+    userValid.confirmCodeValid("123456");
+  });
 });
 
 describe('Userのバリデーション処理 異常系のテスト群', () => {
@@ -154,6 +158,46 @@ describe('Userのバリデーション処理 異常系のテスト群', () => {
     let errorMessage = "";
     try {
       userValid.nicknameValid("", "エラーだよ");
+    } catch (error) {
+      errorMessage = error.message;
+    }
+    expect(errorMessage).toBe("エラーだよ");
+  });
+
+  test('認証コードのバリデーションテスト 数値エラー', async () => {
+    let errorMessage = "";
+    try {
+      userValid.confirmCodeValid("12345a");
+    } catch (error) {
+      errorMessage = error.message;
+    }
+    expect(errorMessage).toBe("認証コードは数値6桁で入力してください");
+  });
+
+  test('認証コードのバリデーションテスト 文字数エラー(5文字)', async () => {
+    let errorMessage = "";
+    try {
+      userValid.confirmCodeValid("12345");
+    } catch (error) {
+      errorMessage = error.message;
+    }
+    expect(errorMessage).toBe("認証コードは数値6桁で入力してください");
+  });
+
+  test('認証コードのバリデーションテスト 文字数エラー(7文字)', async () => {
+    let errorMessage = "";
+    try {
+      userValid.confirmCodeValid("1234567");
+    } catch (error) {
+      errorMessage = error.message;
+    }
+    expect(errorMessage).toBe("認証コードは数値6桁で入力してください");
+  });
+
+  test('認証コードのバリデーションテスト エラーメッセージカスタマイズ', async () => {
+    let errorMessage = "";
+    try {
+      userValid.confirmCodeValid("", "エラーだよ");
     } catch (error) {
       errorMessage = error.message;
     }

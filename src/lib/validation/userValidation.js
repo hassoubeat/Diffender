@@ -4,6 +4,7 @@ const USER_ID = "userId";
 const PASSWORD = "password";
 const CONFIRM_PASSWORD = "confirmPassword";
 const NICKNAME = "nickname";
+const CONFIRM_CODE = "confirmCode";
 
 // userIdのバリデーション処理
 export function userIdValid(userId, validErrorMessage) {
@@ -66,6 +67,22 @@ export function nicknameValid(nickname, validErrorMessage) {
   }
 }
 
+// 認証コードのバリデーション処理
+export function confirmCodeValid(confirmCode, validErrorMessage) {
+  try {
+    v8n()
+      .not.null()
+      .not.empty()
+      .numeric()
+      .length(6, 6)
+      .check(confirmCode);
+  } catch (error) {
+    // エラーメッセージのセット
+    error.message = validErrorMessage || "認証コードは数値6桁で入力してください";
+    throw error;
+  }
+}
+
 // バリデーションタイプを選択
 export function valid(validationType, user) {
   switch(validationType) {
@@ -77,7 +94,9 @@ export function valid(validationType, user) {
       return confirmPasswordValid(user.password, user.confirmPassword);
     case NICKNAME:
       return nicknameValid(user.nickname);
+    case CONFIRM_CODE:
+      return confirmCodeValid(user.confirmCode);  
     default:
-      throw new Error("該当するバリデーションが存在しません");
+      console.error("該当するバリデーションが存在しません");
   }
 }
