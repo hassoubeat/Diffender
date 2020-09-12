@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import izitoast from "izitoast";
 import { confirmSignUp, resendSignUp } from 'lib/auth/cognitoAuth';
-import styles from './Code.module.scss';
+import styles from './ConfirmCode.module.scss';
 
 export default function Code(props = null) {
   // propsの展開

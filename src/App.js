@@ -16,7 +16,7 @@ import AuthCheck from 'modules/auth/AuthCheck';
 import UnAuthCheck from 'modules/auth/UnAuthCheck';
 import DivideForm from 'modules/auth/DivideForm';
 import SignUp from 'modules/auth/SignUp';
-import Code from 'modules/auth/Code';
+import ConfirmCode from 'modules/auth/ConfirmCode';
 import SignIn from 'modules/auth/SignIn';
 import Sidebar from 'modules/sidebar/Sidebar';
 import Main from 'modules/main/Main';
@@ -81,9 +81,11 @@ function App() {
           )} />
           <Route exact path="/code" render={ ({location}) => (
             <UnAuthCheck>
-              <Code
-                queryString={queryString.parse(location.search)}
-              />
+              <DivideForm>
+                <ConfirmCode
+                  queryString={queryString.parse(location.search)}
+                />
+              </DivideForm>
             </UnAuthCheck>
           )} />
           <Route exact path="/signIn" render={ () => (
