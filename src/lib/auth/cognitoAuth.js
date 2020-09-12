@@ -26,7 +26,12 @@ export async function signUp (email, password, attributes, successCallback, erro
     return result;
   } catch (error) {
     console.error(error);
-    if(errorCallback) errorCallback(error);
+
+    if(errorCallback) {
+      errorCallback(error);
+    } else {
+      throw error;
+    }
   }
 };
 
