@@ -95,7 +95,6 @@ export default function SignUp(props = null) {
             name="userId" 
             value={ user.userId } 
             onChangeFunc={(e) => {handleChange(e)} } 
-            inputClass={styles.test} 
             errorMessages={ errors.userId }
           />
           <UtilInput 
@@ -104,7 +103,6 @@ export default function SignUp(props = null) {
             name="password" 
             value={ user.password } 
             onChangeFunc={(e) => {handleChange(e)} } 
-            inputClass={styles.test} 
             errorMessages={ errors.password }
           />
           <UtilInput 
@@ -113,7 +111,6 @@ export default function SignUp(props = null) {
             name="confirmPassword" 
             value={ user.confirmPassword } 
             onChangeFunc={(e) => {handleChange(e)} } 
-            inputClass={styles.test} 
             errorMessages={ errors.confirmPassword }
           />
           <UtilInput 
@@ -122,7 +119,6 @@ export default function SignUp(props = null) {
             name="nickname" 
             value={ user.nickname } 
             onChangeFunc={(e) => {handleChange(e)} } 
-            inputClass={styles.test} 
             errorMessages={ errors.nickname }
           />
           <button className={styles.inputButton} disabled={!isSignUp()} onClick={ async () => { handleSignUp() }
