@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { signIn } from 'lib/auth/cognitoAuth'
+import UtilInput from 'modules/util/input/Input';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { 
@@ -14,31 +15,36 @@ export default function SignIn(props = null) {
   const history = useHistory();
 
   // Stateの定義
-  const [userId, setUserId] = useState("");
-  const [password, setPassword] = useState("");
+  const [user, setUser] = useState({
+    userId: "",
+    password: ""
+  });
 
+  // サインインボタン押下時のイベント
+  const handleSignIn = async () => {
+    try {
+      const result = await signIn(
+        user.userId,
+        user.password
+      );
 
-  // サインイン成功時の処理
-  const signInSuccessCallback = (loginUser) => {
-    // ReduxStateにログインしたユーザ情報をセット
-    dispatch(setCurrentUser({...loginUser.attributes}));
-    dispatch(setIsLogin(true));
+      // ReduxStateにログインしたユーザ情報をセット
+      dispatch(setCurrentUser({...result.attributes}));
+      dispatch(setIsLogin(true));
 
-    toast.successToast({
-      message: 'サインインしました',
-    });
-    history.push(`/`);
-  };
-
-  // サインイン失敗時の処理
-  const signInErrorCallback = (error) => {
-    let message = "サインインに失敗しました"
-    if(error.code === "UserNotFoundException") message = "ユーザが存在しません"
-    if(error.code === "NotAuthorizedException") message = "ユーザIDもしくはパスワードが誤っています"
-    if(error.code === "InvalidParameterException") message = "ユーザIDもしくはパスワードが誤っています"
-    toast.errorToast({
-      message: message
-    });
+      toast.successToast({
+        message: 'サインインしました',
+      });
+      history.push(`/`);
+    } catch(error) {
+      let message = "サインインに失敗しました"
+      if(error.code === "UserNotFoundException") message = "ユーザが存在しません"
+      if(error.code === "NotAuthorizedException") message = "ユーザIDもしくはパスワードが誤っています"
+      if(error.code === "InvalidParameterException") message = "ユーザIDもしくはパスワードが誤っています"
+      toast.errorToast({
+        message: message
+      });
+    }
   }
 
   return (
@@ -48,21 +54,29 @@ export default function SignIn(props = null) {
           <div className={styles.title}>
             {process.env.REACT_APP_PROJECT_NAME}
           </div>
-          <div className={styles.inputItem}>
-            <div className={styles.inputLabel}>
-              ユーザID(メールアドレス)
-            </div>
-            <input className={styles.inputText} type="text" placeholder="user@example.com"
-              onChange={ (e) => setUserId(e.target.value) } value={userId} /> 
-          </div>
-          <div className={styles.inputItem}>
-            <div className={styles.inputLabel}>
-              パスワード
-            </div>
-            <input className={styles.inputText} type="password" onChange={ (e) => setPassword(e.target.value) } value={password} />
-          </div>
+          <UtilInput 
+            label="ユーザID(メールアドレス)" 
+            placeholder="user@example.com" 
+            type="text" 
+            name="userId" 
+            value={ user.userId } 
+            onChangeFunc={(e) => {
+              user.userId = e.target.value
+              setUser(Object.assign({}, user));
+            } } 
+          />
+          <UtilInput 
+            label="パスワード" 
+            type="password" 
+            name="password" 
+            value={ user.password } 
+            onChangeFunc={(e) => {
+              user.password = e.target.value
+              setUser(Object.assign({}, user));
+            } } 
+          />
           <button className={styles.inputButton} onClick={ async () => { 
-            signIn(userId, password, signInSuccessCallback, signInErrorCallback)
+            handleSignIn()
           }}>サインイン</button>
           <div className={styles.actions}>
             <div className={styles.action}>

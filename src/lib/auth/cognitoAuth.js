@@ -86,7 +86,12 @@ export async function signIn (email, password, successCallback, errorCallback) {
     return result;
   } catch (error) {
     console.error(error);
-    if(errorCallback) errorCallback(error);
+    
+    if(errorCallback) {
+      errorCallback(error);
+    } else {
+      throw error;
+    }
   }
 };
 
