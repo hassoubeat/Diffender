@@ -42,6 +42,11 @@
       border:none;
       cursor: pointer;
       text-align: center;
+
+      &:disabled {
+        opacity: 0.5;
+      }
+
     }
 
     .actions {

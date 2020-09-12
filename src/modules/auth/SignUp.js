@@ -24,6 +24,7 @@ export default function SignUp(props = null) {
     nickname: []
   });
 
+  // 入力フォームの値変更時のイベント
   const handleChange = (event) => {
     const inputType = event.target.name;
     const value = event.target.value;
@@ -43,6 +44,17 @@ export default function SignUp(props = null) {
       errors[inputType].push(error.message);
       setErrors(Object.assign({}, errors));
     }
+  }
+
+  // サインアップ処理の実施有無
+  const isSignUp = () => {
+    // エラーが存在する場合にTrue
+    let isErrors = false;
+    Object.values(errors).map( errorMessages => {
+      if (errorMessages.length > 0) isErrors = true;
+    })
+
+    return !isErrors;
   }
 
   return (
@@ -89,9 +101,11 @@ export default function SignUp(props = null) {
             inputClass={styles.test} 
             errorMessages={ errors.nickname }
           />
-          <button className={styles.inputButton} onClick={ async () => { 
-            signUp(user.userId, user.password, { nickname: user.nickname } , successCallback, errorCallback)
-          }}>サインアップ</button>
+          <button className={styles.inputButton} disabled={!isSignUp()}
+            onClick={ async () => { 
+              signUp(user.userId, user.password, { nickname: user.nickname } , successCallback, errorCallback)
+            }
+          }>サインアップ</button>
           <div className={styles.actions}>
             <div className={styles.action}>
               <Link to={'/signIn'}>
