@@ -6,7 +6,11 @@ export default function UserInfo(props = null) {
   return (
     <React.Fragment>
       <div className={styles.userInfo}>
-        <ChangePassword/>
+        <div className={styles.title}>ユーザ情報の編集</div>
+        <section id="changePassword">
+          <div className={styles.sectionTitle}>パスワード変更</div>
+          <ChangePassword/>
+        </section>
       </div>
     </React.Fragment>
   );
