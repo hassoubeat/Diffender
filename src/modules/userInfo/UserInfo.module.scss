@@ -10,10 +10,14 @@
     margin-bottom: 15px;
   }
 
-  .sectionTitle {
-    padding: 4px 0px;
-    font-size: 18px;
-    color: $MAIN_COLOR;
-    border-bottom: 1px solid $LINE_COLOR;
+  .section {
+    margin: 10px 0;
+
+    .sectionTitle {
+      padding: 4px 0px;
+      font-size: 18px;
+      color: $MAIN_COLOR;
+      border-bottom: 1px solid $LINE_COLOR;
+    }
   }
 }
