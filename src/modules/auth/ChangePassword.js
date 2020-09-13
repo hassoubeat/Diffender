@@ -50,7 +50,7 @@ export default function ChangePassword(props = null) {
 
   return (
     <React.Fragment>
-      <div className={styles.resetPassword}>
+      <div className={styles.changePassword}>
         <div className={styles.formArea}>
           <UtilInput 
             label="現在のパスワード" 
