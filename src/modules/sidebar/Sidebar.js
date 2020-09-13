@@ -57,11 +57,16 @@ export default function Sidebar() {
             <li className={`${styles.sideBarItem} ${styles.user}`}>
               <div><i className="fa fa-user"></i></div>
               <div className={styles.username}>
+                {loginUser.nickname}
+              </div>
+              <div className={styles.icon}>
                 <Link to="/user" onClick={() => {if(isSp) dispatch(setDisplaySidebar(false))}}>
-                  {loginUser.nickname}
+                <i className="fa fa-edit"></i>
                 </Link>
               </div>
-              <div><i className="fa fa-sign-out-alt" onClick={ () => { handleSignOut() } }></i></div>
+              <div className={styles.icon}>
+                <i className="fa fa-sign-out-alt" onClick={ () => { handleSignOut() } }></i>
+              </div>
             </li>
             <hr/>
             <li className={`${styles.sideBarItem}`}>
