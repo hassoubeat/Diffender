@@ -41,6 +41,10 @@
 
       .icon {
         margin: 0px 8px;
+
+        &:hover {
+          color:$DARK_GRAY_COLOR;
+        }
       }
     }
   }

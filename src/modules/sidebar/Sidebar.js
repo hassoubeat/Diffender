@@ -60,9 +60,12 @@ export default function Sidebar() {
                 {loginUser.nickname}
               </div>
               <div className={styles.icon}>
-                <Link to="/user" onClick={() => {if(isSp) dispatch(setDisplaySidebar(false))}}>
-                <i className="fa fa-edit"></i>
-                </Link>
+                <i className="fa fa-edit"
+                  onClick={() => {
+                    if(isSp) dispatch(setDisplaySidebar(false));
+                    history.push("/user");
+                  }}
+                ></i>
               </div>
               <div className={styles.icon}>
                 <i className="fa fa-sign-out-alt" onClick={ () => { handleSignOut() } }></i>
