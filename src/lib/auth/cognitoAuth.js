@@ -144,7 +144,12 @@ export async function federationSignIn (federationProvider, successCallback, err
     return result;
   } catch (error) {
     console.error(error);
-    if(errorCallback) errorCallback(error);
+
+    if(errorCallback) {
+      errorCallback(error);
+    } else {
+      throw error;
+    }
   }
 };
 
@@ -156,7 +161,12 @@ export async function signOut (successCallback, errorCallback) {
     if(successCallback) successCallback(result);
   } catch (error) {
     console.error(error);
-    if(errorCallback) errorCallback(error);
+
+    if(errorCallback) {
+      errorCallback(error);
+    } else {
+      throw error;
+    }
   }
 };
 
@@ -165,7 +175,7 @@ export async function getCurrentUser() {
   return await Auth.currentAuthenticatedUser();
 };
 
-// Password変更
+// パスワード変更
 export async function changePassword (user, oldPassword, newPassword, successCallback, errorCallback) {
   let result = "";
   try {
@@ -174,6 +184,11 @@ export async function changePassword (user, oldPassword, newPassword, successCal
     return result;
   } catch (error) {
     console.error(error);
-    if(errorCallback) errorCallback(error);
+
+    if(errorCallback) {
+      errorCallback(error);
+    } else {
+      throw error;
+    }
   }
 };
