@@ -57,7 +57,7 @@ export default function Sidebar() {
             <li className={`${styles.sideBarItem} ${styles.user}`}>
               <div><i className="fa fa-user"></i></div>
               <div className={styles.username}>
-                <Link to="/users" onClick={() => {if(isSp) dispatch(setDisplaySidebar(false))}}>
+                <Link to="/user" onClick={() => {if(isSp) dispatch(setDisplaySidebar(false))}}>
                   {loginUser.nickname}
                 </Link>
               </div>

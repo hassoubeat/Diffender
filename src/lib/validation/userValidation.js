@@ -2,6 +2,7 @@ import v8n from "v8n";
 
 const USER_ID = "userId";
 const PASSWORD = "password";
+const OLD_PASSWORD = "oldPassword";
 const NEW_PASSWORD = "newPassword";
 const CONFIRM_PASSWORD = "confirmPassword";
 const NICKNAME = "nickname";
@@ -90,8 +91,9 @@ export function valid(validationType, user) {
     case USER_ID:
       return userIdValid(user.userId);
     case PASSWORD:
+    case OLD_PASSWORD:
     case NEW_PASSWORD:
-      return passwordValid(user.password);
+      return passwordValid(user[validationType]);
     case CONFIRM_PASSWORD:
       return confirmPasswordValid(user.password, user.confirmPassword);
     case NICKNAME:
