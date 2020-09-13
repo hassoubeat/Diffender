@@ -9,10 +9,12 @@ import {
 } from 'app/userSlice';
 import { isSpWindowSize } from 'lib/util/window';
 import { signOut } from 'lib/auth/cognitoAuth'
+import * as toast from 'lib/util/toast';
 import styles from './Sidebar.module.scss';
 
 export default function Sidebar() {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   // Redux-Stateの取得
   const appWindow = useSelector(selectWindow);
@@ -20,7 +22,26 @@ export default function Sidebar() {
   const isDisplaySidebar = useSelector(selectIsDisplaySidebar);
   const loginUser = useSelector(selectCurrentUser);
 
-  const history = useHistory();
+  // サインアウトボタン押下時の処理
+  const handleSignOut = async () => {
+    if(!window.confirm('サインアウトしますか？')) return;
+
+    try {
+      await signOut();
+      dispatch(setCurrentUser({}));
+      dispatch(setIsLogin(false));
+      toast.successToast({
+        message: 'サインアウトが完了しました',
+      });
+      history.push("/signIn");
+    } catch (error) {
+      console.error(error);
+      let message = "サインアウトに失敗しました";
+      toast.errorToast({
+        message: message
+      });
+    }
+  }
 
   return (
     <React.Fragment>
@@ -34,14 +55,13 @@ export default function Sidebar() {
             </li>
             <hr/>
             <li className={`${styles.sideBarItem} ${styles.user}`}>
-              <Link to="/users" onClick={() => {if(isSp) dispatch(setDisplaySidebar(false))}}>
-                <i className="fa fa-user"></i> {loginUser.name} <i className="fa fa-sign-out-alt" onClick={ async() => {
-                  signOut();
-                  dispatch(setCurrentUser({}));
-                  dispatch(setIsLogin(false));
-                  history.push("/signIn");
-                }}></i>
-              </Link>
+              <div><i className="fa fa-user"></i></div>
+              <div className={styles.username}>
+                <Link to="/users" onClick={() => {if(isSp) dispatch(setDisplaySidebar(false))}}>
+                  {loginUser.nickname}
+                </Link>
+              </div>
+              <div><i className="fa fa-sign-out-alt" onClick={ () => { handleSignOut() } }></i></div>
             </li>
             <hr/>
             <li className={`${styles.sideBarItem}`}>

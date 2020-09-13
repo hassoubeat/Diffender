@@ -30,6 +30,15 @@
       font-size: 48px;
       text-align: center;
     }
+
+    &.user {
+      display: flex;
+
+      .username {
+        margin: 0px 5px;
+        flex: 1 1 0;
+      }
+    }
   }
 
   &Toggle {
