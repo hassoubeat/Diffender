@@ -32,14 +32,14 @@ export default function ChangePassword(props = null) {
         user.newPassword
       );
       toast.successToast({
-        message: 'パスワードの更新が完了しました',
+        message: 'パスワードの変更が完了しました',
       });
       // 入力値のクリア
       user.oldPassword = "";
       user.newPassword = "";
       setUser(Object.assign({}, user));
     } catch(error) {
-      let message = "パスワードの更新に失敗しました"
+      let message = "パスワードの変更に失敗しました"
       if(error.code === "NotAuthorizedException") message = "現在のパスワードが誤っています";
       
       toast.errorToast({
