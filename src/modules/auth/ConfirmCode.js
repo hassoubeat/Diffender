@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import UtilInput from 'modules/util/input/Input';
 import { confirmSignUp, resendSignUp } from 'lib/auth/cognitoAuth';
-import * as userValid from 'lib/validation/userValidation';
+import {
+  handleChangeUserParams,
+  isErrorsCheck
+} from './AuthEvent';
 import * as toast from 'lib/util/toast';
 import styles from './ConfirmCode.module.scss';
 
@@ -21,38 +24,6 @@ export default function ConfirmCode(props = null) {
   });
 
   const history = useHistory();
-
-  // 入力フォームの値変更時のイベント
-  const handleChange = (event) => {
-    const inputType = event.target.name;
-    const value = event.target.value;
-    
-    // エラーメッセージを初期化
-    errors[inputType] = [];
-    setErrors(Object.assign({}, errors));
-
-    // 入力値のセット
-    user[inputType] = value;
-    setUser(Object.assign({}, user));
-
-    // バリデーション
-    try {
-      userValid.valid(inputType, user);
-    } catch (error) {
-      errors[inputType].push(error.message);
-      setErrors(Object.assign({}, errors));
-    }
-  }
-
-  // サインアップ処理の実施有無
-  const isVerifiyConfirmCode = () => {
-    // エラーが存在する場合にTrue
-    let isErrors = false;
-    Object.values(errors).forEach( errorMessages => {
-      if (errorMessages.length > 0) isErrors = true;
-    });
-    return !isErrors;
-  }
 
   // 認証コード再発行ボタン押下時のイベント
   const handleVerifiyConfirmCode = async () => {
@@ -109,7 +80,9 @@ export default function ConfirmCode(props = null) {
             type="text" 
             name="userId" 
             value={ user.userId } 
-            onChangeFunc={(e) => {handleChange(e)} } 
+            onChangeFunc={(e) => { 
+              handleChangeUserParams(e, user, setUser, errors, setErrors) 
+            } } 
             errorMessages={ errors.userId }
           />
           <UtilInput 
@@ -118,11 +91,13 @@ export default function ConfirmCode(props = null) {
             type="text" 
             name="confirmCode" 
             value={ user.confirmCode } 
-            onChangeFunc={(e) => {handleChange(e)} } 
+            onChangeFunc={(e) => { 
+              handleChangeUserParams(e, user, setUser, errors, setErrors) 
+            } } 
             errorMessages={ errors.confirmCode }
           />
           <div className={styles.actions}>
-            <button className={styles.inputButton} disabled={!isVerifiyConfirmCode()} onClick={ async() => { handleVerifiyConfirmCode() }
+            <button className={styles.inputButton} disabled={!isErrorsCheck(errors)} onClick={ async() => { handleVerifiyConfirmCode() }
             }>認証コードの確認</button>
           </div>
           <div className={styles.subMenu}>

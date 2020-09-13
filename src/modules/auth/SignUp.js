@@ -2,10 +2,14 @@ import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { signUp } from 'lib/auth/cognitoAuth';
 import UtilInput from 'modules/util/input/Input';
-import * as userValid from 'lib/validation/userValidation';
+import {
+  handleChangeUserParams,
+  isErrorsCheck
+} from './AuthEvent';
 import * as toast from 'lib/util/toast';
 import styles from './SignUp.module.scss';
 
+// サインアップボタン押下時のイベント
 export default function SignUp(props = null) {
   const history = useHistory();
 
@@ -23,42 +27,8 @@ export default function SignUp(props = null) {
     nickname: []
   });
 
-  // 入力フォームの値変更時のイベント
-  const handleChange = (event) => {
-    const inputType = event.target.name;
-    const value = event.target.value;
-    
-    // エラーメッセージを初期化
-    errors[inputType] = [];
-    setErrors(Object.assign({}, errors));
-
-    // 入力値のセット
-    user[inputType] = value;
-    setUser(Object.assign({}, user));
-
-    // バリデーション
-    try {
-      userValid.valid(inputType, user);
-    } catch (error) {
-      errors[inputType].push(error.message);
-      setErrors(Object.assign({}, errors));
-    }
-  }
-
-  // サインアップ処理の実施有無
-  const isSignUp = () => {
-    // エラーが存在する場合にTrue
-    let isErrors = false;
-    Object.values(errors).forEach( errorMessages => {
-      if (errorMessages.length > 0) isErrors = true;
-    });
-
-    return !isErrors;
-  }
-
   // サインアップボタン押下時のイベント
   const handleSignUp = async () => {
-
     try {
       const result = await signUp(
         user.userId,
@@ -94,7 +64,9 @@ export default function SignUp(props = null) {
             type="text" 
             name="userId" 
             value={ user.userId } 
-            onChangeFunc={(e) => {handleChange(e)} } 
+            onChangeFunc={(e) => { 
+              handleChangeUserParams(e, user, setUser, errors, setErrors) 
+            } } 
             errorMessages={ errors.userId }
           />
           <UtilInput 
@@ -102,7 +74,9 @@ export default function SignUp(props = null) {
             type="password" 
             name="password" 
             value={ user.password } 
-            onChangeFunc={(e) => {handleChange(e)} } 
+            onChangeFunc={(e) => { 
+              handleChangeUserParams(e, user, setUser, errors, setErrors) 
+            } } 
             errorMessages={ errors.password }
           />
           <UtilInput 
@@ -110,7 +84,9 @@ export default function SignUp(props = null) {
             type="password" 
             name="confirmPassword" 
             value={ user.confirmPassword } 
-            onChangeFunc={(e) => {handleChange(e)} } 
+            onChangeFunc={(e) => { 
+              handleChangeUserParams(e, user, setUser, errors, setErrors) 
+            } } 
             errorMessages={ errors.confirmPassword }
           />
           <UtilInput 
@@ -118,10 +94,12 @@ export default function SignUp(props = null) {
             type="text" 
             name="nickname" 
             value={ user.nickname } 
-            onChangeFunc={(e) => {handleChange(e)} } 
+            onChangeFunc={(e) => { 
+              handleChangeUserParams(e, user, setUser, errors, setErrors) 
+            } } 
             errorMessages={ errors.nickname }
           />
-          <button className={styles.inputButton} disabled={!isSignUp()} onClick={ async () => { handleSignUp() }
+          <button className={styles.inputButton} disabled={!isErrorsCheck(errors)} onClick={ async () => { handleSignUp() }
           }>サインアップ</button>
           <div className={styles.actions}>
             <div className={styles.action}>
