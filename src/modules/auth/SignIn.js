@@ -85,7 +85,7 @@ export default function SignIn(props = null) {
               </Link>
             </div>
             <div className={styles.action}>
-              <Link to={'/passwordRemind'}>
+              <Link to={'/forgotPassword'}>
                 パスワードを忘れた場合
               </Link>
             </div>

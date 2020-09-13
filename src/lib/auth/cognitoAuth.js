@@ -74,6 +74,46 @@ export async function resendSignUp (email, successCallback, errorCallback) {
   }
 };
 
+// パスワードリマインド(確認コード送信)
+export async function forgotPassword (email, successCallback, errorCallback) {
+  let result = "";
+  try {
+    result = await Auth.forgotPassword(email);
+    if(successCallback) successCallback(result);
+    return result;
+  } catch (error) {
+    console.error(error);
+    
+    if(errorCallback) {
+      errorCallback(error);
+    } else {
+      throw error;
+    }
+  }
+};
+
+// パスワードリマインド(新しいパスワード設定)
+export async function forgotPasswordSubmit (email, verifyCode, newPassword, successCallback, errorCallback) {
+  let result = "";
+  try {
+    result = await Auth.forgotPasswordSubmit(
+      email,
+      verifyCode,
+      newPassword
+    );
+    if(successCallback) successCallback(result);
+    return result;
+  } catch (error) {
+    console.error(error);
+
+    if(errorCallback) {
+      errorCallback(error);
+    } else {
+      throw error;
+    }
+  }
+};
+
 // サインイン
 export async function signIn (email, password, successCallback, errorCallback) {
   let result = "";

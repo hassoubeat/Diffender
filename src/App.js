@@ -18,6 +18,7 @@ import DivideForm from 'modules/auth/DivideForm';
 import SignUp from 'modules/auth/SignUp';
 import ConfirmCode from 'modules/auth/ConfirmCode';
 import SignIn from 'modules/auth/SignIn';
+import ForgotPassword from 'modules/auth/ForgotPassword';
 import Sidebar from 'modules/sidebar/Sidebar';
 import Main from 'modules/main/Main';
 import NotFound404 from 'modules/notFound/NotFound';
@@ -85,6 +86,13 @@ function App() {
                 <ConfirmCode
                   queryString={queryString.parse(location.search)}
                 />
+              </DivideForm>
+            </UnAuthCheck>
+          )} />
+          <Route exact path="/forgotPassword" render={ () => (
+            <UnAuthCheck>
+              <DivideForm position="left" >
+                <ForgotPassword/>
               </DivideForm>
             </UnAuthCheck>
           )} />
