@@ -175,6 +175,24 @@ export async function getCurrentUser() {
   return await Auth.currentAuthenticatedUser();
 };
 
+// ユーザ属性変更
+export async function updateUserAttributes (user, updateAttr, successCallback, errorCallback) {
+  let result = "";
+  try {
+    result = await Auth.updateUserAttributes(user, updateAttr);
+    if(successCallback) successCallback(result);
+    return result;
+  } catch (error) {
+    console.log(error);
+    
+    if(errorCallback) {
+      errorCallback(error);
+    } else {
+      throw error;
+    }
+  }
+}
+
 // パスワード変更
 export async function changePassword (user, oldPassword, newPassword, successCallback, errorCallback) {
   let result = "";
