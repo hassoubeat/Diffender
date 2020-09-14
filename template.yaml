@@ -183,8 +183,57 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2
+  
+  # 本アプリで利用するCognitoユーザプール
+  DiffenderUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub "${Env}-diffender"
+      UsernameAttributes: 
+        - email
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: false
+      AutoVerifiedAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+          RequireUppercase: true
+      Schema:
+      - Name: email
+        AttributeDataType: String
+        DeveloperOnlyAttribute: false
+        Mutable: true
+        Required: true
+      AccountRecoverySetting:
+        RecoveryMechanisms: 
+          - Name: verified_email
+            Priority: 1
+
+  # 本アプリで利用するCognitoアプリクライアント
+  DiffenderUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: !Sub "${Env}-diffender-client"
+      GenerateSecret: false
+      RefreshTokenValidity: 30
+      ExplicitAuthFlows:
+        - ALLOW_ADMIN_USER_PASSWORD_AUTH
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      UserPoolId:
+        Ref: DiffenderUserPool
 
 Outputs:
   GetProjectListFunction:
     Description: "Access Command"
     Value: !Sub "curl https://${DiffenderApi}.execute-api.${AWS::Region}.amazonaws.com/${Env}/projects"
+  DiffenderUserPool:
+    Description: "Diffender Cognito User Pool ID"
+    Value: !Ref DiffenderUserPool
+  DiffenderUserPoolClient:
+    Description: "Diffender Cognito User Pool Client ID"
+    Value: !Ref DiffenderUserPoolClient

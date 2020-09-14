@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Breadcrumbs from 'modules/breadcrumbs/Breadcrumbs';
+import UserInfo from 'modules/userInfo/UserInfo';
 import ProjectList from 'modules/projectList/ProjectList';
 import ProjectInfo from 'modules/projectInfo/ProjectInfo';
 import PageList from 'modules/pageList/PageList';
@@ -16,6 +17,9 @@ export default function Main() {
     <div className={styles.main}>
       <Breadcrumbs />
       <Switch>
+        <Route exact path="/user" render={() => (
+          <UserInfo />
+        )} />
         <Route exact path="/projects" component={ProjectList} />
         <Route exact path="/projects/:projectId" render={({match}) => (
           <ProjectInfo projectId={match.params.projectId} />

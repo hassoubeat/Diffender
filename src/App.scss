@@ -24,7 +24,7 @@ hr {
 }
 
 // テキストボックス、セレクタの設定
-input[type='text'], select {
+input[type='text'], input[type='password'] , select {
   color: $PLANE_TEXT_COLOR;
   box-sizing: border-box;
   border: 1px solid $LINE_COLOR;
@@ -68,6 +68,12 @@ input[type='checkbox'] {
   &:hover {
     box-shadow: 0 0 1pt 1pt $MAIN_COLOR;
   }
+}
+
+// リンクボタンの設定
+.linkButton {
+  color: $LINK_COLOR;
+  cursor: pointer;
 }
 
 // 画面右下に固定したボタンの設定
