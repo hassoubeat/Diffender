@@ -5,6 +5,17 @@ const PROJECT_COUNTER_ID = 'ProjectIdCounter';
 module.exports.query = async (dynamoDB, queryObj) => {
   return await dynamoDB.query(queryObj).promise();
 }
+
+// データ登録
+module.exports.put = async (dynamoDB, putObj) => {
+  const date = lib.getNowTime();
+  // 現在時刻を登録する
+  putObj.Item.createDt = date.toLocaleString({timeZone: 'Asia/Tokyo'});
+  putObj.Item.updateDt = date.toLocaleString({timeZone: 'Asia/Tokyo'});
+  putObj.Item.createDtUnix = date.getTime();
+  putObj.Item.updateDtUnix = date.getTime();
+  return await dynamoDB.put(putObj).promise();
+}
   
 // Project用の現在のアトミックカウンターからインクリメントした値を取得
 module.exports.getProjectId = async (dynamoDB, tableName) => {

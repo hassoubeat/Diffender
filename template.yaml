@@ -40,6 +40,23 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /projects
             Method: get
+  # Projectsの登録
+  PostProjectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/projects/PostProjectFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /projects
+            Method: post
     
   # 自前で実装した共通ライブラリのレイヤー
   MyLibLayer:
