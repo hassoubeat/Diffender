@@ -1,42 +1,58 @@
 const AWS = require('aws-sdk');
 const dynamoDBClient = new AWS.DynamoDB.DocumentClient();
 const dynamoDBDao = require('dynamodb-dao');
+const projectValidator = require('project-validator');
 
 const TABLE_NAME = process.env.DIFFENDER_DYNAMODB_TABLE_NAME;
 
-// レスポンス変数の定義
-var response = {
-  'statusCode': 200,
-  'headers': {
-    "Access-Control-Allow-Headers" : "*",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "OPTIONS, GET"
-  }
-}
-
 exports.lambda_handler = async (event, context) => {
-  const payload = JSON.parse(event.body);
+  // レスポンス変数の定義
+  let response = {
+    'statusCode': 200,
+    'headers': {
+      "Access-Control-Allow-Headers" : "*",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "OPTIONS, GET"
+    }
+  }
+
+  let project = {};
   
+  // 入力値チェック
+  try {
+    const payload = JSON.parse(event.body);
+    project = payload.project;
+    projectValidator.projectValid(project);
+  } catch (error) {
+    console.error(error);
+
+    response.statusCode = 400;
+    response.body = JSON.stringify({
+      message: `Input value error: ${error.message}`
+    });
+    return response;
+  }
+  
+  // 登録処理
   try {
     // 登録するオブジェクトの生成
     const putObj = {
       id: await getProjectId(dynamoDBClient, dynamoDBDao, TABLE_NAME),
-      ...payload.project
+      name: project.name,
+      description: project.description,
+      projectTieUserId: project.projectTieUserId,
     }
     // Projectの登録
-    const result = await postProject(dynamoDBClient, dynamoDBDao, TABLE_NAME, putObj);
-    console.log(result);
+    await postProject(dynamoDBClient, dynamoDBDao, TABLE_NAME, putObj);
   } catch (error) {
     console.error(error);
 
     response.statusCode = 500;
     response.body = JSON.stringify({
-      message: error.message
+      message: `Server error: ${error.message}`
     });
-
-  } finally {
-    return response;
   }
+  return response;
 }
 
 // プロジェクトIDの取得
