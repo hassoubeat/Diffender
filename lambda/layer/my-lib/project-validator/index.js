@@ -61,10 +61,10 @@ const valid = (validationType, project) => {
   switch(validationType) {
     case PROJECT_NAME:
       return projectNameValid(project[validationType]);
-      case PROJECT_DESCRIPTION:
-        return projectDescriptionValid(project[validationType]);
-      case PROJECT_TIE_USER_ID:
-        return projectTieUserIdValid(project[validationType]);
+    case PROJECT_DESCRIPTION:
+      return projectDescriptionValid(project[validationType]);
+    case PROJECT_TIE_USER_ID:
+      return projectTieUserIdValid(project[validationType]);
     default:
       console.error("該当するバリデーションが存在しません");
   }
