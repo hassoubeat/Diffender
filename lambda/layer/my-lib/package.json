@@ -4,7 +4,8 @@
     "version": "0.0.1",
     "private": true,
     "dependencies": {
-        "dynamodb-dao": "file:./dynamodb-dao"
+        "dynamodb-dao": "file:./dynamodb-dao",
+        "project-validator": "file:./project-validator"
     },
     "scripts": {}
 }
