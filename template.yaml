@@ -28,7 +28,7 @@ Resources:
   GetProjectListFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: lambda/GetProjectListFunction/
+      CodeUri: lambda/projects/GetProjectListFunction/
       Handler: index.lambda_handler
       Runtime: nodejs12.x
       Policies:
@@ -261,9 +261,9 @@ Resources:
         Ref: DiffenderUserPool
 
 Outputs:
-  GetProjectListFunction:
-    Description: "Access Command"
-    Value: !Sub "curl https://${DiffenderApi}.execute-api.${AWS::Region}.amazonaws.com/${Env}/projects"
+  DiffenderApi:
+    Description: "Diffender Api Domain"
+    Value: !Sub "https://${DiffenderApi}.execute-api.${AWS::Region}.amazonaws.com/${Env}"
   DiffenderUserPool:
     Description: "Diffender Cognito User Pool ID"
     Value: !Ref DiffenderUserPool
