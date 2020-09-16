@@ -6,6 +6,7 @@ Globals:
   Function:
     Timeout: 30
     Layers:
+      - !Ref UtilLayer
       - !Ref MyLibLayer
     Environment:
       Variables:
@@ -40,12 +41,38 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /projects
             Method: get
+  # Projectsの登録
+  PostProjectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/projects/PostProjectFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /projects
+            Method: post
     
-  # 自前で実装した共通ライブラリのレイヤー
+  # 自前で実装したライブラリのレイヤー
   MyLibLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
       ContentUri: 'lambda/layer/my-lib'
+      CompatibleRuntimes:
+        - nodejs12.x
+    Metadata:
+      BuildMethod: nodejs12.x
+  # 汎用的なライブラリのレイヤー
+  UtilLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: 'lambda/layer/util'
       CompatibleRuntimes:
         - nodejs12.x
     Metadata:
@@ -58,6 +85,12 @@ Resources:
       Cors:
         AllowOrigin: "'*'"
         AllowHeaders: "'*'"
+      Auth:
+        AddDefaultAuthorizerToCorsPreflight: false
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt DiffenderUserPool.Arn
 
   # 本アプリで利用するS3バケット
   DiffenderS3:

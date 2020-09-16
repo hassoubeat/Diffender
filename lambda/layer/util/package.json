@@ -4,8 +4,7 @@
     "version": "0.0.1",
     "private": true,
     "dependencies": {
-        "dynamodb-dao": "file:./dynamodb-dao",
-        "project-validator": "file:./project-validator"
+        "jwt-decode": "^3.0.0-beta.2"
     },
     "scripts": {}
 }

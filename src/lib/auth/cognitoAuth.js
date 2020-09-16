@@ -170,11 +170,6 @@ export async function signOut (successCallback, errorCallback) {
   }
 };
 
-// 現在のユーザ取得
-export async function getCurrentUser() {
-  return await Auth.currentAuthenticatedUser();
-};
-
 // ユーザ属性変更
 export async function updateUserAttributes (user, updateAttr, successCallback, errorCallback) {
   let result = "";
@@ -209,4 +204,9 @@ export async function changePassword (user, oldPassword, newPassword, successCal
       throw error;
     }
   }
+};
+
+// 現在のユーザ取得
+export async function getCurrentUser() {
+  return await Auth.currentAuthenticatedUser();
 };
