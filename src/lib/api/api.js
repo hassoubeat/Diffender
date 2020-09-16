@@ -20,16 +20,19 @@ Amplify.configure({
 });
 
 // プロジェクト一覧の取得
-// export async function getProjectList(data) {
-//   let result = {};
-//   try {
-//     result = await API.get(DIFFENDER_API_NAME, '/projects', data)
-//   } catch (error) {
-//     console.error(error);
-//     throw error;
-//   }
-//   return result;
-// }
+export async function getProjectList(request) {
+  let result = {};
+  let projectList = [];
+  try {
+    request = await requestSetup(request);
+    result = await API.get(DIFFENDER_API_NAME, '/projects', request);
+    projectList = result.body.Items;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+  return projectList;
+}
 
 // プロジェクトの登録
 export async function postProject(request) {

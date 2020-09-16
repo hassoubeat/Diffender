@@ -1,43 +1,57 @@
 const AWS = require('aws-sdk');
+const jwt_decode = require('jwt-decode');
 const dynamoDBClient = new AWS.DynamoDB.DocumentClient();
 const dynamoDBDao = require('dynamodb-dao');
 
 const TABLE_NAME = process.env.DIFFENDER_DYNAMODB_TABLE_NAME;
 
-// レスポンス変数の定義
-var response = {
-  'statusCode': 200,
-  'headers': {
-    "Access-Control-Allow-Headers" : "*",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "OPTIONS, GET"
-  }
-}
-
 exports.lambda_handler = async (event, context) => {
+  // レスポンス変数の定義
+  let response = {
+    'statusCode': 200,
+    'headers': {
+      "Access-Control-Allow-Headers" : "*",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "OPTIONS, GET"
+    }
+  }
 
-  // TODO eventからパラメータの展開
-  // TODO ユーザ検証(受け取ったパラメータをCognitoに問い合わせ)
+  let user = {};
 
+  // 入力値チェック
   try {
-    // Projectの一覧取得
-    await getProjectList(dynamoDBClient, TABLE_NAME, "blank");
+    // idTokenからユーザ情報取得
+    user = jwt_decode(event.headers.Authorization);
+  } catch (error) {
+    console.error(error);
 
+    response.statusCode = 400;
+    response.body = JSON.stringify({
+      message: `Input value error: ${error.message}`
+    });
+    return response;
+  }
+
+  // 取得処理
+  try {
+    // ユーザに紐付いたProject一覧の取得
+    const projectList = await getProjectList(dynamoDBClient, dynamoDBDao, TABLE_NAME, user.sub);
+    response.body = JSON.stringify({
+      body: projectList
+    });
   } catch (error) {
     console.error(error);
 
     response.statusCode = 500;
     response.body = JSON.stringify({
-      message: error.message
+      message: `Server error: ${error.message}`
     });
-
-  } finally {
-    return response;
   }
+  return response;
 }
 
 // プロジェクト一覧の取得
-async function getProjectList(dynamoDBClient, tableName, userId) {
+async function getProjectList(dynamoDBClient, dynamoDBDao, tableName, userId) {
   return await dynamoDBDao.query(
     dynamoDBClient,
     {
@@ -50,4 +64,3 @@ async function getProjectList(dynamoDBClient, tableName, userId) {
     }
   );
 }
-exports.getProjectList = getProjectList;

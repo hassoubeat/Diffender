@@ -262,7 +262,7 @@ Resources:
 
 Outputs:
   DiffenderApi:
-    Description: "Diffender Api Domain"
+    Description: "Diffender Api endpoint"
     Value: !Sub "https://${DiffenderApi}.execute-api.${AWS::Region}.amazonaws.com/${Env}"
   DiffenderUserPool:
     Description: "Diffender Cognito User Pool ID"
