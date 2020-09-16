@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import UtilInput from 'modules/util/input/Input';
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
+import * as projectValid from 'lib/validation/projectValidation';
 import styles from './ProjectForm.module.scss';
 
 export default function ProjectForm(props = null) {
@@ -15,6 +16,10 @@ export default function ProjectForm(props = null) {
   const [project, setProject] = useState({
     name: "",
     description: ""
+  }); 
+  const [errors, setErrors] = useState({
+    name: [],
+    description: []
   });
 
   useEffect( () => {
@@ -30,10 +35,22 @@ export default function ProjectForm(props = null) {
   const handleChange = (event) => {
     const inputType = event.target.name;
     const value = event.target.value;
+    
+    // エラーメッセージを初期化
+    errors[inputType] = [];
+    setErrors(Object.assign({}, errors));
 
     // 入力値のセット
     project[inputType] = value;
     setProject(Object.assign({}, project));  
+
+    // バリデーション
+    try {
+      projectValid.valid(inputType, project);
+    } catch (error) {
+      errors[inputType].push(error.message);
+      setErrors(Object.assign({}, errors));
+    }
   }
 
   // 登録ボタン押下時の処理
@@ -69,6 +86,7 @@ export default function ProjectForm(props = null) {
             name="name" 
             value={ project.name } 
             onChangeFunc={(e) => { handleChange(e) } } 
+            errorMessages={ errors.name }
           />
           <UtilInput 
             label="プロジェクトの説明" 
@@ -77,6 +95,7 @@ export default function ProjectForm(props = null) {
             name="description" 
             value={ project.description } 
             onChangeFunc={(e) => { handleChange(e) } } 
+            errorMessages={ errors.description }
           />
           <div className={styles.actionArea}>
             <span className={styles.postButton} onClick={async () => { handlePostProject() } }>
