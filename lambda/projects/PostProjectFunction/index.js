@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+const jwt_decode = require('jwt-decode');
 const dynamoDBClient = new AWS.DynamoDB.DocumentClient();
 const dynamoDBDao = require('dynamodb-dao');
 const projectValidator = require('project-validator');
@@ -12,16 +13,22 @@ exports.lambda_handler = async (event, context) => {
     'headers': {
       "Access-Control-Allow-Headers" : "*",
       "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "OPTIONS, GET"
+      "Access-Control-Allow-Methods": "OPTIONS, POST"
     }
   }
 
+  let user = {};
   let project = {};
   
   // 入力値チェック
   try {
+    user = jwt_decode(event.headers.Authorization);
+
     const payload = JSON.parse(event.body);
     project = payload.project;
+
+    // プロジェクトを紐付けるUserIDをセット
+    project.projectTieUserId = user.sub;
     projectValidator.projectValid(project);
   } catch (error) {
     console.error(error);

@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { selectCurrentUser } from 'app/userSlice';
 import UtilInput from 'modules/util/input/Input';
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
@@ -13,14 +11,10 @@ export default function ProjectForm(props = null) {
   const successPostCallback = props.successPostCallback;
   const successDeleteCallback = props.successDeleteCallback;
 
-  // Redux-Stateの取得
-  const loginUser = useSelector(selectCurrentUser);
-
   // 入力フォーム用のState定義
   const [project, setProject] = useState({
     name: "",
-    description: "",
-    projectTieUserId: loginUser.sub || ""
+    description: ""
   });
 
   useEffect( () => {

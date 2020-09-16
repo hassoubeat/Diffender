@@ -1,4 +1,5 @@
 import Amplify, { API } from 'aws-amplify';
+import { getCurrentUser } from 'lib/auth/cognitoAuth';
 
 const DIFFENDER_API_NAME = process.env.REACT_APP_AWS_APP_API_NAME;
 const DIFFENDER_API_ENDPOINT = process.env.REACT_APP_AWS_APP_API_ENDPOINT;
@@ -31,14 +32,29 @@ Amplify.configure({
 // }
 
 // プロジェクトの登録
-export async function postProject(data) {
+export async function postProject(request) {
   let result = {};
-
   try {
-    result = await API.post(DIFFENDER_API_NAME, '/projects', data)
+    request = await requestSetup(request);
+    result = await API.post(DIFFENDER_API_NAME, '/projects', request)
   } catch (error) {
     console.error(error);
     throw error;
   }
   return result;
+}
+
+// リクエストの共通セットアップ
+async function requestSetup(request) {
+  const user = await getCurrentUser();
+  const idToken = user.signInUserSession.idToken.jwtToken;
+
+  const shareRequest = {
+    headers: {
+      // APIGateway Cognito認証用IdTokenのセット
+      Authorization: idToken
+    }
+  }
+  // 元々のリクエスト情報と結合
+  return Object.assign(shareRequest, request); 
 }
