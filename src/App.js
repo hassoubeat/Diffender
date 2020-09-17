@@ -42,28 +42,29 @@ function App() {
           height: window.innerHeight, 
         }
       ));
-      // ログインユーザ設定
-      const getLoginUser = async () => {
-        let currentUser = null;
-        try {
-          currentUser = await getCurrentUser();
-        } catch (error) {
-          console.log(error);
-        }
-        if (currentUser) {
-          // IdToken内のユーザ情報をReduxStateに格納
-          dispatch(setCurrentUser({...currentUser.getSignInUserSession().getIdToken().payload}));
-          dispatch(setIsLogin(true));
-        }
-        // ログイン状態の初期化完了
-        dispatch(setIsInitialize(false));
-      };
-      getLoginUser();
     }
     // 画面サイズ変更時にState変更処理をセット
     window.addEventListener('resize', updateStateWindow);
     // 初回画面表示時にStateにセット
     updateStateWindow();
+
+    // ログインユーザ設定
+    const getLoginUser = async () => {
+      let currentUser = null;
+      try {
+        currentUser = await getCurrentUser();
+      } catch (error) {
+        console.log(error);
+      }
+      if (currentUser) {
+        // IdToken内のユーザ情報をReduxStateに格納
+        dispatch(setCurrentUser({...currentUser.getSignInUserSession().getIdToken().payload}));
+        dispatch(setIsLogin(true));
+      }
+      // ログイン状態の初期化完了
+      dispatch(setIsInitialize(false));
+    };
+    getLoginUser();
   }, [dispatch]);
 
   // ログイン状態の初期化中はレンダリングを行わない
