@@ -23,27 +23,53 @@ Amplify.configure({
 export async function getProjectList(request) {
   let result = {};
   let projectList = [];
-  try {
-    request = await requestSetup(request);
-    result = await API.get(DIFFENDER_API_NAME, '/projects', request);
-    projectList = result.body.Items;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+
+  request = await requestSetup(request);
+  result = await API.get(DIFFENDER_API_NAME, '/projects', request);
+  projectList = result.body.Items;
+  
   return projectList;
 }
 
 // プロジェクトの登録
 export async function postProject(request) {
   let result = {};
-  try {
-    request = await requestSetup(request);
-    result = await API.post(DIFFENDER_API_NAME, '/projects', request)
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+
+  request = await requestSetup(request);
+  result = await API.post(DIFFENDER_API_NAME, '/projects', request)
+
+  return result;
+}
+
+// ユーザオプションの取得
+export async function getUserOption(request) {
+  let result = {};
+  let userOption = {};
+  
+  request = await requestSetup(request);
+  result = await API.get(DIFFENDER_API_NAME, `/userOption`, request);
+  userOption = result.body.Item;
+
+  return userOption;
+}
+
+// ユーザオプションの登録
+export async function postUserOption(request) {
+  let result = {};
+
+  request = await requestSetup(request);
+  result = await API.post(DIFFENDER_API_NAME, `/userOption`, request)
+
+  return result;
+}
+
+// ユーザオプションの変更
+export async function putUserOption(request) {
+  let result = {};
+  
+  request = await requestSetup(request);
+  result = await API.put(DIFFENDER_API_NAME, `/userOption`, request)
+  
   return result;
 }
 

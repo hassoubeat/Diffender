@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { signIn } from 'lib/auth/cognitoAuth'
+import { signIn } from 'lib/auth/cognitoAuth';
+import * as api from 'lib/api/api';
 import UtilInput from 'modules/util/input/Input';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
@@ -28,6 +29,10 @@ export default function SignIn(props = null) {
         user.password
       );
 
+      // ユーザオプションが存在しなかったら新規作成
+      if (!await api.getUserOption()) {
+        await api.postUserOption();
+      }
       // ReduxStateにログインしたユーザ情報をセット
       dispatch(setCurrentUser({...result.attributes}));
       dispatch(setIsLogin(true));

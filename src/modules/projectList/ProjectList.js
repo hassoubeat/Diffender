@@ -3,6 +3,7 @@ import { ReactSortable } from "react-sortablejs";
 import { useHistory } from 'react-router-dom';
 import Modal from 'react-modal';
 import ProjectForm from 'modules/projectForm/ProjectForm';
+import * as bucketSort from 'lib/util/bucketSort';
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
 import styles from './ProjectList.module.scss';
@@ -11,18 +12,24 @@ import styles from './ProjectList.module.scss';
 Modal.setAppElement('#root');
 
 export default function ProjectList() {
+  // Stateの定義
   const [searchWord, setSearchWord] = useState("");
   const [projectList, setProjectList] = useState([]);
   const [isDisplayProjectFormModal, setDisplayProjectFormModal] = useState(false);
 
   // プロジェクト一覧の取得、及びStateの更新
   const updateProjectList = useCallback( async () => {
-    setProjectList(await getProjectList());
+    const projectsSortMap = await getProjectsSortMap();
+    const projectList = await getProjectList();
+    const sortedObj = bucketSort.sort(projectList, projectsSortMap, "id");
+    const sortedProjectList = sortedObj.noSortedList.concat(sortedObj.sortedList);
+    setProjectList(sortedProjectList);
   }, []);
 
-  // プロジェクト一覧のソートイベント
-  const handleSort = async (sortObj) => {
-    console.log(sortObj);
+  // プロジェクト一覧の順序入れ替えイベント
+  const handleSort = async () => {
+    const projectsSortMap = bucketSort.generateSortMap(projectList, "id");
+    await updateProjectsSortMap(projectsSortMap);
   }
 
   useEffect( () => {
@@ -92,6 +99,25 @@ export default function ProjectList() {
     });
   }
 
+  // プロジェクトソートマップの取得
+  async function getProjectsSortMap() {
+    const userOption = await api.getUserOption();
+    return userOption.projectsSortMap || {};
+  }
+
+  // プロジェクトソートマップの更新
+  async function updateProjectsSortMap(updateProjectsSortMap) {
+    const userOption = await api.getUserOption();
+    userOption.projectsSortMap = updateProjectsSortMap;
+    const request = {
+      body: {
+        userOption: userOption
+      }
+    }
+    await api.putUserOption(request);
+  }
+
+  // プロジェクト一覧の取得
   async function getProjectList() {
     let projectList = [];
     try {

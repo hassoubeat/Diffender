@@ -34,6 +34,24 @@ describe.skip('API呼び出し処理 正常系のテスト群', () => {
     }
     await expect(api.postProject(request)).resolves.not.toThrow();
   });
+
+  test('ユーザオプション取得', async () => {
+    await expect(api.getUserOption()).resolves.not.toThrow();
+  });
+
+  test('ユーザオプション登録', async () => {
+    await expect(api.postUserOption()).resolves.not.toThrow();
+  });
+
+  test('ユーザオプション変更', async () => {
+    const userOption = await api.getUserOption();
+    const request = {
+      body: {
+        userOption: userOption
+      }
+    };
+    await expect(api.putUserOption(request)).resolves.not.toThrow();
+  });
 });
 
 describe('API呼び出し処理 異常系テスト群', () => {
