@@ -58,6 +58,23 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /projects
             Method: post
+  # UserOptionの取得
+  GetUserOptionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/users/GetUserOptionFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /userOption
+            Method: get
   # UserOptionの登録
   PostUserOptionFunction:
     Type: AWS::Serverless::Function
