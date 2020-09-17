@@ -25,7 +25,25 @@ describe('DynamoDBのDao 正常系のテスト群', () => {
   // beforeEach( async () => {
   // });
 
-  // データ検索(query)のテスト
+  test('データ取得(get)のテスト', async () => {
+    const response = await dao.get(
+      dynamoDbDocumentClient,
+      {
+        TableName: tableName,
+        Key: {
+          'id': 'project-1'
+        }
+      }
+    );
+    expect(response).toEqual({
+      Item: { 
+          id: "project-1",
+          projectTieUserId: "1d300296-7e68-4b33-ae21-921d2d05975f",
+          createDtUnix: 1599544395895 
+      }
+    });
+  });
+
   test('データ検索(query)のテスト', async () => {
     const response = await dao.query(
       dynamoDbDocumentClient,
@@ -58,7 +76,6 @@ describe('DynamoDBのDao 正常系のテスト群', () => {
     );
   });
 
-  // ResultSetId(アトミックカウンター)取得処理のテスト
   test('プロジェクトIDのアトミックカウンター取得テスト', async () => {
     const response = await dao.getProjectId(dynamoDbDocumentClient, tableName);
     expect(response).toBe(1);

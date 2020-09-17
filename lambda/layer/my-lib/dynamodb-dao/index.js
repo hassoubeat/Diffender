@@ -1,6 +1,11 @@
 // アトミックカウンターのレコードキー
 const PROJECT_COUNTER_ID = 'ProjectIdCounter';
 
+// データ取得
+module.exports.get = async (dynamoDB, getObj) => {
+  return await dynamoDB.get(getObj).promise();
+}
+
 // データ検索
 module.exports.query = async (dynamoDB, queryObj) => {
   return await dynamoDB.query(queryObj).promise();
@@ -15,6 +20,17 @@ module.exports.put = async (dynamoDB, putObj) => {
   putObj.Item.createDtUnix = date.getTime();
   putObj.Item.updateDtUnix = date.getTime();
   return await dynamoDB.put(putObj).promise();
+}
+
+// データ更新
+module.exports.update = async (dynamoDB, updateObj) => {
+  const date = lib.getNowTime();
+  // 現在時刻で更新する
+  updateObj.UpdateExpression += "updateDt=:updateDt, updateDtUnix=:updateDtUnix";
+  updateObj.ExpressionAttributeValues[":updateDt"] = date.toLocaleString({timeZone: 'Asia/Tokyo'});
+  updateObj.ExpressionAttributeValues[":updateDtUnix"] = date.getTime();
+
+  return await dynamoDB.update(updateObj).promise();
 }
   
 // Project用の現在のアトミックカウンターからインクリメントした値を取得

@@ -28,7 +28,7 @@ Resources:
   GetProjectListFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: lambda/GetProjectListFunction/
+      CodeUri: lambda/projects/GetProjectListFunction/
       Handler: index.lambda_handler
       Runtime: nodejs12.x
       Policies:
@@ -58,6 +58,57 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /projects
             Method: post
+  # UserOptionの取得
+  GetUserOptionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/users/GetUserOptionFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /userOption
+            Method: get
+  # UserOptionの登録
+  PostUserOptionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/users/PostUserOptionFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /userOption
+            Method: post
+  # UserOptionの更新
+  PutUserOptionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/users/PutUserOptionFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /userOption
+            Method: put
     
   # 自前で実装したライブラリのレイヤー
   MyLibLayer:
@@ -261,9 +312,9 @@ Resources:
         Ref: DiffenderUserPool
 
 Outputs:
-  GetProjectListFunction:
-    Description: "Access Command"
-    Value: !Sub "curl https://${DiffenderApi}.execute-api.${AWS::Region}.amazonaws.com/${Env}/projects"
+  DiffenderApi:
+    Description: "Diffender Api endpoint"
+    Value: !Sub "https://${DiffenderApi}.execute-api.${AWS::Region}.amazonaws.com/${Env}"
   DiffenderUserPool:
     Description: "Diffender Cognito User Pool ID"
     Value: !Ref DiffenderUserPool

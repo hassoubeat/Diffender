@@ -9,7 +9,6 @@ const PROJECT_TIE_USER_ID = "projectTieUserId";
 
 // プロジェクト名のバリデーション
 export const projectNameValid = (projectName, validErrorMessage) => {
-  console.log(projectName);
   try {
     v8n()
       .string()
