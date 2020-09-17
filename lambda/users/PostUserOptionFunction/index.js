@@ -38,7 +38,7 @@ exports.lambda_handler = async (event, context) => {
     // 登録するオブジェクトの生成
     const postObj = {
       id: userOption.id,
-      projectsSortMapping: {}
+      projectsSortMap: {}
     }
     // userOptionの登録
     await postUserOption(dynamoDBClient, dynamoDBDao, TABLE_NAME, postObj);
