@@ -1,5 +1,9 @@
 const dynamoDbDao = jest.genMockFromModule('dynamodb-dao');
 
+dynamoDbDao.get = async (dynamoDB, getObj) => {
+  return {}
+}
+
 dynamoDbDao.put = async (dynamoDB, putObj) => {
   return {}
 }

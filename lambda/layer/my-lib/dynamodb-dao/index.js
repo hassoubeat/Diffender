@@ -1,6 +1,11 @@
 // アトミックカウンターのレコードキー
 const PROJECT_COUNTER_ID = 'ProjectIdCounter';
 
+// データ取得
+module.exports.get = async (dynamoDB, getObj) => {
+  return await dynamoDB.get(getObj).promise();
+}
+
 // データ検索
 module.exports.query = async (dynamoDB, queryObj) => {
   return await dynamoDB.query(queryObj).promise();
