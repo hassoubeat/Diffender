@@ -58,6 +58,23 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /projects
             Method: post
+  # UserOptionの登録
+  PostUserOptionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/users/PostUserOptionFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /userOption
+            Method: post
     
   # 自前で実装したライブラリのレイヤー
   MyLibLayer:
