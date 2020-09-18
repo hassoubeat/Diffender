@@ -21,24 +21,14 @@ Amplify.configure({
 
 // プロジェクト一覧の取得
 export async function getProjectList(request) {
-  let result = {};
-  let projectList = [];
-
   request = await requestSetup(request);
-  result = await API.get(DIFFENDER_API_NAME, '/projects', request);
-  projectList = result.body.Items;
-  
-  return projectList;
+  return await API.get(DIFFENDER_API_NAME, '/projects', request);
 }
 
 // プロジェクトの登録
 export async function postProject(request) {
-  let result = {};
-
   request = await requestSetup(request);
-  result = await API.post(DIFFENDER_API_NAME, '/projects', request)
-
-  return result;
+  return await API.post(DIFFENDER_API_NAME, '/projects', request)
 }
 
 // ユーザオプションの取得
