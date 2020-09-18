@@ -5,6 +5,7 @@
     "private": true,
     "dependencies": {
         "dynamodb-dao": "file:./dynamodb-dao",
+        "user-option-dao": "file:./user-option-dao",
         "project-validator": "file:./project-validator"
     },
     "scripts": {}
