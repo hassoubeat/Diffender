@@ -92,13 +92,13 @@ describe('ユーザオプション取得 異常系テスト', () => {
     const response = await getUserOptionFunction.lambda_handler(event);
     expect(response).toEqual(
       {
-        statusCode: 400,
+        statusCode: 500,
         headers: {
           'Access-Control-Allow-Headers': '*',
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'OPTIONS, GET'
         },
-        body: "{\"message\":\"Incorrect user info.\"}"
+        body: "{\"message\":\"Cannot read property 'Authorization' of undefined\"}"
       }
     );
   });

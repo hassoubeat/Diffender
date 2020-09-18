@@ -17,9 +17,8 @@ exports.lambda_handler = async (event, context) => {
   }
   
   try {
-    const user = getUser(event);
+    const user = jwt_decode(event.headers.Authorization);
     const userOption = await getUserOption(dynamoDBClient, dynamoDBDao, TABLE_NAME, user.sub);
-    emptyCheckUserOption(userOption);
 
     response.body = JSON.stringify({
       ...userOption
@@ -35,21 +34,11 @@ exports.lambda_handler = async (event, context) => {
   return response;
 }
 
-// idTokenからユーザ情報取得
-function getUser(event){
-  try {
-    return jwt_decode(event.headers.Authorization);
-  } catch(error) {
-    error.statusCode = 400;
-    error.message = "Incorrect user info.";
-    throw error;
-  }
-}
-
 // ユーザオプションの取得
 async function getUserOption(dynamoDBClient, dynamoDBDao, tableName, userId) {
+  let result = {};
   try {
-     const result = await dynamoDBDao.get(
+     result = await dynamoDBDao.get(
       dynamoDBClient,
       {
         TableName: tableName,
@@ -58,18 +47,16 @@ async function getUserOption(dynamoDBClient, dynamoDBDao, tableName, userId) {
         }
       }
     );
-    return result.Item;
   } catch (error) {
     error.statusCode = 500;
     error.message = "Faild get userOption.";
     throw error;
   }
-}
-
-// ユーザオプションの空チェック
-function emptyCheckUserOption(userOption) {
   
-  if(userOption === undefined) {
+  // プロジェクトが存在しない場合は404エラーをthrow
+  if(result.Item !== undefined) {
+    return result.Item;
+  } else {
     const error = new Error("NotFound userOption.");
     error.statusCode = 404;
     throw error;
