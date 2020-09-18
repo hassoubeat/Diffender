@@ -42,15 +42,9 @@ export async function postProject(request) {
 }
 
 // ユーザオプションの取得
-export async function getUserOption(request) {
-  let result = {};
-  let userOption = {};
-  
+export async function getUserOption(request) {  
   request = await requestSetup(request);
-  result = await API.get(DIFFENDER_API_NAME, `/userOption`, request);
-  userOption = result.body.Item;
-
-  return userOption;
+  return await API.get(DIFFENDER_API_NAME, `/userOption`, request);
 }
 
 // ユーザオプションの登録
