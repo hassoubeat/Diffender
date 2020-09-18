@@ -1,28 +1,22 @@
-const fs = require("fs");
-
 // 環境変数の設定
 process.env.DIFFENDER_DYNAMODB_TABLE_NAME　= "dummy";
 
-const dynamoDbDao = require('dynamodb-dao');
+const projectDao = require('project-dao');
 const getProjectListFunction = require("./index");
 
 // jestのマニュアルモック利用
-jest.mock('dynamodb-dao');
+jest.mock('project-dao');
 
 describe('プロジェクト一覧取得 正常系テスト', () => {
 
   test('Lambdaハンドラのテスト', async () => {
 
     // マニュアルモックの上書き
-    dynamoDbDao.query = () => {
-      return {
-        Items: [ 
+    projectDao.getProjectList = () => {
+      return [ 
           { id:'Project-1' , name: 'プロジェクト1', description: 'example.com1のテスト', projectTieUserId: '8c32116d-5c8c-48c0-8264-1df53434b503' },
-          { id:'Project-2' , name: 'プロジェクト2', description: 'example.com2のテスト', projectTieUserId: '8c32116d-5c8c-48c0-8264-1df53434b503' },
-        ],
-        Count: 2,
-        ScannedCount: 2
-      };
+          { id:'Project-2' , name: 'プロジェクト2', description: 'example.com2のテスト', projectTieUserId: '8c32116d-5c8c-48c0-8264-1df53434b503' }
+      ];
     }
 
     // 投入データの生成
@@ -37,7 +31,7 @@ describe('プロジェクト一覧取得 正常系テスト', () => {
     expect(response).toEqual(
       {
         statusCode: 200,
-        body: "{\"body\":{\"Items\":[{\"id\":\"Project-1\",\"name\":\"プロジェクト1\",\"description\":\"example.com1のテスト\",\"projectTieUserId\":\"8c32116d-5c8c-48c0-8264-1df53434b503\"},{\"id\":\"Project-2\",\"name\":\"プロジェクト2\",\"description\":\"example.com2のテスト\",\"projectTieUserId\":\"8c32116d-5c8c-48c0-8264-1df53434b503\"}],\"Count\":2,\"ScannedCount\":2}}",
+        body: "[{\"id\":\"Project-1\",\"name\":\"プロジェクト1\",\"description\":\"example.com1のテスト\",\"projectTieUserId\":\"8c32116d-5c8c-48c0-8264-1df53434b503\"},{\"id\":\"Project-2\",\"name\":\"プロジェクト2\",\"description\":\"example.com2のテスト\",\"projectTieUserId\":\"8c32116d-5c8c-48c0-8264-1df53434b503\"}]",
         headers: {
           'Access-Control-Allow-Headers': '*',
           'Access-Control-Allow-Origin': '*',
@@ -61,13 +55,13 @@ describe('プロジェクト登録処理 異常系テスト', () => {
     const response = await getProjectListFunction.lambda_handler(event);
     expect(response).toEqual(
       {
-        statusCode: 400,
+        statusCode: 500,
         headers: {
           'Access-Control-Allow-Headers': '*',
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'OPTIONS, GET'
         },
-        body: `{"message":"Input value error: Cannot read property 'Authorization' of undefined"}`
+        body: `{"message":"Cannot read property 'Authorization' of undefined"}`
       }
     );
   });
