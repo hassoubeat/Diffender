@@ -110,9 +110,7 @@ export default function ProjectList() {
     const userOption = await api.getUserOption();
     userOption.projectsSortMap = updateProjectsSortMap;
     const request = {
-      body: {
-        userOption: userOption
-      }
+      body: { ...userOption }
     }
     await api.putUserOption(request);
   }

@@ -49,22 +49,14 @@ export async function getUserOption(request) {
 
 // ユーザオプションの登録
 export async function postUserOption(request) {
-  let result = {};
-
   request = await requestSetup(request);
-  result = await API.post(DIFFENDER_API_NAME, `/userOption`, request)
-
-  return result;
+  return await API.post(DIFFENDER_API_NAME, `/userOption`, request)
 }
 
 // ユーザオプションの変更
 export async function putUserOption(request) {
-  let result = {};
-  
   request = await requestSetup(request);
-  result = await API.put(DIFFENDER_API_NAME, `/userOption`, request)
-  
-  return result;
+  return await API.put(DIFFENDER_API_NAME, `/userOption`, request)
 }
 
 // リクエストの共通セットアップ

@@ -16,47 +16,49 @@ exports.lambda_handler = async (event, context) => {
     }
   }
 
-  let user = {};
-  let userOption = {};
-  
-  // 入力値チェック
   try {
-    user = jwt_decode(event.headers.Authorization);
+    const user = jwt_decode(event.headers.Authorization);
+    const putUserOption = getPutObject(event);
+    checkResouceOwner({
+      loginUserId: user.sub, 
+      resouceUserId: putUserOption.id
+    });    
 
-    const payload = JSON.parse(event.body);
-    userOption = payload.userOption;
-  } catch (error) {
-    console.error(error);
-
-    response.statusCode = 400;
-    response.body = JSON.stringify({
-      message: `Input value error: ${error.message}`
-    });
-    return response;
-  }
-
-  // リソースオーナーチェック
-  if (userOption.id !== user.sub) {
-    response.statusCode = 401;
-    response.body = JSON.stringify({
-      message: `Unauthorized resource`
-    });
-    return response;
-  }
-  
-  // 更新処理
-  try {
     // ユーザオプションの更新
-    await updateUserOption(dynamoDBClient, dynamoDBDao, TABLE_NAME, userOption);
+    await updateUserOption(dynamoDBClient, dynamoDBDao, TABLE_NAME, putUserOption);
+    const userOption = await getUserOption(dynamoDBClient, dynamoDBDao, TABLE_NAME, user.sub);
+    response.body = JSON.stringify({
+      ...userOption
+    });
   } catch (error) {
     console.error(error);
 
-    response.statusCode = 500;
+    response.statusCode = error.statusCode || 500;
     response.body = JSON.stringify({
-      message: `Server error: ${error.message}`
+      message: error.message
     });
   }
   return response;
+}
+
+// 更新オブジェクトの取得
+function getPutObject(event) {
+  try {
+    return JSON.parse(event.body);
+  } catch (error)  {
+    error.statusCode = 400;
+    error.message = "Put object error.";
+    throw error;
+  }
+}
+
+// リソースオーナーをチェックする
+function checkResouceOwner({loginUserId, resouceUserId}) {
+  if (loginUserId !== resouceUserId) {
+    const error = new Error("Unauthorized resource.");
+    error.statusCode = 401;
+    throw error;
+  }
 }
 
 // ユーザオプションの更新
@@ -77,4 +79,33 @@ async function updateUserOption(dynamoDBClient, dynamoDBDao, tableName, updateOb
       }
     }
   )
+}
+
+// ユーザオプションの取得
+async function getUserOption(dynamoDBClient, dynamoDBDao, tableName, userId) {
+  let result = {};
+  try {
+     result = await dynamoDBDao.get(
+      dynamoDBClient,
+      {
+        TableName: tableName,
+        Key: {
+          'id': userId
+        }
+      }
+    );
+  } catch (error) {
+    error.statusCode = 500;
+    error.message = "Faild get userOption.";
+    throw error;
+  }
+  
+  // プロジェクトが存在しない場合は404エラーをthrow
+  if(result.Item !== undefined) {
+    return result.Item;
+  } else {
+    const error = new Error("NotFound userOption.");
+    error.statusCode = 404;
+    throw error;
+  }
 }
