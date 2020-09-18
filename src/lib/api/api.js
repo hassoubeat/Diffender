@@ -21,56 +21,32 @@ Amplify.configure({
 
 // プロジェクト一覧の取得
 export async function getProjectList(request) {
-  let result = {};
-  let projectList = [];
-
   request = await requestSetup(request);
-  result = await API.get(DIFFENDER_API_NAME, '/projects', request);
-  projectList = result.body.Items;
-  
-  return projectList;
+  return await API.get(DIFFENDER_API_NAME, '/projects', request);
 }
 
 // プロジェクトの登録
 export async function postProject(request) {
-  let result = {};
-
   request = await requestSetup(request);
-  result = await API.post(DIFFENDER_API_NAME, '/projects', request)
-
-  return result;
+  return await API.post(DIFFENDER_API_NAME, '/projects', request)
 }
 
 // ユーザオプションの取得
-export async function getUserOption(request) {
-  let result = {};
-  let userOption = {};
-  
+export async function getUserOption(request) {  
   request = await requestSetup(request);
-  result = await API.get(DIFFENDER_API_NAME, `/userOption`, request);
-  userOption = result.body.Item;
-
-  return userOption;
+  return await API.get(DIFFENDER_API_NAME, `/userOption`, request);
 }
 
 // ユーザオプションの登録
 export async function postUserOption(request) {
-  let result = {};
-
   request = await requestSetup(request);
-  result = await API.post(DIFFENDER_API_NAME, `/userOption`, request)
-
-  return result;
+  return await API.post(DIFFENDER_API_NAME, `/userOption`, request)
 }
 
 // ユーザオプションの変更
 export async function putUserOption(request) {
-  let result = {};
-  
   request = await requestSetup(request);
-  result = await API.put(DIFFENDER_API_NAME, `/userOption`, request)
-  
-  return result;
+  return await API.put(DIFFENDER_API_NAME, `/userOption`, request)
 }
 
 // リクエストの共通セットアップ

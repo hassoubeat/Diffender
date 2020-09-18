@@ -1,9 +1,5 @@
-const AWS = require('aws-sdk');
 const jwt_decode = require('jwt-decode');
-const dynamoDBClient = new AWS.DynamoDB.DocumentClient();
-const dynamoDBDao = require('dynamodb-dao');
-
-const TABLE_NAME = process.env.DIFFENDER_DYNAMODB_TABLE_NAME;
+const userOptionDao = require('user-option-dao');
 
 exports.lambda_handler = async (event, context) => {
   // レスポンス変数の定義
@@ -16,51 +12,27 @@ exports.lambda_handler = async (event, context) => {
     }
   }
 
-  let user = {};
-  let userOption = {};
-  
-  // 入力値チェック
   try {
-    user = jwt_decode(event.headers.Authorization);
-    userOption.id = user.sub;
-  } catch (error) {
-    console.error(error);
+    const user = jwt_decode(event.headers.Authorization);
 
-    response.statusCode = 400;
-    response.body = JSON.stringify({
-      message: `Input value error: ${error.message}`
-    });
-    return response;
-  }
-  
-  // 登録処理
-  try {
-    // 登録するオブジェクトの生成
     const postObj = {
-      id: userOption.id,
+      id: user.sub,
       projectsSortMap: {}
     }
-    // userOptionの登録
-    await postUserOption(dynamoDBClient, dynamoDBDao, TABLE_NAME, postObj);
+    await userOptionDao.postUserOption(postObj);
+
+    const userOption = await userOptionDao.getUserOption(user.sub);
+
+    response.body = JSON.stringify({
+      ...userOption
+    });
   } catch (error) {
     console.error(error);
 
-    response.statusCode = 500;
+    response.statusCode = error.statusCode || 500;
     response.body = JSON.stringify({
-      message: `Server error: ${error.message}`
+      message: error.message
     });
   }
   return response;
 }
-
-// ユーザオプションの登録
-async function postUserOption(dynamoDBClient, dynamoDBDao, tableName, postObj) {
-  return await dynamoDBDao.put(
-    dynamoDBClient,
-    {
-      TableName: tableName,
-      Item: postObj
-    }
-  )
-}
-exports.postUserOption = postUserOption;

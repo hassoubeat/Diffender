@@ -1,10 +1,6 @@
-const AWS = require('aws-sdk');
 const jwt_decode = require('jwt-decode');
-const dynamoDBClient = new AWS.DynamoDB.DocumentClient();
-const dynamoDBDao = require('dynamodb-dao');
+const projectDao = require('project-dao');
 const projectValidator = require('project-validator');
-
-const TABLE_NAME = process.env.DIFFENDER_DYNAMODB_TABLE_NAME;
 
 exports.lambda_handler = async (event, context) => {
   // レスポンス変数の定義
@@ -17,65 +13,44 @@ exports.lambda_handler = async (event, context) => {
     }
   }
 
-  let user = {};
-  let project = {};
-  
-  // 入力値チェック
   try {
-    user = jwt_decode(event.headers.Authorization);
+    const user = jwt_decode(event.headers.Authorization);
+    const postProject = getRequetBody(event);
 
-    const payload = JSON.parse(event.body);
-    project = payload.project;
+    postProject.projectTieUserId = user.sub;
+    projectValidator.projectValid(postProject);
 
-    // プロジェクトを紐付けるUserIDをセット
-    project.projectTieUserId = user.sub;
-    projectValidator.projectValid(project);
-  } catch (error) {
-    console.error(error);
-
-    response.statusCode = 400;
-    response.body = JSON.stringify({
-      message: `Input value error: ${error.message}`
-    });
-    return response;
-  }
-  
-  // 登録処理
-  try {
-    // 登録するオブジェクトの生成
-    const putObj = {
-      id: await getProjectId(dynamoDBClient, dynamoDBDao, TABLE_NAME),
-      name: project.name,
-      description: project.description,
-      projectTieUserId: project.projectTieUserId,
+    const postObject = {
+      id: await projectDao.generateProjectId(),
+      name: postProject.name,
+      description: postProject.description,
+      projectTieUserId: postProject.projectTieUserId,
     }
-    // Projectの登録
-    await postProject(dynamoDBClient, dynamoDBDao, TABLE_NAME, putObj);
+    await projectDao.postProject(postObject);
+
+    const project = await projectDao.getProject(postObject.id);
+
+    response.body = JSON.stringify({
+      ...project
+    });
   } catch (error) {
     console.error(error);
 
-    response.statusCode = 500;
+    response.statusCode = error.statusCode || 500;
     response.body = JSON.stringify({
-      message: `Server error: ${error.message}`
+      message: error.message
     });
   }
   return response;
 }
 
-// プロジェクトIDの取得
-async function getProjectId(dynamoDBClient, dynamoDBDao, tableName) {
-  return `Project-${await dynamoDBDao.getProjectId(dynamoDBClient, tableName)}`;
+// 更新オブジェクトの取得
+function getRequetBody(event) {
+  try {
+    return JSON.parse(event.body);
+  } catch (error)  {
+    error.statusCode = 400;
+    error.message = "Request body is empty.";
+    throw error;
+  }
 }
-exports.getProjectId = getProjectId;
-
-// プロジェクトの登録
-async function postProject(dynamoDBClient, dynamoDBDao, tableName, putObj) {
-  return await dynamoDBDao.put(
-    dynamoDBClient,
-    {
-      TableName: tableName,
-      Item: putObj
-    }
-  )
-}
-exports.postProject = postProject;

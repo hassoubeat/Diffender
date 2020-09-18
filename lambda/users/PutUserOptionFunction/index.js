@@ -1,9 +1,5 @@
-const AWS = require('aws-sdk');
 const jwt_decode = require('jwt-decode');
-const dynamoDBClient = new AWS.DynamoDB.DocumentClient();
-const dynamoDBDao = require('dynamodb-dao');
-
-const TABLE_NAME = process.env.DIFFENDER_DYNAMODB_TABLE_NAME;
+const userOptionDao = require('user-option-dao');
 
 exports.lambda_handler = async (event, context) => {
   // レスポンス変数の定義
@@ -16,65 +12,47 @@ exports.lambda_handler = async (event, context) => {
     }
   }
 
-  let user = {};
-  let userOption = {};
-  
-  // 入力値チェック
   try {
-    user = jwt_decode(event.headers.Authorization);
+    const user = jwt_decode(event.headers.Authorization);
+    const putUserOption = getPutObject(event);
+    checkResouceOwner({
+      loginUserId: user.sub, 
+      resouceUserId: putUserOption.id
+    });    
 
-    const payload = JSON.parse(event.body);
-    userOption = payload.userOption;
-  } catch (error) {
-    console.error(error);
-
-    response.statusCode = 400;
-    response.body = JSON.stringify({
-      message: `Input value error: ${error.message}`
-    });
-    return response;
-  }
-
-  // リソースオーナーチェック
-  if (userOption.id !== user.sub) {
-    response.statusCode = 401;
-    response.body = JSON.stringify({
-      message: `Unauthorized resource`
-    });
-    return response;
-  }
-  
-  // 更新処理
-  try {
     // ユーザオプションの更新
-    await updateUserOption(dynamoDBClient, dynamoDBDao, TABLE_NAME, userOption);
+    await userOptionDao.updateUserOption(putUserOption);
+    const userOption = await userOptionDao.getUserOption(user.sub);
+    response.body = JSON.stringify({
+      ...userOption
+    });
   } catch (error) {
     console.error(error);
 
-    response.statusCode = 500;
+    response.statusCode = error.statusCode || 500;
     response.body = JSON.stringify({
-      message: `Server error: ${error.message}`
+      message: error.message
     });
   }
   return response;
 }
 
-// ユーザオプションの更新
-async function updateUserOption(dynamoDBClient, dynamoDBDao, tableName, updateObj) {
-  return await dynamoDBDao.update(
-    dynamoDBClient,
-    {
-      TableName: tableName,
-      Key: {
-        id : updateObj.id
-      },
-      UpdateExpression: `
-        Set 
-        projectsSortMap=:projectsSortMap,
-      `,
-      ExpressionAttributeValues: {
-        ":projectsSortMap": updateObj.projectsSortMap,
-      }
-    }
-  )
+// 更新オブジェクトの取得
+function getPutObject(event) {
+  try {
+    return JSON.parse(event.body);
+  } catch (error)  {
+    error.statusCode = 400;
+    error.message = "Put object error.";
+    throw error;
+  }
+}
+
+// リソースオーナーをチェックする
+function checkResouceOwner({loginUserId, resouceUserId}) {
+  if (loginUserId !== resouceUserId) {
+    const error = new Error("Unauthorized resource.");
+    error.statusCode = 401;
+    throw error;
+  }
 }

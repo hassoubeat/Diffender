@@ -30,9 +30,12 @@ export default function SignIn(props = null) {
       );
 
       // ユーザオプションが存在しなかったら新規作成
-      if (!await api.getUserOption()) {
-        await api.postUserOption();
+      try {
+        await api.getUserOption();
+      } catch (error) {
+        if (error.response.status === 404) await api.postUserOption();
       }
+      
       // ReduxStateにログインしたユーザ情報をセット
       dispatch(setCurrentUser({...result.attributes}));
       dispatch(setIsLogin(true));

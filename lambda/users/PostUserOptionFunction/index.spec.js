@@ -1,14 +1,27 @@
 // 環境変数の設定
 process.env.DIFFENDER_DYNAMODB_TABLE_NAME　= "dummy";
 
+const userOptionDao = require('user-option-dao');
 const postUserOptionFunction = require("./index");
 
 // jestのマニュアルモック利用
-jest.mock('dynamodb-dao');
+jest.mock('user-option-dao');
 
 describe('ユーザ登録処理 正常系テスト', () => {
 
   test('Lambdaハンドラのテスト', async () => {
+
+    // マニュアルモックの上書き
+    userOptionDao.getUserOption = () => {
+      return {
+        id:'8c32116d-5c8c-48c0-8264-1df53434b503' , 
+        projectsSortMap: {
+          "Project-1": 1,
+          "Project-2": 0,
+          "Project-3": 2,
+        }
+      };
+    }
 
     // 投入データの生成
     const event = {
@@ -26,7 +39,8 @@ describe('ユーザ登録処理 正常系テスト', () => {
           'Access-Control-Allow-Headers': '*',
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'OPTIONS, POST'
-        }
+        },
+        body: "{\"id\":\"8c32116d-5c8c-48c0-8264-1df53434b503\",\"projectsSortMap\":{\"Project-1\":1,\"Project-2\":0,\"Project-3\":2}}"
       }
     );
   });
@@ -45,13 +59,13 @@ describe('ユーザオプション登録処理 異常系テスト', () => {
     const response = await postUserOptionFunction.lambda_handler(event);
     expect(response).toEqual(
       {
-        statusCode: 400,
+        statusCode: 500,
         headers: {
           'Access-Control-Allow-Headers': '*',
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'OPTIONS, POST'
         },
-        body: `{"message":"Input value error: Cannot read property 'Authorization' of undefined"}`
+        body: "{\"message\":\"Cannot read property 'Authorization' of undefined\"}"
       }
     );
   });

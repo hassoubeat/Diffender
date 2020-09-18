@@ -60,9 +60,7 @@ export default function ProjectForm(props = null) {
     );
     try {
       await api.postProject({
-        body: {
-          project: project
-        }
+        body: project
       });
       toast.successToast(
         { message: "プロジェクトの登録が完了しました" }
