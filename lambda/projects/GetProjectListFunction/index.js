@@ -15,7 +15,7 @@ exports.lambda_handler = async (event, context) => {
   try {
     const user = jwt_decode(event.headers.Authorization);
 
-    const projectList = await projectDao.getProjectList(user.sub);
+    const projectList = await projectDao.getProjectList(user.sub, false);
     response.body = JSON.stringify(
       projectList
     );

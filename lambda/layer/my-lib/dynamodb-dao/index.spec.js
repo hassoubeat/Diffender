@@ -44,7 +44,7 @@ describe('DynamoDBのDao 正常系のテスト群', () => {
     });
   });
 
-  test('データ検索(query)のテスト', async () => {
+  test('データ検索(query)のテスト ソート順昇順', async () => {
     const response = await dao.query(
       dynamoDbDocumentClient,
       {
@@ -68,6 +68,39 @@ describe('DynamoDBのDao 正常系のテスト群', () => {
             id: "project-2",
             projectTieUserId: "1d300296-7e68-4b33-ae21-921d2d05975f",
             createDtUnix: 1599544395896
+          }
+        ],
+        Count: 2,
+        ScannedCount: 2
+      }
+    );
+  });
+
+  test('データ検索(query)のテスト ソート順降順', async () => {
+    const response = await dao.query(
+      dynamoDbDocumentClient,
+      {
+        TableName: tableName,
+        IndexName: "ProjectsByUserIdSearchIndex",
+        KeyConditionExpression: "projectTieUserId=:projectTieUserId",
+        ExpressionAttributeValues: {
+          ":projectTieUserId": "1d300296-7e68-4b33-ae21-921d2d05975f"
+        },
+        ScanIndexForward: false
+      }
+    );
+    expect(response).toEqual(
+      {
+        Items: [ 
+          { 
+            id: "project-2",
+            projectTieUserId: "1d300296-7e68-4b33-ae21-921d2d05975f",
+            createDtUnix: 1599544395896
+          },
+          { 
+            id: "project-1",
+            projectTieUserId: "1d300296-7e68-4b33-ae21-921d2d05975f",
+            createDtUnix: 1599544395895 
           }
         ],
         Count: 2,

@@ -5,7 +5,7 @@ const dynamoDBDao = require('dynamodb-dao');
 const TABLE_NAME = process.env.DIFFENDER_DYNAMODB_TABLE_NAME;
 
 // プロジェクト一覧の取得
-async function getProjectList(userId) {
+async function getProjectList(userId, isSortASC = true) {
   const result =  await dynamoDBDao.query(
     dynamoDBClient,
     {
@@ -14,7 +14,8 @@ async function getProjectList(userId) {
       KeyConditionExpression: "projectTieUserId=:projectTieUserId",
       ExpressionAttributeValues: {
         ":projectTieUserId": userId
-      }
+      },
+      ScanIndexForward: isSortASC
     }
   );
   return result.Items;
