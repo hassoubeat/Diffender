@@ -16,6 +16,7 @@ const projectNameValid = (projectName, validErrorMessage) => {
 
     // エラーメッセージのセット
     error.message = validErrorMessage || "プロジェクト名は最大30文字です";
+    error.statusCode = 400;
     throw error;
   }
 }
@@ -33,6 +34,7 @@ const projectDescriptionValid = (projectDescription, validErrorMessage) => {
 
     // エラーメッセージのセット
     error.message = validErrorMessage || "プロジェクト説明は最大50文字です";
+    error.statusCode = 400;
     throw error;
   }
 }
@@ -51,6 +53,7 @@ const projectTieUserIdValid = (projectTieUserId, validErrorMessage) => {
 
     // エラーメッセージのセット
     error.message = validErrorMessage || "プロジェクトに紐づくユーザIDは必須です";
+    error.statusCode = 400;
     throw error;
   }
 }
