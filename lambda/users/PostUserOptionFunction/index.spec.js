@@ -1,26 +1,24 @@
 // 環境変数の設定
 process.env.DIFFENDER_DYNAMODB_TABLE_NAME　= "dummy";
 
-const dynamoDbDao = require('dynamodb-dao');
+const userOptionDao = require('user-option-dao');
 const postUserOptionFunction = require("./index");
 
 // jestのマニュアルモック利用
-jest.mock('dynamodb-dao');
+jest.mock('user-option-dao');
 
 describe('ユーザ登録処理 正常系テスト', () => {
 
   test('Lambdaハンドラのテスト', async () => {
 
     // マニュアルモックの上書き
-    dynamoDbDao.get = () => {
+    userOptionDao.getUserOption = () => {
       return {
-        Item: { 
-          id:'8c32116d-5c8c-48c0-8264-1df53434b503' , 
-          projectsSortMap: {
-            "Project-1": 1,
-            "Project-2": 0,
-            "Project-3": 2,
-          }
+        id:'8c32116d-5c8c-48c0-8264-1df53434b503' , 
+        projectsSortMap: {
+          "Project-1": 1,
+          "Project-2": 0,
+          "Project-3": 2,
         }
       };
     }
