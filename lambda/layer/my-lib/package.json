@@ -6,6 +6,7 @@
     "dependencies": {
         "dynamodb-dao": "file:./dynamodb-dao",
         "user-option-dao": "file:./user-option-dao",
+        "project-dao": "file:./project-dao",
         "project-validator": "file:./project-validator"
     },
     "scripts": {}
