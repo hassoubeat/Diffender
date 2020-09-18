@@ -16,38 +16,26 @@ exports.lambda_handler = async (event, context) => {
     }
   }
 
-  let user = {};
-  let userOption = {};
-  
-  // 入力値チェック
   try {
-    user = jwt_decode(event.headers.Authorization);
-    userOption.id = user.sub;
-  } catch (error) {
-    console.error(error);
+    const user = jwt_decode(event.headers.Authorization);
 
-    response.statusCode = 400;
-    response.body = JSON.stringify({
-      message: `Input value error: ${error.message}`
-    });
-    return response;
-  }
-  
-  // 登録処理
-  try {
-    // 登録するオブジェクトの生成
     const postObj = {
-      id: userOption.id,
+      id: user.sub,
       projectsSortMap: {}
     }
-    // userOptionの登録
     await postUserOption(dynamoDBClient, dynamoDBDao, TABLE_NAME, postObj);
+
+    const userOption = await getUserOption(dynamoDBClient, dynamoDBDao, TABLE_NAME, user.sub);
+
+    response.body = JSON.stringify({
+      ...userOption
+    });
   } catch (error) {
     console.error(error);
 
-    response.statusCode = 500;
+    response.statusCode = error.statusCode || 500;
     response.body = JSON.stringify({
-      message: `Server error: ${error.message}`
+      message: error.message
     });
   }
   return response;
@@ -55,12 +43,46 @@ exports.lambda_handler = async (event, context) => {
 
 // ユーザオプションの登録
 async function postUserOption(dynamoDBClient, dynamoDBDao, tableName, postObj) {
-  return await dynamoDBDao.put(
-    dynamoDBClient,
-    {
-      TableName: tableName,
-      Item: postObj
-    }
-  )
+  try {
+    return await dynamoDBDao.put(
+      dynamoDBClient,
+      {
+        TableName: tableName,
+        Item: postObj
+      }
+    )
+  } catch (error) {
+    error.statusCode = 500;
+    error.message = "Faild post userOption.";
+    throw error;
+  }
 }
-exports.postUserOption = postUserOption;
+
+// ユーザオプションの取得
+async function getUserOption(dynamoDBClient, dynamoDBDao, tableName, userId) {
+  let result = {};
+  try {
+     result = await dynamoDBDao.get(
+      dynamoDBClient,
+      {
+        TableName: tableName,
+        Key: {
+          'id': userId
+        }
+      }
+    );
+  } catch (error) {
+    error.statusCode = 500;
+    error.message = "Faild get userOption.";
+    throw error;
+  }
+  
+  // プロジェクトが存在しない場合は404エラーをthrow
+  if(result.Item !== undefined) {
+    return result.Item;
+  } else {
+    const error = new Error("NotFound userOption.");
+    error.statusCode = 404;
+    throw error;
+  }
+}
