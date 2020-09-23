@@ -3,6 +3,8 @@ import { ReactSortable } from "react-sortablejs";
 import { useHistory } from 'react-router-dom';
 import Modal from 'react-modal';
 import ProjectForm from 'modules/projectForm/ProjectForm';
+import Loading from 'modules/util/loading/Loading';
+
 import * as bucketSort from 'lib/util/bucketSort';
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
@@ -13,6 +15,7 @@ Modal.setAppElement('#root');
 
 export default function ProjectList() {
   // Stateの定義
+  const [isLoading, setIsLoading] = useState(true);
   const [searchWord, setSearchWord] = useState("");
   const [projectList, setProjectList] = useState([]);
   const [isDisplayProjectFormModal, setDisplayProjectFormModal] = useState(false);
@@ -24,6 +27,7 @@ export default function ProjectList() {
     const sortedObj = bucketSort.sort(projectList, projectsSortMap, "id");
     const sortedProjectList = sortedObj.noSortedList.concat(sortedObj.sortedList);
     setProjectList(sortedProjectList);
+    setIsLoading(false);
   }, []);
 
   // プロジェクト一覧の順序入れ替えイベント
@@ -40,6 +44,10 @@ export default function ProjectList() {
   }, [updateProjectList]);
 
   const history = useHistory();
+
+  if (isLoading) return (
+    <Loading/>
+  );
 
   return (
     <React.Fragment>
