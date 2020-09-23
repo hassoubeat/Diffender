@@ -12,17 +12,17 @@ import { getCurrentUser } from 'lib/auth/cognitoAuth'
 import queryString from 'query-string';
 
 import './App.scss';
-import AuthCheck from 'modules/auth/AuthCheck';
-import UnAuthCheck from 'modules/auth/UnAuthCheck';
-import DivideForm from 'modules/auth/DivideForm';
-import SignUp from 'modules/auth/SignUp';
-import ConfirmCode from 'modules/auth/ConfirmCode';
-import SignIn from 'modules/auth/SignIn';
-import ForgotPassword from 'modules/auth/ForgotPassword';
-import ResetPassword from 'modules/auth/ResetPassword';
-import Sidebar from 'modules/sidebar/Sidebar';
-import Main from 'modules/main/Main';
-import NotFound404 from 'modules/notFound/NotFound';
+import AuthCheck from 'components/auth/AuthCheck';
+import UnAuthCheck from 'components/auth/UnAuthCheck';
+import DivideForm from 'components/auth/DivideForm';
+import SignUp from 'components/auth/SignUp';
+import ConfirmCode from 'components/auth/ConfirmCode';
+import SignIn from 'components/auth/SignIn';
+import ForgotPassword from 'components/auth/ForgotPassword';
+import ResetPassword from 'components/auth/ResetPassword';
+import Sidebar from 'components/common/Sidebar';
+import NotFound404 from 'components/common/NotFound';
+import Main from 'components/Main';
 
 
 function App() {
