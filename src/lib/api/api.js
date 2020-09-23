@@ -19,6 +19,12 @@ Amplify.configure({
   }
 });
 
+// プロジェクトの取得
+export async function getProject(projectId, request) {
+  request = await requestSetup(request);
+  return await API.get(DIFFENDER_API_NAME, `/projects/${projectId}`, request);
+}
+
 // プロジェクト一覧の取得
 export async function getProjectList(request) {
   request = await requestSetup(request);
@@ -29,6 +35,12 @@ export async function getProjectList(request) {
 export async function postProject(request) {
   request = await requestSetup(request);
   return await API.post(DIFFENDER_API_NAME, '/projects', request)
+}
+
+// プロジェクトの更新
+export async function putProject(projectId, request) {
+  request = await requestSetup(request);
+  return await API.put(DIFFENDER_API_NAME, `/projects/${projectId}`, request)
 }
 
 // ユーザオプションの取得
