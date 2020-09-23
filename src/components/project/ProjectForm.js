@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import UtilInput from 'components/util/input/Input';
+import Loading from 'components/common/Loading';
+
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
 import * as projectValid from 'lib/validation/projectValidation';
@@ -13,6 +15,7 @@ export default function ProjectForm(props = null) {
   const successDeleteCallback = props.successDeleteCallback;
 
   // 入力フォーム用のState定義
+  const [isLoading, setIsLoading] = useState(isUpdate);
   const [project, setProject] = useState({
     name: "",
     description: ""
@@ -25,10 +28,21 @@ export default function ProjectForm(props = null) {
   useEffect( () => {
     if (!isUpdate) return;
     const asyncSetProject = async () => {
-      const project = await getProject(projectId);
-      setProject(project);
+      let updateProject = {};
+      try {
+        updateProject = await api.getProject(projectId, { 
+          body: {}
+        });
+      } catch (error) {
+        toast.errorToast(
+          { message: "プロジェクトの取得に失敗しました" }
+        );
+      }
+      setProject(updateProject);
+      setIsLoading(false);
     }
     asyncSetProject();
+    
   }, [projectId, isUpdate]);
 
   // 入力変更時の処理
@@ -73,6 +87,30 @@ export default function ProjectForm(props = null) {
     }
   }
 
+  // 更新ボタン押下時の処理
+  const handlePutProject = async () => {
+    toast.infoToast(
+      { message: "プロジェクトの更新リクエストを送信しました" }
+    );
+    try {
+      await api.putProject(projectId, {
+        body: project
+      });
+      toast.successToast(
+        { message: "プロジェクトの更新が完了しました" }
+      );
+      if (successPostCallback) successPostCallback();
+    } catch (error) {
+      toast.errorToast(
+        { message: "プロジェクトの更新に失敗しました" }
+      );
+    }
+  }
+
+  if (isLoading) return (
+    <Loading/>
+  );
+
   return (
     <React.Fragment>
       <div className={styles.projectForm}>
@@ -96,7 +134,9 @@ export default function ProjectForm(props = null) {
             errorMessages={ errors.description }
           />
           <div className={styles.actionArea}>
-            <span className={styles.postButton} onClick={async () => { handlePostProject() } }>
+            <span className={styles.postButton} onClick={async () => { 
+              (isUpdate) ? handlePutProject() : handlePostProject();
+            }}>
               {(isUpdate) ? '更新' : '登録'}
             </span>
             {/* 更新時のみ削除ボタンを表示 */}
@@ -110,16 +150,6 @@ export default function ProjectForm(props = null) {
       </div>
     </React.Fragment>
   );
-
-  async function getProject(projectId) {
-    // TODO APIの呼び出し
-    console.log(projectId);
-    return {
-        Id: "Project-1",
-        ProjectName: "プロジェクト1",
-        ProjectDescription: "テスト用のプロジェクトです"
-      }
-  }
 
   async function deleteProject(projectId, successCallback) {
     console.log(projectId);
