@@ -58,6 +58,33 @@ async function postProject(postObject) {
 }
 module.exports.postProject = postProject;
 
+// プロジェクトの更新
+async function updateProject(updateObj) {
+  return await dynamoDBDao.update(
+    dynamoDBClient,
+    {
+      TableName: TABLE_NAME,
+      Key: {
+        id : updateObj.id
+      },
+      UpdateExpression: `
+        Set 
+        #name = :name, 
+        description = :description, 
+      `,
+      ExpressionAttributeNames: {
+        // nameが予約語と被っているため、プレースホルダーで対応
+        '#name': 'name'  
+      },
+      ExpressionAttributeValues: {
+        ":name": updateObj.name,
+        ":description": updateObj.description,
+      }
+    }
+  )
+}
+module.exports.updateProject = updateProject;
+
 // 新しいプロジェクトIDの発行
 async function generateProjectId() {
   return `Project-${await dynamoDBDao.getProjectId(dynamoDBClient, TABLE_NAME)}`;
