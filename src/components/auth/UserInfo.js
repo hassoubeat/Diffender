@@ -1,6 +1,6 @@
 import React from 'react';
-import UpdateUserAttributes from 'modules/auth/UpdateUserAttributes';
-import ChangePassword from 'modules/auth/ChangePassword';
+import UpdateUserAttributes from './UpdateUserAttributes';
+import ChangePassword from './ChangePassword';
 import styles from './UserInfo.module.scss';
 
 export default function UserInfo(props = null) {

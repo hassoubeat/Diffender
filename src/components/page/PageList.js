@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Modal from 'react-modal';
-import PageForm from 'modules/pageForm/PageForm';
+import PageForm from './pageForm/PageForm';
 import styles from './PageList.module.scss';
 
 // モーダルの展開先エレメントの指定

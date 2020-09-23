@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Modal from 'react-modal';
-import ProjectForm from 'modules/projectForm/ProjectForm';
-import ScreenshotRequestForm from 'modules/screenshotRequestForm/ScreenshotRequestForm';
-import ResultList from 'modules/resultList/ResultList';
+import ProjectForm from './ProjectForm';
+import ScreenshotRequestForm from './ScreenshotRequestForm';
+import ResultList from 'components/result/ResultList';
 import styles from './ProjectInfo.module.scss';
 
 // モーダルの展開先エレメントの指定

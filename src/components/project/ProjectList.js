@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ReactSortable } from "react-sortablejs";
 import { useHistory } from 'react-router-dom';
 import Modal from 'react-modal';
-import ProjectForm from 'modules/projectForm/ProjectForm';
-import Loading from 'modules/util/loading/Loading';
+import ProjectForm from './ProjectForm';
+import Loading from 'components/common/Loading';
 
 import * as bucketSort from 'lib/util/bucketSort';
 import * as api from 'lib/api/api';

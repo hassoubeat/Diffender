@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import UtilInput from 'modules/util/input/Input';
+import UtilInput from 'components/util/input/Input';
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
 import * as projectValid from 'lib/validation/projectValidation';

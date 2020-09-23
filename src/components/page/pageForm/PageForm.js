@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import BasicForm from './_BasicForm';
 import BrowserOptionsForm from './_BrowserSettingsForm';
 import ScreenshotOptionsForm from './_ScreenshotOptionsForm';
-import ActionForm from 'modules/pageForm/_ActionForm';
-import Accordion from 'modules/util/accordion/Accordion';
-import Pagination from 'modules/util/pagination/Pagination';
+import ActionForm from 'components/page/pageForm/_ActionForm';
+import Accordion from 'components/util/accordion/Accordion';
+import Pagination from 'components/util/pagination/Pagination';
 import * as toast from 'lib/util/toast';
 import styles from './PageForm.module.scss';
 

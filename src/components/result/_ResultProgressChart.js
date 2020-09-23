@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import RoundChart from 'modules/util/chart/RoundChart';
+import RoundChart from 'components/util/chart/RoundChart';
 import styles from './_ResultProgressChart.module.scss';
 
 export default function ReusltList(props = null) {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import UtilInput from 'modules/util/input/Input';
+import UtilInput from 'components/util/input/Input';
 import { forgotPasswordSubmit } from 'lib/auth/cognitoAuth';
 import {
   handleChangeUserParams,

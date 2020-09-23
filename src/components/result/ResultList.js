@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Modal from 'react-modal';
-import DiffRequestForm from 'modules/diffRequestForm/DiffRequestForm';
+import DiffRequestForm from './DiffRequestForm';
 import styles from './ResultList.module.scss';
 
 // モーダルの展開先エレメントの指定

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { signIn } from 'lib/auth/cognitoAuth';
 import * as api from 'lib/api/api';
-import UtilInput from 'modules/util/input/Input';
+import UtilInput from 'components/util/input/Input';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { 

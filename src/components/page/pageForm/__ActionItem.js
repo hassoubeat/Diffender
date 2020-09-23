@@ -1,5 +1,5 @@
 import React from 'react';
-import Accordion from 'modules/util/accordion/Accordion'
+import Accordion from 'components/util/accordion/Accordion'
 import styles from './__ActionItem.module.scss';
 
 const ACTION_TYPE_GOTO = process.env.REACT_APP_ACTION_TYPE_GOTO;

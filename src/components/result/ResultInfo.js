@@ -1,8 +1,8 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import ResultForm from 'modules/resultForm/ResultForm';
+import ResultForm from './ResultForm';
 import ResultProgressChart from './_ResultProgressChart';
-import ResultItemList from 'modules/resultItemList/ResultItemList';
+import ResultItemList from 'components/resultItem/ResultItemList';
 import styles from './ResultInfo.module.scss';
 
 export default function ResultInfo(props = null) {

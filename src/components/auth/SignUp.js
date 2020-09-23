@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { signUp } from 'lib/auth/cognitoAuth';
-import UtilInput from 'modules/util/input/Input';
+import UtilInput from 'components/util/input/Input';
 import {
   handleChangeUserParams,
   isErrorsCheck

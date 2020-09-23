@@ -1,14 +1,14 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Breadcrumbs from 'modules/breadcrumbs/Breadcrumbs';
-import UserInfo from 'modules/userInfo/UserInfo';
-import ProjectList from 'modules/projectList/ProjectList';
-import ProjectInfo from 'modules/projectInfo/ProjectInfo';
-import PageList from 'modules/pageList/PageList';
-import PageInfo from 'modules/pageInfo/PageInfo';
-import ResultList from 'modules/resultList/ResultList';
-import ResultInfo from 'modules/resultInfo/ResultInfo';
-import NotFound404 from 'modules/notFound/NotFound';
+import Breadcrumbs from 'components/common/Breadcrumbs';
+import UserInfo from 'components/auth/UserInfo';
+import ProjectList from 'components/project/ProjectList';
+import ProjectInfo from 'components/project/ProjectInfo';
+import PageList from 'components/page/PageList';
+import PageInfo from 'components/page/PageInfo';
+import ResultList from 'components/result/ResultList';
+import ResultInfo from 'components/result/ResultInfo';
+import NotFound404 from 'components/common/NotFound';
 import styles from './Main.module.scss';
 
 export default function Main() {

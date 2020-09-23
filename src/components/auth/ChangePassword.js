@@ -7,7 +7,7 @@ import {
   getCurrentUser, 
   changePassword 
 } from 'lib/auth/cognitoAuth';
-import UtilInput from 'modules/util/input/Input';
+import UtilInput from 'components/util/input/Input';
 import * as toast from 'lib/util/toast';
 import styles from './ChangePassword.module.scss';
 

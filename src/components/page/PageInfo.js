@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import PageForm from 'modules/pageForm/PageForm';
+import PageForm from './pageForm/PageForm';
 import styles from './PageInfo.module.scss';
 
 export default function PageInfo(props = null) {
