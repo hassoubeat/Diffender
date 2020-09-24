@@ -1,6 +1,3 @@
-// アトミックカウンターのレコードキー
-const PROJECT_COUNTER_ID = 'ProjectIdCounter';
-
 // データ取得
 module.exports.get = async (dynamoDB, getObj) => {
   return await dynamoDB.get(getObj).promise();
@@ -32,14 +29,14 @@ module.exports.update = async (dynamoDB, updateObj) => {
 
   return await dynamoDB.update(updateObj).promise();
 }
-  
-// Project用の現在のアトミックカウンターからインクリメントした値を取得
-module.exports.getProjectId = async (dynamoDB, tableName) => {
-  return await incrementeAtomicCounter(dynamoDB, tableName, PROJECT_COUNTER_ID);
+
+// データ削除
+module.exports.delete = async (dynamoDB, deleteObj) => {
+  return await dynamoDB.delete(deleteObj).promise();
 }
 
 // アトミックカウンター更新処理
-async function incrementeAtomicCounter(dynamoDB, tableName, id) {
+module.exports.incrementeAtomicCounter = async (dynamoDB, tableName, id) => {
   const result = await dynamoDB.update({
     TableName: tableName,
     Key: {
