@@ -92,6 +92,23 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /projects/{projectId}
             Method: put
+  # Projectsの削除
+  DeleteProjectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/projects/DeleteProjectFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /projects/{projectId}
+            Method: delete
   # UserOptionの取得
   GetUserOptionFunction:
     Type: AWS::Serverless::Function

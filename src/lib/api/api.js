@@ -43,6 +43,12 @@ export async function putProject(projectId, request) {
   return await API.put(DIFFENDER_API_NAME, `/projects/${projectId}`, request)
 }
 
+// プロジェクトの削除
+export async function deleteProject(projectId, request) {
+  request = await requestSetup(request);
+  return await API.del(DIFFENDER_API_NAME, `/projects/${projectId}`, request)
+}
+
 // ユーザオプションの取得
 export async function getUserOption(request) {  
   request = await requestSetup(request);

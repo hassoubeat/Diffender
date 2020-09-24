@@ -109,9 +109,32 @@ describe('DynamoDBのDao 正常系のテスト群', () => {
     );
   });
 
-  test('プロジェクトIDのアトミックカウンター取得テスト', async () => {
-    const response = await dao.getProjectId(dynamoDbDocumentClient, tableName);
-    expect(response).toBe(1);
+  test.skip('データ削除(delete)のテスト', async () => {
+    jest.setTimeout(30000);
+    // 削除テスト用データの登録
+    const deleteTestObj = {
+      TableName: tableName,
+      Item: {  id: "delete-test-obj" }
+    }
+    await dynamoDbDocumentClient.put(deleteTestObj).promise();
+
+    // 削除するデータがあることを確認
+    expect(await getRecord(deleteTestObj.Item.id)).toEqual({
+      "Item": { id : "delete-test-obj" }
+    });
+
+    // 登録したデータを削除
+    await dao.delete(
+      dynamoDbDocumentClient,
+      {
+        TableName: tableName,
+        Key: {
+          id: "delete-test-obj"
+        }
+      }
+    );
+    // 削除後のデータがないことを確認
+    expect(await getRecord(deleteTestObj.Item.Id)).toEqual({});
   });
 
   // afterEach( async () => {
@@ -177,7 +200,7 @@ async function deleteTestTable() {
 async function getRecord(id) {
   const getParams = { 
     TableName: tableName,
-    Key: { Id : id }
+    Key: { id : id }
   }
   return await dynamoDbDocumentClient.get(getParams).promise();
 }
@@ -186,7 +209,7 @@ async function getRecord(id) {
 async function deleteRecord(id) {
   const deleteParams = { 
     TableName: tableName,
-    Key:{ Id: id }
+    Key:{ id: id }
   }
   await dynamoDbDocumentClient.delete(deleteParams).promise();
 }

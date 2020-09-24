@@ -3,6 +3,8 @@ const dynamoDBClient = new AWS.DynamoDB.DocumentClient();
 const dynamoDBDao = require('dynamodb-dao');
 
 const TABLE_NAME = process.env.DIFFENDER_DYNAMODB_TABLE_NAME;
+// アトミックカウンターのレコードキー
+const PROJECT_COUNTER_ID = 'ProjectIdCounter';
 
 // プロジェクト一覧の取得
 async function getProjectList(userId, isSortASC = true) {
@@ -85,8 +87,23 @@ async function updateProject(updateObj) {
 }
 module.exports.updateProject = updateProject;
 
+// プロジェクトの削除
+async function deleteProject(projectId) {
+  await dynamoDBDao.delete(
+    dynamoDBClient,
+    {
+      TableName: TABLE_NAME,
+      Key: {
+        'id': projectId
+      }
+    }
+  );
+  return;
+}
+module.exports.deleteProject = deleteProject;
+
 // 新しいプロジェクトIDの発行
 async function generateProjectId() {
-  return `Project-${await dynamoDBDao.getProjectId(dynamoDBClient, TABLE_NAME)}`;
+  return `Project-${await dynamoDBDao.incrementeAtomicCounter(dynamoDBClient, TABLE_NAME, PROJECT_COUNTER_ID)}`;
 }
 module.exports.generateProjectId = generateProjectId;

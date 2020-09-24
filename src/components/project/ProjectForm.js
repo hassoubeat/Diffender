@@ -107,6 +107,27 @@ export default function ProjectForm(props = null) {
     }
   }
 
+  // 削除ボタン押下時の処理
+  const handleDeleteProject = async () => {
+    if (!window.confirm("プロジェクトを削除しますか？")) return;
+    toast.infoToast(
+      { message: "プロジェクトの削除リクエストを送信しました" }
+    );
+    try {
+      await api.deleteProject(projectId, {
+        body: project
+      });
+      toast.successToast(
+        { message: "プロジェクトの削除が完了しました" }
+      );
+      if (successDeleteCallback) successDeleteCallback();
+    } catch (error) {
+      toast.errorToast(
+        { message: "プロジェクトの削除に失敗しました" }
+      );
+    }
+  }
+
   if (isLoading) return (
     <Loading/>
   );
@@ -141,27 +162,11 @@ export default function ProjectForm(props = null) {
             </span>
             {/* 更新時のみ削除ボタンを表示 */}
             {(isUpdate) && <span className={styles.deleteButton} onClick={
-              async () => { 
-                await deleteProject(props.projectId, successDeleteCallback)
-              }
+              async () => { handleDeleteProject() }
             }>削除</span>}
           </div>
         </div>
       </div>
     </React.Fragment>
   );
-
-  async function deleteProject(projectId, successCallback) {
-    console.log(projectId);
-    if (!window.confirm('プロジェクトを削除しますか？')) return;
-
-    toast.infoToast(
-      { message: "削除リクエストを送信しました" }
-    );
-    // TODO APIの呼び出し
-    toast.infoToast(
-      { message: "削除が完了しました" }
-    );
-    if (successCallback) successCallback();
-  }
 }
