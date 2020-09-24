@@ -1,6 +1,7 @@
 const jwt_decode = require('jwt-decode');
 const projectDao = require('project-dao');
 const projectValidator = require('project-validator');
+const lambdaCommon = require('lambda-common');
 
 exports.lambda_handler = async (event, context) => {
   // レスポンス変数の定義
@@ -15,7 +16,7 @@ exports.lambda_handler = async (event, context) => {
 
   try {
     const user = jwt_decode(event.headers.Authorization);
-    const postProject = getRequetBody(event);
+    const postProject = lambdaCommon.getRequetBody(event);
 
     postProject.projectTieUserId = user.sub;
     projectValidator.projectValid(postProject);
@@ -30,9 +31,7 @@ exports.lambda_handler = async (event, context) => {
 
     const project = await projectDao.getProject(postObject.id);
 
-    response.body = JSON.stringify({
-      ...project
-    });
+    response.body = JSON.stringify(project);
   } catch (error) {
     console.error(error);
 
@@ -42,15 +41,4 @@ exports.lambda_handler = async (event, context) => {
     });
   }
   return response;
-}
-
-// 更新オブジェクトの取得
-function getRequetBody(event) {
-  try {
-    return JSON.parse(event.body);
-  } catch (error)  {
-    error.statusCode = 400;
-    error.message = "Request body is empty.";
-    throw error;
-  }
 }

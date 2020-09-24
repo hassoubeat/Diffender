@@ -1,5 +1,6 @@
 const jwt_decode = require('jwt-decode');
 const projectDao = require('project-dao');
+const lambdaCommon = require('lambda-common');
 
 exports.lambda_handler = async (event, context) => {
   // レスポンス変数の定義
@@ -14,11 +15,11 @@ exports.lambda_handler = async (event, context) => {
   
   try {
     const user = jwt_decode(event.headers.Authorization);
-    const projectId = getPathParameter(event, "projectId");
+    const projectId = lambdaCommon.getPathParameter(event, "projectId");
     
     const project = await projectDao.getProject(projectId);
 
-    checkResouceOwner({
+    lambdaCommon.checkResouceOwner({
       loginUserId: user.sub, 
       resouceUserId: project.projectTieUserId
     })
@@ -33,28 +34,4 @@ exports.lambda_handler = async (event, context) => {
     });
   }
   return response;
-}
-
-// eventからパスパラメーターを取得する
-function getPathParameter(event, key) {
-  try {
-    const pathParam = event.pathParameters[key];
-    if (pathParam === undefined) throw new Error();
-    return pathParam;
-  } catch (error) {
-    console.error(error);
-
-    error.statusCode = 400;
-    error.message = `NotFound PathParameter: ${key}`;
-    throw error;
-  }
-}
-
-// リソースオーナーをチェックする
-function checkResouceOwner({loginUserId, resouceUserId}) {
-  if (loginUserId !== resouceUserId) {
-    const error = new Error("Unauthorized resource.");
-    error.statusCode = 401;
-    throw error;
-  }
 }

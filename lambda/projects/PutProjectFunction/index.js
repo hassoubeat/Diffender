@@ -1,6 +1,7 @@
 const jwt_decode = require('jwt-decode');
 const projectDao = require('project-dao');
 const projectValidator = require('project-validator');
+const lambdaCommon = require('lambda-common');
 
 exports.lambda_handler = async (event, context) => {
   // レスポンス変数の定義
@@ -15,11 +16,11 @@ exports.lambda_handler = async (event, context) => {
 
   try {
     const user = jwt_decode(event.headers.Authorization);
-    const projectId = getPathParameter(event, "projectId");
-    const updateProject = getRequetBody(event);
+    const projectId = lambdaCommon.getPathParameter(event, "projectId");
+    const updateProject = lambdaCommon.getRequetBody(event);
     updateProject.id = projectId;
 
-    checkResouceOwner({
+    lambdaCommon.checkResouceOwner({
       loginUserId: user.sub, 
       resouceUserId: updateProject.projectTieUserId
     });
@@ -40,39 +41,4 @@ exports.lambda_handler = async (event, context) => {
     });
   }
   return response;
-}
-
-// eventからパスパラメーターを取得する
-function getPathParameter(event, key) {
-  try {
-    const pathParam = event.pathParameters[key];
-    if (pathParam === undefined) throw new Error();
-    return pathParam;
-  } catch (error) {
-    console.error(error);
-
-    error.statusCode = 400;
-    error.message = `NotFound PathParameter: ${key}`;
-    throw error;
-  }
-}
-
-// 更新オブジェクトの取得
-function getRequetBody(event) {
-  try {
-    return JSON.parse(event.body);
-  } catch (error)  {
-    error.statusCode = 400;
-    error.message = "Request body is empty.";
-    throw error;
-  }
-}
-
-// リソースオーナーをチェックする
-function checkResouceOwner({loginUserId, resouceUserId}) {
-  if (loginUserId !== resouceUserId) {
-    const error = new Error("Unauthorized resource.");
-    error.statusCode = 401;
-    throw error;
-  }
 }
