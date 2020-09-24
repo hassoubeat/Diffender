@@ -109,6 +109,7 @@ export default function ProjectForm(props = null) {
 
   // 削除ボタン押下時の処理
   const handleDeleteProject = async () => {
+    if (!window.confirm("プロジェクトを削除しますか？")) return;
     toast.infoToast(
       { message: "プロジェクトの削除リクエストを送信しました" }
     );
