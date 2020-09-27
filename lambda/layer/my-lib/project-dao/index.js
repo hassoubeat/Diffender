@@ -54,7 +54,14 @@ async function postProject(postObject) {
     dynamoDBClient,
     {
       TableName: TABLE_NAME,
-      Item: postObject
+      Item: {
+        id: postObject.id,
+        name: postObject.name,
+        description: postObject.description,
+        beforeCommonActions: postObject.beforeCommonActions,
+        afterCommonActions: postObject.afterCommonActions,
+        projectTieUserId: postObject.projectTieUserId
+      }
     }
   )
 }
@@ -73,6 +80,8 @@ async function updateProject(updateObj) {
         Set 
         #name = :name, 
         description = :description, 
+        beforeCommonActions = :beforeCommonActions, 
+        afterCommonActions = :afterCommonActions, 
       `,
       ExpressionAttributeNames: {
         // nameが予約語と被っているため、プレースホルダーで対応
@@ -81,6 +90,8 @@ async function updateProject(updateObj) {
       ExpressionAttributeValues: {
         ":name": updateObj.name,
         ":description": updateObj.description,
+        ":beforeCommonActions": updateObj.beforeCommonActions,
+        ":afterCommonActions": updateObj.afterCommonActions
       }
     }
   )

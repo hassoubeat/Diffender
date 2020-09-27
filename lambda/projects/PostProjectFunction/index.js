@@ -21,15 +21,12 @@ exports.lambda_handler = async (event, context) => {
     postProject.projectTieUserId = user.sub;
     projectValidator.projectValid(postProject);
 
-    const postObject = {
-      id: await projectDao.generateProjectId(),
-      name: postProject.name,
-      description: postProject.description,
-      projectTieUserId: postProject.projectTieUserId,
-    }
-    await projectDao.postProject(postObject);
+    postProject.id = await projectDao.generateProjectId();
+    postProject.beforeCommonActions = [];
+    postProject.afterCommonActions = [];
+    await projectDao.postProject(postProject);
 
-    const project = await projectDao.getProject(postObject.id);
+    const project = await projectDao.getProject(postProject.id);
 
     response.body = JSON.stringify(project);
   } catch (error) {
