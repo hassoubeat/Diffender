@@ -1,5 +1,4 @@
 import React, { useState, useEffect, createContext } from 'react';
-import { useImmer } from "use-immer";
 import { FormProvider, useForm } from "react-hook-form";
 import BasicForm from './_BasicForm';
 import BrowserOptionsForm from './_BrowserSettingsForm';
@@ -27,49 +26,48 @@ export default function PageForm(props = null) {
 
   // 入力フォーム用のState定義
   const [isLoading, setIsLoading] = useState(isUpdate);
-  const [page, setPage] = useImmer({
-    name: "",
-    description: "",
-    browserSettings: {
-      deviceType: "iPhone6"
-    },
-    screenshotOptions: {
-      fullPage: false
-    },
-    actions: [],
-    isEnableBeforeCommonAction: true,
-    isEnableAfterCommonAction: true
-  });
-  const [beforeCommonActions, setBeforeCommonActions] = useState([]);
-  const [afterCommonActions, setAfterCommonActions] = useState([]);
-
   // ReactHookForm setup
   const reactHookFormMethods = useForm({
-    mode: 'onChange'
+    mode: 'onChange',
+    defaultValues: {
+      name: "",
+      description: "",
+      browserSettings: {
+        deviceType: "iPhone 6",
+        deviceSize: "1200x1080"
+      },
+      screenshotOptions: {
+        fullPage: false
+      },
+      actions: [],
+      isEnableBeforeCommonAction: true,
+      isEnableAfterCommonAction: true,
+      beforeCommonActions: [],
+      afterCommonActions: []
+    }
   });
-  const {register, errors} = reactHookFormMethods;
+  const {register, errors, reset} = reactHookFormMethods;
   const onSubmit = (data) => { console.table(data) };
 
   useEffect( () => {
     // 共通アクションリストのセット
-    const asyncSetCommonActions = async () => {
-      const project = await api.getProject(projectId);
-      setBeforeCommonActions(project.beforeCommonActions);
-      setAfterCommonActions(project.afterCommonActions);
-    }
-    asyncSetCommonActions();
+    // const asyncSetCommonActions = async () => {
+    //   const project = await api.getProject(projectId);
+    //   setBeforeCommonActions(project.beforeCommonActions);
+    //   setAfterCommonActions(project.afterCommonActions);
+    // }
+    // asyncSetCommonActions();
 
     // 更新でない場合は終了
     if (!isUpdate) return;
 
     // ページ情報の取得
     const asyncSetPage = async () => {
-      const page = await api.getPage(projectId, pageId);
-      setPage(page);
-      setIsLoading(false);
+      const page = await getPage(pageId);
+      reset(page);
     }
     asyncSetPage();
-  }, [isUpdate, pageId, projectId, setPage]);
+  }, [isUpdate, pageId, projectId, reset]);
 
   if (isLoading) return (
     <Loading/>
@@ -79,7 +77,6 @@ export default function PageForm(props = null) {
     <React.Fragment>
       <form onSubmit={reactHookFormMethods.handleSubmit(onSubmit)}>
       <FormProvider {...reactHookFormMethods} >
-      <PageContext.Provider value={{page, setPage}}>
       <div className={styles.pageForm}>
         <div className={styles.inputArea}>
           <Pagination renderList={
@@ -95,7 +92,6 @@ export default function PageForm(props = null) {
                   placeholder="TOPページ" 
                   type="text" 
                   name="name" 
-                  defaultValue={ page.name } 
                   errorMessages={ (errors.name) && [errors.name.message] } 
                   inputRef={ register({
                     required: 'ページ名は必須です',
@@ -110,7 +106,6 @@ export default function PageForm(props = null) {
                   placeholder="TOPページの正常系テスト" 
                   type="text" 
                   name="description" 
-                  defaultValue={ page.description } 
                   errorMessages={ (errors.description) && [errors.description.message] } 
                   inputRef={ register({
                     maxLength : {
@@ -137,7 +132,6 @@ export default function PageForm(props = null) {
         </div>
         <button type="submit">Submit</button>
       </div>
-      </PageContext.Provider>
       </FormProvider>
       </form>
     </React.Fragment>
@@ -147,41 +141,20 @@ export default function PageForm(props = null) {
     console.log(pageId);
     // TODO API呼び出し
     return {
-      id: "Page-1",
-      pageName: "ページ1",
-      pageDescription: "example.comのTOPページ",
+      name: "test3",
+      description: "",
       browserSettings: {
-        deviceType: "iPhone 6"
+        deviceType: "iPhone5",
+        deviceSize: "1200x900"
       },
       screenshotOptions: {
-        fullPage: true
+        fullPage: false
       },
+      actions: [],
       isEnableBeforeCommonAction: true,
-      isEnableAfterCommonAction: false,
-      actionList: [
-        {
-          type: "GOTO",
-          localName: "ページ遷移",
-          name: "アクション1",
-          url: "https://example.com",
-          millisecond: 0,
-          basicAuth: {
-            user: "user",
-            password: "password"
-          }
-        },
-        {
-          type: "WAIT",
-          localName: "待機",
-          name: "アクション2",
-          url: "",
-          millisecond: 1000,
-          basicAuth: {
-            user: "",
-            password: ""
-          }
-        },
-      ]
+      isEnableAfterCommonAction: true,
+      beforeCommonActions: [],
+      afterCommonActions: []
     }
   }
 
