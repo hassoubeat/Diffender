@@ -61,6 +61,8 @@ async function postPage(postObject) {
         browserSettings: postObject.browserSettings,
         screenshotOptions: postObject.screenshotOptions,
         actions: postObject.actions,
+        isEnableBeforeCommonAction: postObject.isEnableBeforeCommonAction,
+        isEnableAfterCommonAction: postObject.isEnableAfterCommonAction,
         pageTieUserId: postObject.pageTieUserId,
         pageTieProjectId: postObject.pageTieProjectId,
       }
