@@ -38,7 +38,7 @@ export default function ActionItem(props = null) {
   return (
     <div className={styles.actionItem} data-index={index} >
       <div className={styles.inputTitle}>
-        <div className={styles.title}>{action.localName}</div>
+        <div className={styles.title}>{action.typeName}</div>
         <div className={styles.trash} onClick={ () => {deleteAction()} }><i className="fa fa-trash-alt"></i></div>
         <div className="draggable"><i className="fa fa-arrows-alt"></i></div>
       </div>
@@ -52,6 +52,18 @@ export default function ActionItem(props = null) {
         inputRef={register({
           required: 'アクション名は必須です'
         })}
+      />
+      <input
+        name={`${actionsName}[${index}].type`}
+        type="hidden" 
+        defaultValue={action.type} 
+        ref={register()}
+      />
+      <input
+        name={`${actionsName}[${index}].typeName`}
+        type="hidden" 
+        defaultValue={action.typeName} 
+        ref={register()}
       />
       {/* アクションのタイプに応じたDOMをセット */}
       {actionDom[action.type]}

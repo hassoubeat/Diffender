@@ -20,7 +20,7 @@ Amplify.configure({
 });
 
 // プロジェクトの取得
-export async function getProject(projectId, request) {
+export async function getProject({projectId, request}) {
   request = await requestSetup(request);
   return await API.get(DIFFENDER_API_NAME, `/projects/${projectId}`, request);
 }
@@ -38,7 +38,7 @@ export async function postProject(request) {
 }
 
 // プロジェクトの更新
-export async function putProject(projectId, request) {
+export async function putProject({projectId, request}) {
   request = await requestSetup(request);
   return await API.put(DIFFENDER_API_NAME, `/projects/${projectId}`, request)
 }
@@ -56,7 +56,7 @@ export async function getPage(projectId, pageId, request) {
 }
 
 // ページの登録
-export async function postPage(projectId, request) {
+export async function postPage({projectId, request}) {
   request = await requestSetup(request);
   return await API.post(DIFFENDER_API_NAME, `/projects/${projectId}/pages`, request);
 }

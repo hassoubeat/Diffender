@@ -9,11 +9,11 @@ const ACTION_TYPE_WAIT = process.env.REACT_APP_ACTION_TYPE_WAIT;
 const ACTION_TYPE_LIST = [
   {
     type: ACTION_TYPE_GOTO,
-    localName: "ページ遷移"
+    typeName: "ページ遷移"
   },
   {
     type: ACTION_TYPE_WAIT,
-    localName: "待機"
+    typeName: "待機"
   }
 ];
 
@@ -33,7 +33,7 @@ export default function ActionForm(props = null) {
   const addAction = (actionType) => {
     append({
       type: actionType.type,
-      localName: actionType.localName,
+      typeName: actionType.typeName,
       name: "",
       url: "",
       millisecond: 0,
@@ -89,7 +89,7 @@ export default function ActionForm(props = null) {
                 onClick={() => {
                   addAction(actionType)
                 }}
-              >{actionType.localName}</span>
+              >{actionType.typeName}</span>
             ))
           }
         </div>

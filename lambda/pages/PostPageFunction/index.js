@@ -21,7 +21,7 @@ exports.lambda_handler = async (event, context) => {
     const postPage = lambdaCommon.getRequetBody(event);
 
     // 取得するページが紐づくプロジェクトのリソースオーナーチェック
-    const project = projectDao.getProject(projectId);
+    const project = await projectDao.getProject(projectId);
     lambdaCommon.checkResouceOwner({
       loginUserId: user.sub, 
       resouceUserId: project.projectTieUserId

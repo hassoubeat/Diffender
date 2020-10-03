@@ -54,7 +54,9 @@ export default function PageForm(props = null) {
   useEffect( () => {
     // 共通アクションリストのセット
     const asyncSetCommonActions = async () => {
-      const project = await api.getProject(projectId);
+      const project = await api.getProject({
+        projectId: projectId
+      });
       setValue("beforeCommonActions", project.beforeCommonActions);
       setValue("afterCommonActions", project.afterCommonActions);
     }
@@ -77,9 +79,45 @@ export default function PageForm(props = null) {
 
   // submit成功時の処理
   const onSubmit = async (data) => { 
-    console.table(data);
-    console.log(data)
-    if(postSuccessCallback) postSuccessCallback();
+    toast.infoToast(
+      { message: "ページの登録リクエストを送信しました" }
+    );
+
+    try {
+      // TODO
+      const project =  await api.getProject({
+        projectId: projectId
+      });
+
+      // 共通アクションの登録
+      await api.putProject({
+        projectId: projectId, 
+        request : {
+          body: {
+            ...project,
+            beforeCommonActions: data.beforeCommonActions || [],
+            afterCommonActions: data.afterCommonActions || []
+          }
+        }
+      })
+
+      // ページの登録
+      await api.postPage({
+        projectId: projectId,
+        request: {
+          body: data
+        }
+      });
+      toast.successToast(
+        { message: "ページの登録が完了しました" }
+      );
+      if(postSuccessCallback) postSuccessCallback();
+    } catch (error) {
+      console.log(error);
+      toast.errorToast(
+        { message: "ページの登録に失敗しました" }
+      );
+    }
   };
 
   // submit失敗時(バリデーションエラー)が発生した時のイベント処理
@@ -214,7 +252,6 @@ export default function PageForm(props = null) {
             ]
           } />
         </div>
-        <button type="submit">Submit</button>
       </div>
       </FormProvider>
       </form>
@@ -269,23 +306,4 @@ export default function PageForm(props = null) {
     );
     if (successCallback) successCallback();
   }
-
-  // // Pageオブジェクトを生成する
-  // function pageObjBuild() {
-  //   // TODO API側の仕様を決定した後に詳細を実装
-  //   const test = JSON.stringify(actionList);
-  //   console.log(actionList);
-  //   console.log(test);
-  //   console.log(JSON.parse(test));
-
-  //   return {
-  //     pageName: pageName,
-  //     pageDescription: pageDescription,
-  //     browserSettings: browserSettings,
-  //     screenshotOptions: screenshotOptions,
-  //     actionList: actionList,
-  //     isEnableBeforeCommonAction: isEnableBeforeCommonAction,
-  //     isEnableAfterCommonAction: isEnableAfterCommonAction
-  //   }
-  // }
 }
