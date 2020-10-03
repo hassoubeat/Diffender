@@ -14,7 +14,7 @@ export default function ScreenshotOptionsForm(props = null) {
             name="screenshotOptions.fullPage"
             className={styles.checkBox} 
             type="checkBox" 
-            ref={register}
+            ref={register()}
           />全画面撮影
       </div>
     </React.Fragment>
