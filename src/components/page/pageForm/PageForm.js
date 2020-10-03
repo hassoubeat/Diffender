@@ -1,6 +1,5 @@
 import React, { useState, useEffect, createContext } from 'react';
 import { FormProvider, useForm } from "react-hook-form";
-import BasicForm from './_BasicForm';
 import BrowserOptionsForm from './_BrowserSettingsForm';
 import ScreenshotOptionsForm from './_ScreenshotOptionsForm';
 import ActionForm from 'components/page/pageForm/_ActionForm';
@@ -25,7 +24,7 @@ export default function PageForm(props = null) {
   const deleteSuccessCallback = props.deleteSuccessCallback;
 
   // 入力フォーム用のState定義
-  const [isLoading, setIsLoading] = useState(isUpdate);
+  const [isLoading, setIsLoading] = useState(true);
   // ReactHookForm setup
   const reactHookFormMethods = useForm({
     mode: 'onChange',
@@ -46,28 +45,51 @@ export default function PageForm(props = null) {
       afterCommonActions: []
     }
   });
-  const {register, errors, reset} = reactHookFormMethods;
-  const onSubmit = (data) => { console.table(data) };
+  const {register, errors, reset, watch, setValue, handleSubmit} = reactHookFormMethods;
+
+  // watch
+  const isEnableBeforeCommonAction = watch("isEnableBeforeCommonAction");
+  const isEnableAfterCommonAction = watch("isEnableAfterCommonAction");
 
   useEffect( () => {
     // 共通アクションリストのセット
-    // const asyncSetCommonActions = async () => {
-    //   const project = await api.getProject(projectId);
-    //   setBeforeCommonActions(project.beforeCommonActions);
-    //   setAfterCommonActions(project.afterCommonActions);
-    // }
-    // asyncSetCommonActions();
+    const asyncSetCommonActions = async () => {
+      const project = await api.getProject(projectId);
+      setValue("beforeCommonActions", project.beforeCommonActions);
+      setValue("afterCommonActions", project.afterCommonActions);
+    }
+    asyncSetCommonActions();
 
     // 更新でない場合は終了
-    if (!isUpdate) return;
+    if (!isUpdate) {
+      setIsLoading(false);
+      return;
+    }
 
     // ページ情報の取得
     const asyncSetPage = async () => {
       const page = await getPage(pageId);
       reset(page);
+      setIsLoading(false);
     }
     asyncSetPage();
-  }, [isUpdate, pageId, projectId, reset]);
+  }, [isUpdate, pageId, projectId, reset, setValue]);
+
+  // submit成功時の処理
+  const onSubmit = async (data) => { 
+    console.table(data);
+    console.log(data)
+    if(postSuccessCallback) postSuccessCallback();
+  };
+
+  // submit失敗時(バリデーションエラー)が発生した時のイベント処理
+  const onSubmitError = (error) => { 
+    console.table(error);
+    console.log(error)
+    toast.errorToast(
+      { message: "入力エラーが存在します" }
+    )
+  };
 
   if (isLoading) return (
     <Loading/>
@@ -75,7 +97,7 @@ export default function PageForm(props = null) {
 
   return (
     <React.Fragment>
-      <form onSubmit={reactHookFormMethods.handleSubmit(onSubmit)}>
+      <form>
       <FormProvider {...reactHookFormMethods} >
       <div className={styles.pageForm}>
         <div className={styles.inputArea}>
@@ -126,6 +148,68 @@ export default function PageForm(props = null) {
                 <Accordion text="スクリーンショットオプション" >
                   <ScreenshotOptionsForm />
                 </Accordion>
+              </React.Fragment>,
+              // 2P目
+              <React.Fragment>
+                <div className={styles.sectionTitle}>アクション</div>
+                <small className={styles.sectionMessage}>
+                  アクションとはスクリーンショットを撮影する前に行う処理です。<br/>
+                  スクリーンショットを撮影したいページへの遷移や事前のログインなどを行うことが可能です。
+                </small>
+                <Accordion className={styles.commonActionList} text="共通アクション(前処理)" >
+                  <div className={styles.detail}>
+                    <div className={styles.message}>
+                      共通アクションとはプロジェクトの全アクションで実施するアクションです。<br/>
+                      多くの画面で共通して実行するアクション(ログインなど)は本機能に記載することを推奨します。<br/>
+                    </div>
+                    <div className={(isEnableBeforeCommonAction) ? "" : styles.disable }>
+                      <ActionForm actionsName="beforeCommonActions" />
+                    </div>
+                    <div className={styles.enableActionToggle}>
+                      <input 
+                        name="isEnableBeforeCommonAction"
+                        className={styles.checkBox} 
+                        type="checkBox" 
+                        defaultChecked={isEnableBeforeCommonAction} 
+                        ref={register()}
+                      />共通アクションを実行する
+                    </div>
+                  </div>
+                </Accordion>
+                <ActionForm actionsName="actions" />
+                <Accordion className={styles.commonActionList} text="共通アクション(後処理)" >
+                  <div className={styles.detail}>
+                    <div className={styles.message}>
+                      共通アクションとはプロジェクトの全アクションで実施するアクションです。<br/>
+                      多くの画面で共通して実行するアクション(ログアウトなど)は本機能に記載することを推奨します。<br/>
+                    </div>
+                    <div className={(isEnableAfterCommonAction) ? "" : styles.disable }>
+                      <ActionForm actionsName="afterCommonActions" />
+                    </div>
+                    <div className={styles.enableActionToggle}>
+                      <input 
+                        name="isEnableAfterCommonAction"
+                        className={styles.checkBox} 
+                        type="checkBox" 
+                        defaultChecked={isEnableAfterCommonAction} 
+                        ref={register()}
+                      />共通アクションを実行する
+                    </div>
+                  </div>
+                </Accordion>
+                <div className={styles.actionArea}>
+                  <span className={styles.postButton} onClick={
+                    handleSubmit(onSubmit, onSubmitError)
+                  }>
+                    {(isUpdate) ? '更新' : '登録'}
+                  </span>
+                  {/* 更新時のみ削除ボタンを表示 */}
+                  {(isUpdate) && <span className={styles.deleteButton} onClick={
+                    async () => { 
+                      await deletePage(pageId, deleteSuccessCallback)
+                    }
+                  }>削除</span>}
+                </div>
               </React.Fragment>
             ]
           } />
@@ -172,19 +256,19 @@ export default function PageForm(props = null) {
   //   if (successCallback) successCallback();
   // }
 
-  // async function deletePage(pageId, successCallback) {
-  //   console.log(pageId);
-  //   if (!window.confirm('ページを削除しますか？')) return;
+  async function deletePage(pageId, successCallback) {
+    console.log(pageId);
+    if (!window.confirm('ページを削除しますか？')) return;
 
-  //   toast.infoToast(
-  //     { message: "削除リクエストを送信しました" }
-  //   );
-  //   // TODO APIの呼び出し
-  //   toast.infoToast(
-  //     { message: "削除が完了しました" }
-  //   );
-  //   if (successCallback) successCallback();
-  // }
+    toast.infoToast(
+      { message: "削除リクエストを送信しました" }
+    );
+    // TODO APIの呼び出し
+    toast.infoToast(
+      { message: "削除が完了しました" }
+    );
+    if (successCallback) successCallback();
+  }
 
   // // Pageオブジェクトを生成する
   // function pageObjBuild() {
@@ -205,75 +289,3 @@ export default function PageForm(props = null) {
   //   }
   // }
 }
-
-
-// // 2P目
-// <React.Fragment>
-// <div className={styles.sectionTitle}>アクション</div>
-// <small className={styles.sectionMessage}>
-//   アクションとはスクリーンショットを撮影する前に行う処理です。<br/>
-//   スクリーンショットを撮影したいページへの遷移や事前のログインなどを行うことが可能です。
-// </small>
-// <Accordion className={styles.commonActionList} text="共通アクション(前処理)" >
-//   <div className={styles.detail}>
-//     <div className={styles.message}>
-//       共通アクションとはプロジェクトの全アクションで実施するアクションです。<br/>
-//       多くの画面で共通して実行するアクション(ログインなど)は本機能に記載することを推奨します。<br/>
-//     </div>
-//     {/* 共通アクションが無効の時はdisable */}
-//     <div className={(isEnableBeforeCommonAction) ? "" : styles.disable }>
-//       <ActionForm
-//         actionList={beforeCommonActionList} 
-//         setActionList={setBeforeCommonActionList}
-//       />
-//     </div>
-//     <div className={styles.enableActionToggle}>
-//       <input className={styles.checkBox} type="checkBox" checked={isEnableBeforeCommonAction} onChange={
-//         (e) => { 
-//           setIsEnableBeforeCommonAction(e.target.checked);
-//         }
-//       } />共通アクションを実行する
-//     </div>
-//   </div>
-// </Accordion>
-// <ActionForm 
-//   actionList={actionList} 
-//   setActionList={setActionList}
-// />
-// <Accordion className={styles.commonActionList} text="共通アクション(後処理)" >
-//   <div className={styles.detail}>
-//     <div className={styles.message}>
-//       共通アクションとはプロジェクトの全アクションで実施するアクションです。<br/>
-//       多くの画面で共通して実行するアクション(ログアウトなど)は本機能に記載することを推奨します。<br/>
-//     </div>
-//     {/* 共通アクションが無効の時はdisable */}
-//     <div className={(isEnableAfterCommonAction) ? "" : styles.disable }>
-//       <ActionForm
-//         actionList={afterCommonActionList} 
-//         setActionList={setAfterCommonActionList}
-//       />
-//     </div>
-//     <div className={styles.enableActionToggle}>
-//       <input className={styles.checkBox} type="checkBox" checked={isEnableAfterCommonAction} onChange={
-//         (e) => { 
-//           setIsEnableAfterCommonAction(e.target.checked);
-//         }
-//       } />共通アクションを実行する
-//     </div>
-//   </div>
-// </Accordion>
-// <div className={styles.actionArea}>
-//   <span className={styles.postButton} onClick={async () => { await postPage(
-//     pageObjBuild(),
-//     postSuccessCallback
-//   )}}>
-//     {(isUpdate) ? '更新' : '登録'}
-//   </span>
-//   {/* 更新時のみ削除ボタンを表示 */}
-//   {(isUpdate) && <span className={styles.deleteButton} onClick={
-//     async () => { 
-//       await deletePage(pageId, deleteSuccessCallback)
-//     }
-//   }>削除</span>}
-// </div>
-// </React.Fragment>

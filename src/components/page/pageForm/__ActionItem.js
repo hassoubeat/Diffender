@@ -1,5 +1,9 @@
 import React from 'react';
+import { useFormContext } from "react-hook-form";
+import _ from "lodash";
+
 import Accordion from 'components/util/accordion/Accordion'
+import UtilInput from 'components/util/input/Input';
 import styles from './__ActionItem.module.scss';
 
 const ACTION_TYPE_GOTO = process.env.REACT_APP_ACTION_TYPE_GOTO;
@@ -9,34 +13,46 @@ export default function ActionItem(props = null) {
   // props展開
   const index = props.index;
   const action = props.action;
-  const setAction = props.setAction;
+  const actionsName = props.actionsName;
   const deleteAction = props.deleteAction;
 
+  // Hook Setup
+  const {register, errors } = useFormContext();
+
   const actionDom = {};
-  actionDom[ACTION_TYPE_GOTO] = createGotoDom(action, setAction);
-  actionDom[ACTION_TYPE_WAIT] = createWaitDom(action, setAction);
-  
+  actionDom[ACTION_TYPE_GOTO] = createGotoDom({
+    action: action, 
+    actionsName: actionsName, 
+    index: index,
+    errors: errors,
+    register: register
+  })
+  actionDom[ACTION_TYPE_WAIT] = createWaitDom(({
+    action: action, 
+    actionsName: actionsName,
+    index: index,
+    errors: errors,
+    register: register
+  }));
 
   return (
-    <div  className={styles.actionItem} data-index={index} >
+    <div className={styles.actionItem} data-index={index} >
       <div className={styles.inputTitle}>
         <div className={styles.title}>{action.localName}</div>
         <div className={styles.trash} onClick={ () => {deleteAction()} }><i className="fa fa-trash-alt"></i></div>
         <div className="draggable"><i className="fa fa-arrows-alt"></i></div>
       </div>
-      <div className={styles.inputItem}>
-        <label className={styles.inputLabel}>
-          アクション名
-        </label>
-        <div>
-          <input className={styles.inputText} type="text" placeholder=" 例： example.comへのページ遷移" value={action.name} 
-            onChange={(e) => {
-              action.name = e.target.value;
-              setAction(action);
-            }} 
-          />
-        </div>
-      </div>
+      <UtilInput
+        label="アクション名" 
+        placeholder="example.comへのページ遷移" 
+        type="text" 
+        name={`${actionsName}[${index}].url`}
+        defaultValue={action.url}
+        errorMessages={ _.get(errors, `${actionsName}[${index}].url.message`) && [ _.get(errors, `${actionsName}[${index}].url.message`) ] } 
+        inputRef={register({
+          required: 'アクション名は必須です'
+        })}
+      />
       {/* アクションのタイプに応じたDOMをセット */}
       {actionDom[action.type]}
     </div>
@@ -44,50 +60,44 @@ export default function ActionItem(props = null) {
 }
 
 // ページ遷移アクションアイテムの生成処理
-function createGotoDom(action, setAction) {
+function createGotoDom({action, actionsName, index, errors, register}) {
   return (
     <React.Fragment>
-      <div className={styles.inputItem}>
-        <label className={styles.inputLabel}>
-          URL
-        </label>
-        <div>
-          <input className={styles.inputText} type="text" placeholder=" 例： https://example.com" value={action.url} 
-            onChange={(e) => {
-              action.url = e.target.value;
-              setAction(action);
-            }} 
-          />
-        </div>
-      </div>
+      <UtilInput
+        label="URL" 
+        placeholder="https://example.com" 
+        type="text" 
+        name={`${actionsName}[${index}].name`}
+        defaultValue={action.name}
+        errorMessages={ _.get(errors, `${actionsName}[${index}].name.message`) && [ _.get(errors, `${actionsName}[${index}].name.message`) ] } 
+        inputRef={register({
+          required: 'URLは必須です',
+          pattern: {
+            value: new RegExp("https?://[\\w/:%#$&?()~.=+-]+"),
+            message: 'URLの形式で入力してください'
+          }
+        })}
+      />
       <Accordion text="オプション" className={styles.option}>
         <div className={styles.optionArea}>
-          <div className={styles.inputItem}>
-            <label className={styles.inputLabel}>
-              Basic認証ユーザ
-            </label>
-            <div>
-              <input className={styles.inputText} type="text" placeholder=" 例： User" value={action.basicAuth.user} 
-                onChange={(e) => {
-                  action.basicAuth.user = e.target.value;
-                  setAction(action);
-                }} 
-              />
-            </div>
-          </div>
-          <div className={styles.inputItem}>
-            <label className={styles.inputLabel}>
-              Basic認証パスワード
-            </label>
-            <div>
-              <input className={styles.inputText} type="text" placeholder=" 例： Password" value={action.basicAuth.password} 
-                onChange={(e) => {
-                  action.basicAuth.password = e.target.value;
-                  setAction(action);
-                }} 
-              />
-            </div>
-          </div>
+          <UtilInput
+            label="Basic認証ユーザ" 
+            placeholder="User" 
+            type="text" 
+            name={`${actionsName}[${index}].basicAuth.user`}
+            defaultValue={_.get(action, "basicAuth.user", "")}
+            errorMessages={ _.get(errors, `${actionsName}[${index}].basicAuth.user.message`) && [ _.get(errors, `${actionsName}[${index}].basicAuth.user.message`) ] } 
+            inputRef={ register() }
+          />
+          <UtilInput
+            label="Basic認証パスワード" 
+            placeholder="Password" 
+            type="text" 
+            name={`${actionsName}[${index}].basicAuth.password`}
+            defaultValue={_.get(action, "basicAuth.password", "")}
+            errorMessages={ _.get(errors, `${actionsName}[${index}].basicAuth.password.message`) && [ _.get(errors, `${actionsName}[${index}].basicAuth.password.message`) ] } 
+            inputRef={ register() }
+          />
         </div>
       </Accordion>
     </React.Fragment>
@@ -95,22 +105,20 @@ function createGotoDom(action, setAction) {
 }
 
 // ページアクションアイテムの生成処理
-function createWaitDom(action, setAction) {
+function createWaitDom({action, actionsName, index, errors, register}) {
   return (
     <React.Fragment>
-      <div className={styles.inputItem}>
-        <label className={styles.inputLabel}>
-          待機時間(ミリ秒)
-        </label>
-        <div>
-          <input className={styles.inputText} type="text" placeholder=" 例： 1000" value={action.millisecond} 
-            onChange={(e) => {
-              action.millisecond = e.target.value;
-              setAction(action);
-            }} 
-          />
-        </div>
-      </div>
+      <UtilInput
+        label="待機時間(ミリ秒)" 
+        placeholder="1000" 
+        type="text" 
+        name={`${actionsName}[${index}].millisecond`}
+        defaultValue={_.get(action, "millisecond", "")}
+        errorMessages={ _.get(errors, `${actionsName}[${index}].millisecond.message`) && [ _.get(errors, `${actionsName}[${index}].millisecond.message`) ] } 
+        inputRef={ register({
+          required: '待機時間(ミリ秒)は必須です'
+        }) }
+      />
     </React.Fragment>
   );
 }
