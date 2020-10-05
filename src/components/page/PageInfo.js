@@ -14,6 +14,7 @@ export default function PageInfo(props = null) {
     <React.Fragment>
       <div className={styles.pageInfo}>
         <PageForm 
+          projectId={projectId} 
           pageId={pageId} 
           deleteSuccessCallback={ () => {history.push(`/projects/${projectId}/pages`)} }
         />

@@ -4,52 +4,52 @@ const dynamoDBDao = require('dynamodb-dao');
 
 const TABLE_NAME = process.env.DIFFENDER_DYNAMODB_TABLE_NAME;
 // アトミックカウンターのレコードキー
-const PROJECT_COUNTER_ID = 'ProjectIdCounter';
+const PAGE_COUNTER_ID = 'PageIdCounter';
 
-// プロジェクト一覧の取得
-async function getProjectList(userId, isSortASC = true) {
+// ページ一覧の取得
+async function getPageList(projectId, isSortASC = true) {
   const result =  await dynamoDBDao.query(
     dynamoDBClient,
     {
       TableName: TABLE_NAME,
-      IndexName: "ProjectsByUserIdSearchIndex",
-      KeyConditionExpression: "projectTieUserId=:projectTieUserId",
+      IndexName: "PagesByProjectIdSearchIndex",
+      KeyConditionExpression: "parentProjectId=:parentProjectId",
       ExpressionAttributeValues: {
-        ":projectTieUserId": userId
+        ":parentProjectId": projectId
       },
       ScanIndexForward: isSortASC
     }
   );
   return result.Items;
 }
-module.exports.getProjectList = getProjectList;
+module.exports.getPageList = getPageList;
 
-// プロジェクトの取得
-async function getProject(projectId) {
+// ページの取得
+async function getPage(pageId) {
   let result = {};
   result = await dynamoDBDao.get(
     dynamoDBClient,
     {
       TableName: TABLE_NAME,
       Key: {
-        'id': projectId
+        'id': pageId
       }
     }
   );
 
-  // プロジェクトが存在しない場合は404エラーをthrow
+  // ページが存在しない場合は404エラーをthrow
   if(result.Item !== undefined) {
     return result.Item;
   } else {
-    const error = new Error("NotFound project.");
+    const error = new Error("NotFound page.");
     error.statusCode = 404;
     throw error;
   }
 }
-module.exports.getProject = getProject;
+module.exports.getPage = getPage;
 
-// プロジェクトの登録
-async function postProject(postObject) {
+// ページの登録
+async function postPage(postObject) {
   return await dynamoDBDao.put(
     dynamoDBClient,
     {
@@ -58,17 +58,21 @@ async function postProject(postObject) {
         id: postObject.id,
         name: postObject.name,
         description: postObject.description,
-        beforeCommonActions: postObject.beforeCommonActions,
-        afterCommonActions: postObject.afterCommonActions,
-        projectTieUserId: postObject.projectTieUserId
+        browserSettings: postObject.browserSettings,
+        screenshotOptions: postObject.screenshotOptions,
+        actions: postObject.actions,
+        isEnableBeforeCommonAction: postObject.isEnableBeforeCommonAction,
+        isEnableAfterCommonAction: postObject.isEnableAfterCommonAction,
+        pageTieUserId: postObject.pageTieUserId,
+        pageTieProjectId: postObject.pageTieProjectId,
       }
     }
   )
 }
-module.exports.postProject = postProject;
+module.exports.postPage = postPage;
 
-// プロジェクトの更新
-async function updateProject(updateObj) {
+// ページの更新
+async function updatePage(updateObj) {
   return await dynamoDBDao.update(
     dynamoDBClient,
     {
@@ -80,8 +84,6 @@ async function updateProject(updateObj) {
         Set 
         #name = :name, 
         description = :description, 
-        beforeCommonActions = :beforeCommonActions, 
-        afterCommonActions = :afterCommonActions, 
       `,
       ExpressionAttributeNames: {
         // nameが予約語と被っているため、プレースホルダーで対応
@@ -90,31 +92,29 @@ async function updateProject(updateObj) {
       ExpressionAttributeValues: {
         ":name": updateObj.name,
         ":description": updateObj.description,
-        ":beforeCommonActions": updateObj.beforeCommonActions,
-        ":afterCommonActions": updateObj.afterCommonActions
       }
     }
   )
 }
-module.exports.updateProject = updateProject;
+module.exports.updatePage = updatePage;
 
-// プロジェクトの削除
-async function deleteProject(projectId) {
+// ページの削除
+async function deletePage(pageId) {
   await dynamoDBDao.delete(
     dynamoDBClient,
     {
       TableName: TABLE_NAME,
       Key: {
-        'id': projectId
+        'id': pageId
       }
     }
   );
   return;
 }
-module.exports.deleteProject = deleteProject;
+module.exports.deletePage = deletePage;
 
-// 新しいプロジェクトIDの発行
-async function generateProjectId() {
-  return `Project-${await dynamoDBDao.incrementeAtomicCounter(dynamoDBClient, TABLE_NAME, PROJECT_COUNTER_ID)}`;
+// 新しいページIDの発行
+async function generatePageId() {
+  return `Page-${await dynamoDBDao.incrementeAtomicCounter(dynamoDBClient, TABLE_NAME, PAGE_COUNTER_ID)}`;
 }
-module.exports.generateProjectId = generateProjectId;
+module.exports.generatePageId = generatePageId;

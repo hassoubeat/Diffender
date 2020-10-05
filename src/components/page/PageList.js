@@ -52,6 +52,7 @@ export default function PageList(props = null) {
         </small>
         <p></p>
         <PageForm
+          projectId={projectId} 
           postSuccessCallback={ () => {setIsDisplayPageFormModal(false)} }
           deleteSuccessCallback={ () => {setIsDisplayPageFormModal(false)} }
         />

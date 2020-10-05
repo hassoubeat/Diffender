@@ -7,8 +7,11 @@
         "dynamodb-dao": "file:./dynamodb-dao",
         "user-option-dao": "file:./user-option-dao",
         "project-dao": "file:./project-dao",
+        "page-dao": "file:./page-dao",
         "project-validator": "file:./project-validator",
-        "lambda-common": "file:./lambda-common"
+        "lambda-common": "file:./lambda-common",
+        "page-validator": "file:./page-validator",
+        "action-validator": "file:./action-validator"
     },
     "scripts": {}
 }

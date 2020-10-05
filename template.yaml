@@ -109,6 +109,40 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /projects/{projectId}
             Method: delete
+  # Pageの取得
+  GetPageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/pages/GetPageFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /projects/{projectId}/pages/{pageId}
+            Method: get
+  # Pageの登録
+  PostPageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/pages/PostPageFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /projects/{projectId}/pages
+            Method: post
   # UserOptionの取得
   GetUserOptionFunction:
     Type: AWS::Serverless::Function
@@ -227,11 +261,11 @@ Resources:
           AttributeType: S
         - AttributeName: resultTieUserId
           AttributeType: S
-        - AttributeName: parentProjectId
+        - AttributeName: pageTieProjectId
           AttributeType: S
-        - AttributeName: parentResultId
+        - AttributeName: resultItemTieResultId
           AttributeType: S
-        - AttributeName: relateProjectId
+        - AttributeName: resultTieProjectId
           AttributeType: S
       # プライマリキープライマリキー、レンジキーの指定
       KeySchema:
@@ -272,7 +306,7 @@ Resources:
         # ProjectIdでページ一覧を検索するためのGSI
         - IndexName: PagesByProjectIdSearchIndex
           KeySchema:
-            - AttributeName: parentProjectId
+            - AttributeName: pageTieProjectId
               KeyType: HASH
             - AttributeName: createDtUnix
               KeyType: RANGE
@@ -287,7 +321,7 @@ Resources:
         # ResultIdで結果一覧を検索するためのGSI
         - IndexName: ResultItemsByResultIdSearchIndex
           KeySchema:
-            - AttributeName: parentResultId
+            - AttributeName: resultItemTieResultId
               KeyType: HASH
             - AttributeName: createDtUnix
               KeyType: RANGE
@@ -302,7 +336,7 @@ Resources:
         # ProjectIdでリザルト一覧を検索するためのGSI
         - IndexName: ResultsByProjectIdSearchIndex
           KeySchema:
-            - AttributeName: relateProjectId
+            - AttributeName: resultTieProjectId
               KeyType: HASH
             - AttributeName: createDtUnix
               KeyType: RANGE

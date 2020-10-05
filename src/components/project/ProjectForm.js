@@ -30,8 +30,8 @@ export default function ProjectForm(props = null) {
     const asyncSetProject = async () => {
       let updateProject = {};
       try {
-        updateProject = await api.getProject(projectId, { 
-          body: {}
+        updateProject = await api.getProject({
+          projectId: projectId
         });
       } catch (error) {
         toast.errorToast(
@@ -93,8 +93,11 @@ export default function ProjectForm(props = null) {
       { message: "プロジェクトの更新リクエストを送信しました" }
     );
     try {
-      await api.putProject(projectId, {
-        body: project
+      await api.putProject({
+        projectId: projectId, 
+        request : {
+          body: project
+        }
       });
       toast.successToast(
         { message: "プロジェクトの更新が完了しました" }

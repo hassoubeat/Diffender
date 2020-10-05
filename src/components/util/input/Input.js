@@ -7,8 +7,10 @@ export default function Input(props = null) {
   const placeholder = props.placeholder || "";
   const type = props.type || "text";
   const name = props.name || "";
-  const value = props.value || "";
-  const onChangeFunc = props.onChangeFunc;
+  const value = props.value;
+  const defaultValue = props.defaultValue;
+  const ref = props.inputRef || (() => {});
+  const onChangeFunc = props.onChangeFunc || (() => {});  
   const errorMessages = props.errorMessages || [];
   const labelClass = props.labelClass || "";
   const inputClass = props.inputClass || "";
@@ -32,6 +34,8 @@ export default function Input(props = null) {
           placeholder={placeholder} 
           onChange={ (e) => onChangeFunc(e) } 
           value={value}
+          defaultValue={defaultValue}
+          ref={ref}
         /> 
         {isError() && 
           errorMessages.map( (errorMessage, index) => (

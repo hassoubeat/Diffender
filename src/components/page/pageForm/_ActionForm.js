@@ -1,4 +1,5 @@
 import React from 'react';
+import { useFormContext, useFieldArray } from "react-hook-form";
 import { ReactSortable } from "react-sortablejs";
 import ActionItem from './__ActionItem';
 import styles from './_ActionForm.module.scss';
@@ -8,33 +9,69 @@ const ACTION_TYPE_WAIT = process.env.REACT_APP_ACTION_TYPE_WAIT;
 const ACTION_TYPE_LIST = [
   {
     type: ACTION_TYPE_GOTO,
-    localName: "ページ遷移"
+    typeName: "ページ遷移"
   },
   {
     type: ACTION_TYPE_WAIT,
-    localName: "待機"
+    typeName: "待機"
   }
 ];
 
 export default function ActionForm(props = null) {
   // パラメータ取得
-  const actionList = props.actionList;
-  const setActionList = props.setActionList;
+  const actionsName = props.actionsName;
+
+  // Hook Setup
+  const { control } = useFormContext();
+
+  const {fields, append, remove, move } = useFieldArray({
+    control, 
+    name: actionsName,
+  });
+
+  // Event
+  const addAction = (actionType) => {
+    append({
+      type: actionType.type,
+      typeName: actionType.typeName,
+      name: "",
+      url: "",
+      millisecond: 0,
+      basicAuth: {
+        user: "",
+        password: ""
+      }
+    });
+  }
+
+  const deleteAction = (key) => {
+    if (!window.confirm('アクションを削除しますか？')) return;
+    remove(key);
+  }
 
   return (
     <React.Fragment>
       <div className={styles.actionForm}>
         {/* アクションが定義されていない時に表示するメッセージ */}
-        {(actionList.length === 0) && <div className={styles.noActionListMessage}>以下からアクションを追加してください</div>}
+        {(fields.length === 0) && <div className={styles.noActionListMessage}>以下からアクションを追加してください</div>}
+
         {/* アクションアイテムの生成 */}
-        <ReactSortable className={styles.actionList} list={actionList} setList={setActionList} handle=".draggable">
+        <ReactSortable 
+          className={styles.actionList} 
+          list={fields} 
+          setList={() => {}} 
+          onEnd={(e) => {
+            move(e.oldIndex, e.newIndex);
+          }}
+          handle=".draggable"
+        >
           {
-            actionList.map( (action, index) => (
-              <ActionItem key={index} index={index+1} action={action} 
-                setAction={ (action) => {
-                  actionList[index] = action;
-                  setActionList(Object.assign([], actionList));
-                }}
+            fields.map( (action, index) => (
+              <ActionItem 
+                key={action.id} 
+                index={index} 
+                action={action}
+                actionsName={actionsName} 
                 deleteAction={ () => {
                   deleteAction(index);
                 }}
@@ -46,36 +83,17 @@ export default function ActionForm(props = null) {
           {/* アクションの追加ボタンを生成 */}
           {
             ACTION_TYPE_LIST.map( (actionType) => (
-              <span key={actionType.type} className={styles.button} onClick={() => {addAction(actionList, setActionList, actionType)}}
-              >{actionType.localName}</span>
+              <span 
+                key={actionType.type} 
+                className={styles.button} 
+                onClick={() => {
+                  addAction(actionType)
+                }}
+              >{actionType.typeName}</span>
             ))
           }
         </div>
-          
       </div>
     </React.Fragment>
   );
-
-  // アクションの追加
-  function addAction(actionList, setActionList, actionType) {
-    actionList.push({
-      type: actionType.type,
-      localName: actionType.localName,
-      name: "",
-      url: "",
-      millisecond: 0,
-      basicAuth: {
-        user: "",
-        password: ""
-      }
-    });
-    setActionList(Object.assign([], actionList));
-  }
-
-  // アクションの削除
-  function deleteAction(key) {
-    if (!window.confirm('アクションを削除しますか？')) return;
-    actionList.splice(key, 1); 
-    setActionList(Object.assign([], actionList));
-  }
 }
