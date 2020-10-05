@@ -26,13 +26,13 @@ export async function getProject({projectId, request}) {
 }
 
 // プロジェクト一覧の取得
-export async function getProjectList(request) {
+export async function getProjectList({request}) {
   request = await requestSetup(request);
   return await API.get(DIFFENDER_API_NAME, '/projects', request);
 }
 
 // プロジェクトの登録
-export async function postProject(request) {
+export async function postProject({request}) {
   request = await requestSetup(request);
   return await API.post(DIFFENDER_API_NAME, '/projects', request)
 }
@@ -44,7 +44,7 @@ export async function putProject({projectId, request}) {
 }
 
 // プロジェクトの削除
-export async function deleteProject(projectId, request) {
+export async function deleteProject({projectId, request}) {
   request = await requestSetup(request);
   return await API.del(DIFFENDER_API_NAME, `/projects/${projectId}`, request)
 }

@@ -127,7 +127,7 @@ export default function ProjectList() {
   async function getProjectList() {
     let projectList = [];
     try {
-      projectList = await api.getProjectList();
+      projectList = await api.getProjectList({});
     } catch (error) {
       toast.errorToast(
         { message: "プロジェクト一覧の取得に失敗しました" }
