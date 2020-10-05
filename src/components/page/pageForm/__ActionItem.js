@@ -46,9 +46,9 @@ export default function ActionItem(props = null) {
         label="アクション名" 
         placeholder="example.comへのページ遷移" 
         type="text" 
-        name={`${actionsName}[${index}].url`}
-        defaultValue={action.url}
-        errorMessages={ _.get(errors, `${actionsName}[${index}].url.message`) && [ _.get(errors, `${actionsName}[${index}].url.message`) ] } 
+        name={`${actionsName}[${index}].name`}
+        defaultValue={action.name}
+        errorMessages={ _.get(errors, `${actionsName}[${index}].name.message`) && [ _.get(errors, `${actionsName}[${index}].name.message`) ] } 
         inputRef={register({
           required: 'アクション名は必須です'
         })}
@@ -79,9 +79,9 @@ function createGotoDom({action, actionsName, index, errors, register}) {
         label="URL" 
         placeholder="https://example.com" 
         type="text" 
-        name={`${actionsName}[${index}].name`}
-        defaultValue={action.name}
-        errorMessages={ _.get(errors, `${actionsName}[${index}].name.message`) && [ _.get(errors, `${actionsName}[${index}].name.message`) ] } 
+        name={`${actionsName}[${index}].url`}
+        defaultValue={action.url}
+        errorMessages={ _.get(errors, `${actionsName}[${index}].url.message`) && [ _.get(errors, `${actionsName}[${index}].url.message`) ] } 
         inputRef={register({
           required: 'URLは必須です',
           pattern: {
