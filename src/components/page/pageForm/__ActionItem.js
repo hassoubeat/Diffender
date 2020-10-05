@@ -123,7 +123,7 @@ function createWaitDom({action, actionsName, index, errors, register}) {
       <UtilInput
         label="待機時間(ミリ秒)" 
         placeholder="1000" 
-        type="text" 
+        type="number" 
         name={`${actionsName}[${index}].millisecond`}
         defaultValue={_.get(action, "millisecond", "")}
         errorMessages={ _.get(errors, `${actionsName}[${index}].millisecond.message`) && [ _.get(errors, `${actionsName}[${index}].millisecond.message`) ] } 

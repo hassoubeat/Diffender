@@ -99,14 +99,21 @@ export default function PageForm(props = null) {
         }
       })
 
+    
+      data.actions = data.actions || [];
+      data.actions.forEach((action) => {
+        // TODO 数値型のキャスト変換
+        // ReactHookFormで数値の自動キャストに対応していないため、手動キャスト
+        // 自動キャストを追加するかの議論は https://github.com/react-hook-form/react-hook-form/issues/615
+        // 自動キャストが実装された場合は対応して本処理を除外
+        if (action.millisecond) action.millisecond = Number(action.millisecond);
+      });
+
       // ページの登録
       await api.postPage({
         projectId: projectId,
         request: {
-          body: {
-            ...data,
-            actions: data.actions || []
-          }
+          body: data
         }
       });
       toast.successToast(
