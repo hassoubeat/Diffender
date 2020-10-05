@@ -32,8 +32,7 @@ export default function PageForm(props = null) {
       name: "",
       description: "",
       browserSettings: {
-        deviceType: "iPhone 6",
-        deviceSize: "1200x1080"
+        deviceType: "iPhone 6"
       },
       screenshotOptions: {
         fullPage: false
@@ -84,7 +83,6 @@ export default function PageForm(props = null) {
     );
 
     try {
-      // TODO
       const project =  await api.getProject({
         projectId: projectId
       });
@@ -105,7 +103,10 @@ export default function PageForm(props = null) {
       await api.postPage({
         projectId: projectId,
         request: {
-          body: data
+          body: {
+            ...data,
+            actions: data.actions || []
+          }
         }
       });
       toast.successToast(
@@ -278,20 +279,6 @@ export default function PageForm(props = null) {
       afterCommonActions: []
     }
   }
-
-  // async function postPage(postObj, successCallback) {
-  //   console.log(postObj);
-  //   toast.infoToast(
-  //     { message: "リクエストを送信しました" }
-  //   );
-  //   // TODO APIの呼び出し
-  //   // TODO 新規登録と更新で呼び出すAPIを変更
-  //   // TODO 共通アクションリストの処理
-  //   toast.infoToast(
-  //     { message: "リクエストが完了しました" }
-  //   );
-  //   if (successCallback) successCallback();
-  // }
 
   async function deletePage(pageId, successCallback) {
     console.log(pageId);

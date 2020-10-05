@@ -1,7 +1,7 @@
 const jwt_decode = require('jwt-decode');
 const projectDao = require('project-dao');
 const pageDao = require('page-dao');
-// const pageValidator = require('page-validator');
+const pageValidator = require('page-validator');
 const lambdaCommon = require('lambda-common');
 
 exports.lambda_handler = async (event, context) => {
@@ -31,8 +31,7 @@ exports.lambda_handler = async (event, context) => {
     postPage.pageTieUserId = user.sub;
     postPage.pageTieProjectId = projectId;
     
-    // TODO ページバリデーションの実装
-    // pageValidator.pageValid(postPage);
+    pageValidator.pageValid(postPage);
 
     await pageDao.postPage(postPage);
 
