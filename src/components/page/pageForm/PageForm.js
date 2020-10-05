@@ -114,7 +114,7 @@ export default function PageForm(props = null) {
       );
       if(postSuccessCallback) postSuccessCallback();
     } catch (error) {
-      console.log(error);
+      console.log(error.response);
       toast.errorToast(
         { message: "ページの登録に失敗しました" }
       );
