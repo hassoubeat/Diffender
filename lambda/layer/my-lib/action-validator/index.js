@@ -59,8 +59,8 @@ const actionNameValid = ({value, prependKey="", errorMessage}) => {
 }
 module.exports.actionNameValid = actionNameValid;
 
-// URLのバリデーション
-const urlValid = ({value, prependKey="", errorMessage}) => {
+// GOTO:URLのバリデーション
+const gotoUrlValid = ({value, prependKey="", errorMessage}) => {
   runValid(
     () => { 
       v8n()
@@ -72,20 +72,22 @@ const urlValid = ({value, prependKey="", errorMessage}) => {
     errorMessage || `[${prependKey}url] url format and required.`
   );
 }
-module.exports.urlValid = urlValid;
+module.exports.gotoUrlValid = gotoUrlValid;
 
-// ミリ秒のバリデーション
-const millsecondValid = ({value, prependKey="", errorMessage}) => {
+// WAIT:ミリ秒のバリデーション
+const waitMillisecondValid = ({value, prependKey="", errorMessage}) => {
   runValid(
     () => { 
       v8n()
+        .not.null()
+        .not.empty()
         .integer()
         .check(value)
     },
-    errorMessage || `[${prependKey}millsecond] is integer.`
+    errorMessage || `[${prependKey}millisecond] is integer and required.`
   );
 }
-module.exports.millsecondValid = millsecondValid;
+module.exports.waitMillisecondValid = waitMillisecondValid;
 
 // Actionオブジェクト全てをバリデーション
  const actionValid = ({action, prependKey=""}) => {
@@ -104,14 +106,14 @@ module.exports.millsecondValid = millsecondValid;
   })
   switch(action.type) {
     case "GOTO": 
-      urlValid({
+      gotoUrlValid({
         value: action.url,
         prependKey: prependKey
       });
       break;
     case "WAIT":
-      millsecondValid({
-        value: action.millsecond,
+      waitMillisecondValid({
+        value: action.millisecond,
         prependKey: prependKey
       });
       break;

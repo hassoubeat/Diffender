@@ -74,7 +74,7 @@ describe('Pageのバリデーション処理 正常系のテスト群', () => {
             type: "WAIT",
             typeName: "待機",
             name: "読み込み待機",
-            millsecond: 1000
+            millisecond: 1000
           }
         ]
       }

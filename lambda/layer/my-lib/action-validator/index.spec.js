@@ -36,7 +36,7 @@ describe('Pageのバリデーション処理 正常系のテスト群', () => {
 
   test('URLのバリデーションテスト', async () => {
     expect(() => {
-      actionValidator.urlValid({
+      actionValidator.gotoUrlValid({
         value: "https://localhost:3000"
       });
     }).not.toThrow();
@@ -44,7 +44,7 @@ describe('Pageのバリデーション処理 正常系のテスト群', () => {
 
   test('ミリ秒のバリデーション', async () => {
     expect(() => {
-      actionValidator.millsecondValid({
+      actionValidator.waitMillisecondValid({
         value: 1000
       });
     }).not.toThrow();
@@ -74,7 +74,7 @@ describe('Pageのバリデーション処理 正常系のテスト群', () => {
         type: "WAIT",
         typeName: "待機",
         name: "読み込み待機",
-        millsecond: 1000
+        millisecond: 1000
       }
       actionValidator.actionValid({
         action: action,
@@ -128,7 +128,7 @@ describe('Pageのバリデーション処理 異常系のテスト群', () => {
 
   test('URLのバリデーションテスト 空', async () => {
     expect(() => {
-      actionValidator.urlValid({
+      actionValidator.gotoUrlValid({
         value: ""
       });
     }).toThrow();
@@ -136,7 +136,7 @@ describe('Pageのバリデーション処理 異常系のテスト群', () => {
 
   test('URLのバリデーションテスト 非URL形式', async () => {
     expect(() => {
-      actionValidator.urlValid({
+      actionValidator.gotoUrlValid({
         value: "localhost:3000"
       });
     }).toThrow();
@@ -144,7 +144,7 @@ describe('Pageのバリデーション処理 異常系のテスト群', () => {
 
   test('ミリ秒のバリデーションテスト 空', async () => {
     expect(() => {
-      actionValidator.millsecondValid({
+      actionValidator.waitMillisecondValid({
         value: ""
       });
     }).toThrow();
@@ -152,7 +152,7 @@ describe('Pageのバリデーション処理 異常系のテスト群', () => {
 
   test('ミリ秒のバリデーションテスト 文字', async () => {
     expect(() => {
-      actionValidator.millsecondValid({
+      actionValidator.waitMillisecondValid({
         value: "1000"
       });
     }).toThrow();
