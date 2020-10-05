@@ -50,7 +50,10 @@ export default function ActionItem(props = null) {
         defaultValue={action.name}
         errorMessages={ _.get(errors, `${actionsName}[${index}].name.message`) && [ _.get(errors, `${actionsName}[${index}].name.message`) ] } 
         inputRef={register({
-          required: 'アクション名は必須です'
+          maxLength : {
+            value: 30,
+            message: '最大30文字で入力してください'
+          }
         })}
       />
       <input

@@ -162,7 +162,6 @@ export default function PageForm(props = null) {
                   name="name" 
                   errorMessages={ (errors.name) && [errors.name.message] } 
                   inputRef={ register({
-                    required: 'ページ名は必須です',
                     maxLength : {
                       value: 30,
                       message: '最大30文字で入力してください'
