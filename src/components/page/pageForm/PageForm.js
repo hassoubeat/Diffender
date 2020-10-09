@@ -2,7 +2,7 @@ import React, { useState, useEffect, createContext } from 'react';
 import { FormProvider, useForm } from "react-hook-form";
 import BrowserOptionsForm from './_BrowserSettingsForm';
 import ScreenshotOptionsForm from './_ScreenshotOptionsForm';
-import ActionForm from 'components/page/pageForm/_ActionForm';
+import ActionForm from 'components/action/ActionForm';
 import Accordion from 'components/util/accordion/Accordion';
 import Pagination from 'components/util/pagination/Pagination';
 import UtilInput from 'components/util/input/Input';

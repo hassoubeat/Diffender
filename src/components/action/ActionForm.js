@@ -1,8 +1,8 @@
 import React from 'react';
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { ReactSortable } from "react-sortablejs";
-import ActionItem from './__ActionItem';
-import styles from './_ActionForm.module.scss';
+import ActionItem from './ActionItem';
+import styles from './ActionForm.module.scss';
 
 const ACTION_TYPE_GOTO = process.env.REACT_APP_ACTION_TYPE_GOTO;
 const ACTION_TYPE_WAIT = process.env.REACT_APP_ACTION_TYPE_WAIT;

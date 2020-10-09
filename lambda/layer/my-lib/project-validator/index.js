@@ -1,8 +1,5 @@
 const v8n = require("v8n");
-
-const PROJECT_NAME = "name";
-const PROJECT_DESCRIPTION = "description";
-const PROJECT_TIE_USER_ID = "projectTieUserId";
+const actionValidator = require("action-validator");
 
 // プロジェクト名のバリデーション
 const projectNameValid = (projectName, validErrorMessage) => {
@@ -59,25 +56,21 @@ const projectTieUserIdValid = (projectTieUserId, validErrorMessage) => {
 }
 module.exports.projectTieUserIdValid = projectTieUserIdValid;
 
-// バリデーションタイプを選択
-const valid = (validationType, project) => {  
-  switch(validationType) {
-    case PROJECT_NAME:
-      return projectNameValid(project[validationType]);
-    case PROJECT_DESCRIPTION:
-      return projectDescriptionValid(project[validationType]);
-    case PROJECT_TIE_USER_ID:
-      return projectTieUserIdValid(project[validationType]);
-    default:
-      console.error("該当するバリデーションが存在しません");
-  }
-}
-module.exports.valid = valid;
-
 // Projectオブジェクト全てをバリデーション
  const projectValid = (project) => {
-  Object.keys(project).forEach( inputType => {
-    valid(inputType, project);
+  projectNameValid(project.name);
+  projectDescriptionValid(project.description);
+  project.beforeCommonActions.forEach( (action, index) => {
+    actionValidator.actionValid({
+      action: action,
+      prependKey: `beforeCommonActions[${index}].`
+    })
+  });
+  project.afterCommonActions.forEach( (action, index) => {
+    actionValidator.actionValid({
+      action: action,
+      prependKey: `afterCommonActions[${index}].`
+    })
   });
 }
 module.exports.projectValid = projectValid;

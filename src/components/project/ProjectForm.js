@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useForm, FormProvider } from "react-hook-form";
 import UtilInput from 'components/util/input/Input';
+import Accordion from 'components/util/accordion/Accordion';
 import Loading from 'components/common/Loading';
+import ActionForm from 'components/action/ActionForm';
 
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
-import * as projectValid from 'lib/validation/projectValidation';
 import styles from './ProjectForm.module.scss';
 
 export default function ProjectForm(props = null) {
@@ -16,14 +18,18 @@ export default function ProjectForm(props = null) {
 
   // 入力フォーム用のState定義
   const [isLoading, setIsLoading] = useState(isUpdate);
-  const [project, setProject] = useState({
-    name: "",
-    description: ""
-  }); 
-  const [errors, setErrors] = useState({
-    name: [],
-    description: []
+
+  // ReactHookForm setup
+  const reactHookFormMethods = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      name: "",
+      description: "",
+      beforeCommonActions: [],
+      afterCommonActions: []
+    }
   });
+  const {register, errors, reset, handleSubmit} = reactHookFormMethods;
 
   useEffect( () => {
     if (!isUpdate) return;
@@ -32,82 +38,76 @@ export default function ProjectForm(props = null) {
       try {
         updateProject = await api.getProject({
           projectId: projectId
-        });
+        })
       } catch (error) {
         toast.errorToast(
           { message: "プロジェクトの取得に失敗しました" }
         );
       }
-      setProject(updateProject);
+      reset(updateProject);
       setIsLoading(false);
     }
     asyncSetProject();
     
-  }, [projectId, isUpdate]);
+  }, [projectId, isUpdate, reset]);
 
-  // 入力変更時の処理
-  const handleChange = (event) => {
-    const inputType = event.target.name;
-    const value = event.target.value;
-    
-    // エラーメッセージを初期化
-    errors[inputType] = [];
-    setErrors(Object.assign({}, errors));
+  const onSubmit = async (project) => {
+    const eventName = (isUpdate) ? "更新" : "登録";
 
-    // 入力値のセット
-    project[inputType] = value;
-    setProject(Object.assign({}, project));  
+    // TODO 数値型のキャスト変換
+    // ReactHookFormで数値の自動キャストに対応していないため、手動キャスト
+    // 自動キャストを追加するかの議論は https://github.com/react-hook-form/react-hook-form/issues/615
+    // 自動キャストが実装された場合は対応して本処理を除外
+    project.beforeCommonActions = project.beforeCommonActions || [];
+    project.beforeCommonActions.forEach((action) => {
+      if (action.millisecond) action.millisecond = Number(action.millisecond);
+    });
+    project.afterCommonActions = project.afterCommonActions || [];
+    project.afterCommonActions.forEach((action) => {
+      if (action.millisecond) action.millisecond = Number(action.millisecond);
+    });
 
-    // バリデーション
-    try {
-      projectValid.valid(inputType, project);
-    } catch (error) {
-      errors[inputType].push(error.message);
-      setErrors(Object.assign({}, errors));
-    }
-  }
-
-  // 登録ボタン押下時の処理
-  const handlePostProject = async () => {
     toast.infoToast(
-      { message: "プロジェクトの登録リクエストを送信しました" }
+      { message: `プロジェクトの${eventName}リクエストを送信しました` }
     );
     try {
-      await api.postProject({
-        body: project
-      });
+      if (isUpdate) {
+        const updateProject = await api.getProject({
+          projectId: projectId
+        })
+        await api.putProject({
+          projectId: projectId, 
+          request : {
+            body: {
+              ...updateProject,
+              ...project
+            }
+          }
+        });
+      } else {
+        await api.postProject({
+          request: {
+            body: project
+          }
+        });
+      }
       toast.successToast(
-        { message: "プロジェクトの登録が完了しました" }
+        { message: `プロジェクトの${eventName}が完了しました` }
       );
       if (successPostCallback) successPostCallback();
     } catch (error) {
+      console.log(error.response);
       toast.errorToast(
-        { message: "プロジェクトの登録に失敗しました" }
+        { message: `プロジェクトの${eventName}に失敗しました` }
       );
     }
   }
-
-  // 更新ボタン押下時の処理
-  const handlePutProject = async () => {
-    toast.infoToast(
-      { message: "プロジェクトの更新リクエストを送信しました" }
-    );
-    try {
-      await api.putProject({
-        projectId: projectId, 
-        request : {
-          body: project
-        }
-      });
-      toast.successToast(
-        { message: "プロジェクトの更新が完了しました" }
-      );
-      if (successPostCallback) successPostCallback();
-    } catch (error) {
-      toast.errorToast(
-        { message: "プロジェクトの更新に失敗しました" }
-      );
-    }
+  const onSubmitError = (error) => {
+    console.table(error);
+    console.log(error)
+    toast.errorToast(
+      { message: "入力エラーが存在します" }
+    )
   }
 
   // 削除ボタン押下時の処理
@@ -117,8 +117,8 @@ export default function ProjectForm(props = null) {
       { message: "プロジェクトの削除リクエストを送信しました" }
     );
     try {
-      await api.deleteProject(projectId, {
-        body: project
+      await api.deleteProject({
+        projectId: projectId
       });
       toast.successToast(
         { message: "プロジェクトの削除が完了しました" }
@@ -137,30 +137,59 @@ export default function ProjectForm(props = null) {
 
   return (
     <React.Fragment>
+      <form>
+      <FormProvider {...reactHookFormMethods} >
       <div className={styles.projectForm}>
         <div className={styles.inputArea}>
-          <UtilInput 
+          <UtilInput
             label="プロジェクト名" 
             placeholder="example.com" 
             type="text" 
             name="name" 
-            value={ project.name } 
-            onChangeFunc={(e) => { handleChange(e) } } 
-            errorMessages={ errors.name }
+            errorMessages={ (errors.name) && [errors.name.message] } 
+            inputRef={ register({
+              required: "プロジェクト名は必須です",
+              maxLength : {
+                value: 30,
+                message: '最大30文字で入力してください'
+              }
+            })}
           />
-          <UtilInput 
+          <UtilInput
             label="プロジェクトの説明" 
             placeholder="example.comのテスト" 
             type="text" 
             name="description" 
-            value={ project.description } 
-            onChangeFunc={(e) => { handleChange(e) } } 
-            errorMessages={ errors.description }
+            errorMessages={ (errors.description) && [errors.description.message] } 
+            inputRef={ register({
+              maxLength : {
+                value: 50,
+                message: '最大50文字で入力してください'
+              }
+            })}
           />
+          <Accordion className={styles.commonActionList} text="共通アクション(前処理)" >
+            <div className={styles.detail}>
+              <div className={styles.message}>
+                本処理は全ページのアクションの前に実行するアクションです。<br/>
+                多くの画面で共通して実行するアクション(ログインなど)は本機能に記載することをおすすめします。<br/>
+              </div>
+              <ActionForm actionsName="beforeCommonActions" />
+            </div>
+          </Accordion>
+          <Accordion className={styles.commonActionList} text="共通アクション(後処理)" >
+            <div className={styles.detail}>
+              <div className={styles.message}>
+                本処理は全ページのアクションの後に実行するアクションです。<br/>
+                多くの画面で共通して実行するアクション(ログアウトなど)は本機能に記載することをおすすめします。<br/>
+              </div>
+              <ActionForm actionsName="afterCommonActions" />
+            </div>
+          </Accordion>
           <div className={styles.actionArea}>
-            <span className={styles.postButton} onClick={async () => { 
-              (isUpdate) ? handlePutProject() : handlePostProject();
-            }}>
+            <span className={styles.postButton} onClick={ 
+              handleSubmit(onSubmit, onSubmitError)
+            }>
               {(isUpdate) ? '更新' : '登録'}
             </span>
             {/* 更新時のみ削除ボタンを表示 */}
@@ -170,6 +199,8 @@ export default function ProjectForm(props = null) {
           </div>
         </div>
       </div>
+      </FormProvider>
+      </form>
     </React.Fragment>
   );
 }

@@ -4,7 +4,7 @@ import _ from "lodash";
 
 import Accordion from 'components/util/accordion/Accordion'
 import UtilInput from 'components/util/input/Input';
-import styles from './__ActionItem.module.scss';
+import styles from './ActionItem.module.scss';
 
 const ACTION_TYPE_GOTO = process.env.REACT_APP_ACTION_TYPE_GOTO;
 const ACTION_TYPE_WAIT = process.env.REACT_APP_ACTION_TYPE_WAIT;

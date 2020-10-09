@@ -24,6 +24,34 @@ describe('Projectのバリデーション処理 正常系のテスト群', () =>
     const project = {
       name: "プロジェクト1",
       description: "プロジェクト1",
+      beforeCommonActions: [
+        {
+          type: "GOTO",
+          typeName: "ページ遷移",
+          name: "テストページへの移動",
+          url: "https://localhost:3000"
+        },
+        {
+          type: "WAIT",
+          typeName: "待機",
+          name: "読み込み待機",
+          millisecond: 1000
+        }
+      ],
+      afterCommonActions: [
+        {
+          type: "GOTO",
+          typeName: "ページ遷移",
+          name: "テストページへの移動",
+          url: "https://localhost:3000"
+        },
+        {
+          type: "WAIT",
+          typeName: "待機",
+          name: "読み込み待機",
+          millisecond: 1000
+        }
+      ],
       projectTieUserId: "8c32116d-5c8c-48c0-8264-1df53434b503",
     }
     expect(() => {
