@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import UtilInput from 'components/util/input/Input';
+import Accordion from 'components/util/accordion/Accordion';
 import Loading from 'components/common/Loading';
+import ActionForm from 'components/action/ActionForm';
 
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
@@ -18,7 +20,7 @@ export default function ProjectForm(props = null) {
   const [isLoading, setIsLoading] = useState(isUpdate);
 
   // ReactHookForm setup
-  const {register, errors, reset, getValues, handleSubmit} = useForm({
+  const reactHookFormMethods = useForm({
     mode: 'onChange',
     defaultValues: {
       name: "",
@@ -27,6 +29,7 @@ export default function ProjectForm(props = null) {
       afterCommonActions: []
     }
   });
+  const {register, errors, reset, handleSubmit} = reactHookFormMethods;
 
   useEffect( () => {
     if (!isUpdate) return;
@@ -121,6 +124,7 @@ export default function ProjectForm(props = null) {
   return (
     <React.Fragment>
       <form>
+      <FormProvider {...reactHookFormMethods} >
       <div className={styles.projectForm}>
         <div className={styles.inputArea}>
           <UtilInput
@@ -150,6 +154,24 @@ export default function ProjectForm(props = null) {
               }
             })}
           />
+          <Accordion className={styles.commonActionList} text="共通アクション(前処理)" >
+            <div className={styles.detail}>
+              <div className={styles.message}>
+                本処理は全ページのアクションの前に実行するアクションです。<br/>
+                多くの画面で共通して実行するアクション(ログインなど)は本機能に記載することをおすすめします。<br/>
+              </div>
+              <ActionForm actionsName="beforeCommonActions" />
+            </div>
+          </Accordion>
+          <Accordion className={styles.commonActionList} text="共通アクション(後処理)" >
+            <div className={styles.detail}>
+              <div className={styles.message}>
+                本処理は全ページのアクションの後に実行するアクションです。<br/>
+                多くの画面で共通して実行するアクション(ログアウトなど)は本機能に記載することをおすすめします。<br/>
+              </div>
+              <ActionForm actionsName="afterCommonActions" />
+            </div>
+          </Accordion>
           <div className={styles.actionArea}>
             <span className={styles.postButton} onClick={ 
               handleSubmit(onSubmit, onSubmitError)
@@ -163,6 +185,7 @@ export default function ProjectForm(props = null) {
           </div>
         </div>
       </div>
+      </FormProvider>
       </form>
     </React.Fragment>
   );
