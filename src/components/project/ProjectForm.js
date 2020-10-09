@@ -53,6 +53,20 @@ export default function ProjectForm(props = null) {
 
   const onSubmit = async (project) => {
     const eventName = (isUpdate) ? "更新" : "登録";
+
+    // TODO 数値型のキャスト変換
+    // ReactHookFormで数値の自動キャストに対応していないため、手動キャスト
+    // 自動キャストを追加するかの議論は https://github.com/react-hook-form/react-hook-form/issues/615
+    // 自動キャストが実装された場合は対応して本処理を除外
+    project.beforeCommonActions = project.beforeCommonActions || [];
+    project.beforeCommonActions.forEach((action) => {
+      if (action.millisecond) action.millisecond = Number(action.millisecond);
+    });
+    project.afterCommonActions = project.afterCommonActions || [];
+    project.afterCommonActions.forEach((action) => {
+      if (action.millisecond) action.millisecond = Number(action.millisecond);
+    });
+
     toast.infoToast(
       { message: `プロジェクトの${eventName}リクエストを送信しました` }
     );
