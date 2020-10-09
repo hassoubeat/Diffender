@@ -109,6 +109,23 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /projects/{projectId}
             Method: delete
+  # Page一覧の取得
+  GetPageListFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/pages/GetPageListFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /projects/{projectId}/pages
+            Method: get
   # Pageの取得
   GetPageFunction:
     Type: AWS::Serverless::Function

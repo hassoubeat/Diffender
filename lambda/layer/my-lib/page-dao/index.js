@@ -13,9 +13,9 @@ async function getPageList(projectId, isSortASC = true) {
     {
       TableName: TABLE_NAME,
       IndexName: "PagesByProjectIdSearchIndex",
-      KeyConditionExpression: "parentProjectId=:parentProjectId",
+      KeyConditionExpression: "pageTieProjectId=:pageTieProjectId",
       ExpressionAttributeValues: {
-        ":parentProjectId": projectId
+        ":pageTieProjectId": projectId
       },
       ScanIndexForward: isSortASC
     }
