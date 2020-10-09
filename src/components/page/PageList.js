@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Modal from 'react-modal';
 import PageForm from './pageForm/PageForm';
+import Loading from 'components/common/Loading';
+
+import * as api from 'lib/api/api';
+
 import styles from './PageList.module.scss';
 
 // モーダルの展開先エレメントの指定
@@ -13,26 +17,36 @@ export default function PageList(props = null) {
 
   const [searchWord, setSearchWord] = useState("");
   const [pageList, setPageList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isDisplayPageFormModal, setIsDisplayPageFormModal] = useState(false);
 
   useEffect( () => {
     // Page一覧を取得して、Stateを更新
     const asyncUpdatePageList = async () => {
-      setPageList(await getPageList());
+      setPageList(
+        await api.getPageList({
+          projectId:projectId
+        })
+      );
+      setIsLoading(false);
     };
     asyncUpdatePageList();
-  }, []);
+  }, [projectId]);
+
+  if (isLoading) return (
+    <Loading/>
+  );
 
   return (
     <React.Fragment>
       <div className={styles.pageList}>
         <input className={styles.searchBox} type="text" placeholder="search" onChange={(e) => setSearchWord(e.target.value)} />
         {filterPageList(pageList, searchWord).map( (page) => (
-          <Link key={page.Id} to={`/projects/${projectId}/pages/${page.Id}`}>
+          <Link key={page.id} to={`/projects/${projectId}/pages/${page.id}`}>
             <div className={styles.pageItem}>
-              {page.PageName}
+              {page.name}
               <div className={styles.description}>
-                {page.PageDescription}
+                {page.description}
               </div>
             </div>
             
@@ -67,23 +81,7 @@ export default function PageList(props = null) {
   function filterPageList(pageList, searchWord) {
     return pageList.filter((page) => {
       // プロジェクト名に検索ワードが含まれる要素のみフィルタリング
-      return page.PageName.match(searchWord);
+      return page.name.match(searchWord);
     });
-  }
-
-  async function getPageList() {
-    // TODO いずれlibにAPIを実装してそちらからデータを取得
-    return [
-      {
-        Id: "Page-1",
-        PageName: "ページ1",
-        PageDescription: "example.comのTOPページ"
-      },
-      {
-        Id: "Page-2",
-        PageName: "ページ2",
-        PageDescription: "example.comのInfoページ"
-      }
-    ];
   }
 }
