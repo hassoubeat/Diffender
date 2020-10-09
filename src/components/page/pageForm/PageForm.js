@@ -118,103 +118,99 @@ export default function PageForm(props = null) {
       <FormProvider {...reactHookFormMethods} >
       <div className={styles.pageForm}>
         <div className={styles.inputArea}>
-              <React.Fragment>
-                <div className={styles.sectionTitle}>基本情報</div>
-                <hr className={styles.border}/>
-                <small className={styles.sectionMessage}>
-                  ページに関する基本情報を設定します。
-                </small>
-                <UtilInput
-                  label="ページ名" 
-                  placeholder="TOPページ" 
-                  type="text" 
-                  name="name" 
-                  errorMessages={ (errors.name) && [errors.name.message] } 
-                  inputRef={ register({
-                    maxLength : {
-                      value: 30,
-                      message: '最大30文字で入力してください'
-                    }
-                  })}
-                />
-                <UtilInput
-                  label="ページの説明" 
-                  placeholder="TOPページの正常系テスト" 
-                  type="text" 
-                  name="description" 
-                  errorMessages={ (errors.description) && [errors.description.message] } 
-                  inputRef={ register({
-                    maxLength : {
-                      value: 30,
-                      message: '最大50文字で入力してください'
-                    }
-                  })}
-                />
-                <Accordion text="ブラウザオプション" >
-                  <BrowserOptionsForm deviceList={
-                    // TODO 環境変数からデバイスリストを取得
-                    [
-                      "iPhone 6",
-                      "iPhone 5"
-                    ]
-                  }/>
-                </Accordion>
-                <Accordion text="スクリーンショットオプション" >
-                  <ScreenshotOptionsForm />
-                </Accordion>
-              </React.Fragment>
-              <React.Fragment>
-                <div className={styles.sectionTitle}>アクション</div>
-                <hr className={styles.border}/>
-                <small className={styles.sectionMessage}>
-                  アクションとはスクリーンショットを撮影する前に行う処理です。<br/>
-                  スクリーンショットを撮影したいページへの遷移や事前のログインなどを行うことが可能です。
-                </small>
-                <Accordion className={styles.commonActionList} text="共通アクション(前処理)" >
-                  <div className={styles.detail}>
-                    <div className={styles.message}>
-                      共通アクションとはプロジェクトの全アクションで実施するアクションです。<br/>
-                      共通アクションの編集は<Link to={`/projects/${projectId}`}>こちら</Link>から
-                    </div>
-                    <input 
-                      name="isEnableBeforeCommonAction"
-                      className={styles.checkBox} 
-                      type="checkBox" 
-                      defaultChecked={isEnableBeforeCommonAction} 
-                      ref={register()}
-                    />共通アクションを実行する
-                  </div>
-                </Accordion>
-                <ActionForm actionsName="actions" />
-                <Accordion className={styles.commonActionList} text="共通アクション(後処理)" >
-                  <div className={styles.detail}>
-                    <div className={styles.message}>
-                      共通アクションとはプロジェクトの全アクションで実施するアクションです。<br/>
-                      共通アクションの編集は<Link to={`/projects/${projectId}`}>こちら</Link>から
-                    </div>
-                    <input 
-                      name="isEnableAfterCommonAction"
-                      className={styles.checkBox} 
-                      type="checkBox" 
-                      defaultChecked={isEnableAfterCommonAction} 
-                      ref={register()}
-                    />共通アクションを実行する
-                  </div>
-                </Accordion>
-                <div className={styles.actionArea}>
-                  <span className={styles.postButton} onClick={
-                    handleSubmit(onSubmit, onSubmitError)
-                  }>
-                    {(isUpdate) ? '更新' : '登録'}
-                  </span>
-                  {/* 更新時のみ削除ボタンを表示 */}
-                  {(isUpdate) && <span className={styles.deleteButton} onClick={
-                    async () => { 
-                      await deletePage(pageId, deleteSuccessCallback)
-                    }
-                  }>削除</span>}
-                </div>
-              </React.Fragment>
+          <div className={styles.sectionTitle}>基本情報</div>
+          <hr className={styles.border}/>
+          <small className={styles.sectionMessage}>
+            ページに関する基本情報を設定します。
+          </small>
+          <UtilInput
+            label="ページ名" 
+            placeholder="TOPページ" 
+            type="text" 
+            name="name" 
+            errorMessages={ (errors.name) && [errors.name.message] } 
+            inputRef={ register({
+              maxLength : {
+                value: 30,
+                message: '最大30文字で入力してください'
+              }
+            })}
+          />
+          <UtilInput
+            label="ページの説明" 
+            placeholder="TOPページの正常系テスト" 
+            type="text" 
+            name="description" 
+            errorMessages={ (errors.description) && [errors.description.message] } 
+            inputRef={ register({
+              maxLength : {
+                value: 30,
+                message: '最大50文字で入力してください'
+              }
+            })}
+          />
+          <Accordion text="ブラウザオプション" >
+            <BrowserOptionsForm deviceList={
+              // TODO 環境変数からデバイスリストを取得
+              [
+                "iPhone 6",
+                "iPhone 5"
+              ]
+            }/>
+          </Accordion>
+          <Accordion text="スクリーンショットオプション" >
+            <ScreenshotOptionsForm />
+          </Accordion>
+          <div className={styles.sectionTitle}>アクション</div>
+          <hr className={styles.border}/>
+          <small className={styles.sectionMessage}>
+            アクションとはスクリーンショットを撮影する前に行う処理です。<br/>
+            スクリーンショットを撮影したいページへの遷移や事前のログインなどを行うことが可能です。
+          </small>
+          <Accordion className={styles.commonActionList} text="共通アクション(前処理)" >
+            <div className={styles.detail}>
+              <div className={styles.message}>
+                共通アクションとはプロジェクトの全アクションで実施するアクションです。<br/>
+                共通アクションの編集は<Link to={`/projects/${projectId}`}>こちら</Link>から
+              </div>
+              <input 
+                name="isEnableBeforeCommonAction"
+                className={styles.checkBox} 
+                type="checkBox" 
+                defaultChecked={isEnableBeforeCommonAction} 
+                ref={register()}
+              />共通アクションを実行する
+            </div>
+          </Accordion>
+          <ActionForm actionsName="actions" />
+          <Accordion className={styles.commonActionList} text="共通アクション(後処理)" >
+            <div className={styles.detail}>
+              <div className={styles.message}>
+                共通アクションとはプロジェクトの全アクションで実施するアクションです。<br/>
+                共通アクションの編集は<Link to={`/projects/${projectId}`}>こちら</Link>から
+              </div>
+              <input 
+                name="isEnableAfterCommonAction"
+                className={styles.checkBox} 
+                type="checkBox" 
+                defaultChecked={isEnableAfterCommonAction} 
+                ref={register()}
+              />共通アクションを実行する
+            </div>
+          </Accordion>
+          <div className={styles.actionArea}>
+            <span className={styles.postButton} onClick={
+              handleSubmit(onSubmit, onSubmitError)
+            }>
+              {(isUpdate) ? '更新' : '登録'}
+            </span>
+            {/* 更新時のみ削除ボタンを表示 */}
+            {(isUpdate) && <span className={styles.deleteButton} onClick={
+              async () => { 
+                await deletePage(pageId, deleteSuccessCallback)
+              }
+            }>削除</span>}
+          </div>
         </div>
       </div>
       </FormProvider>
