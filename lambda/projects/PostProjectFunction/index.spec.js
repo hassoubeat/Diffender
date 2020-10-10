@@ -128,7 +128,7 @@ describe('プロジェクト登録処理 異常系テスト', () => {
 
     // 投入データの生成
     const postData = JSON.parse(fs.readFileSync(`${__dirname}/postData.json`, 'utf8'));
-    postData.project.projectTieUserId = "";
+    postData.projectTieUserId = "";
     const event = {
       body: JSON.stringify(postData)
     };

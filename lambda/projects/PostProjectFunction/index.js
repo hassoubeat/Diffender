@@ -19,11 +19,12 @@ exports.lambda_handler = async (event, context) => {
     const postProject = lambdaCommon.getRequetBody(event);
 
     postProject.projectTieUserId = user.sub;
-    projectValidator.projectValid(postProject);
-
     postProject.id = await projectDao.generateProjectId();
     postProject.beforeCommonActions = [];
     postProject.afterCommonActions = [];
+    
+    projectValidator.projectValid(postProject);
+
     await projectDao.postProject(postProject);
 
     const project = await projectDao.getProject(postProject.id);
