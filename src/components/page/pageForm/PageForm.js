@@ -131,6 +131,28 @@ export default function PageForm(props = null) {
     )
   };
 
+  // 削除ボタン押下時の処理
+  const handleDeleteProject = async () => {
+    if (!window.confirm("ページを削除しますか？")) return;
+    toast.infoToast(
+      { message: "ページの削除リクエストを送信しました" }
+    );
+    try {
+      await api.deletePage({
+        projectId: projectId,
+        pageId: pageId
+      });
+      toast.successToast(
+        { message: "ページの削除が完了しました" }
+      );
+      if (deleteSuccessCallback) deleteSuccessCallback();
+    } catch (error) {
+      toast.errorToast(
+        { message: "ページの削除に失敗しました" }
+      );
+    }
+  }
+
   if (isLoading) return (
     <Loading/>
   );
@@ -230,7 +252,7 @@ export default function PageForm(props = null) {
             {/* 更新時のみ削除ボタンを表示 */}
             {(isUpdate) && <span className={styles.deleteButton} onClick={
               async () => { 
-                await deletePage(pageId, deleteSuccessCallback)
+                await handleDeleteProject();
               }
             }>削除</span>}
           </div>
@@ -240,18 +262,4 @@ export default function PageForm(props = null) {
       </form>
     </React.Fragment>
   );
-
-  async function deletePage(pageId, successCallback) {
-    console.log(pageId);
-    if (!window.confirm('ページを削除しますか？')) return;
-
-    toast.infoToast(
-      { message: "削除リクエストを送信しました" }
-    );
-    // TODO APIの呼び出し
-    toast.infoToast(
-      { message: "削除が完了しました" }
-    );
-    if (successCallback) successCallback();
-  }
 }

@@ -73,6 +73,12 @@ export async function putPage({projectId, pageId, request}) {
   return await API.put(DIFFENDER_API_NAME, `/projects/${projectId}/pages/${pageId}`, request)
 }
 
+// ページの削除
+export async function deletePage({projectId, pageId, request}) {
+  request = await requestSetup(request);
+  return await API.del(DIFFENDER_API_NAME, `/projects/${projectId}/pages/${pageId}`, request)
+}
+
 // ユーザオプションの取得
 export async function getUserOption(request) {  
   request = await requestSetup(request);
