@@ -72,26 +72,40 @@ async function postPage(postObject) {
 module.exports.postPage = postPage;
 
 // ページの更新
-async function updatePage(updateObj) {
+async function updatePage(updateObject) {
   return await dynamoDBDao.update(
     dynamoDBClient,
     {
       TableName: TABLE_NAME,
       Key: {
-        id : updateObj.id
+        id : updateObject.id
       },
       UpdateExpression: `
         Set 
         #name = :name, 
         description = :description, 
+        browserSettings = :browserSettings, 
+        screenshotOptions = :screenshotOptions, 
+        actions = :actions, 
+        isEnableBeforeCommonAction = :isEnableBeforeCommonAction, 
+        isEnableAfterCommonAction = :isEnableAfterCommonAction, 
+        pageTieUserId = :pageTieUserId, 
+        pageTieProjectId = :pageTieProjectId, 
       `,
       ExpressionAttributeNames: {
         // nameが予約語と被っているため、プレースホルダーで対応
         '#name': 'name'  
       },
       ExpressionAttributeValues: {
-        ":name": updateObj.name,
-        ":description": updateObj.description,
+        ":name": updateObject.name, 
+        ":description": updateObject.description, 
+        ":browserSettings": updateObject.browserSettings, 
+        ":screenshotOptions": updateObject.screenshotOptions, 
+        ":actions": updateObject.actions, 
+        ":isEnableBeforeCommonAction": updateObject.isEnableBeforeCommonAction, 
+        ":isEnableAfterCommonAction": updateObject.isEnableAfterCommonAction, 
+        ":pageTieUserId": updateObject.pageTieUserId, 
+        ":pageTieProjectId": updateObject.pageTieProjectId, 
       }
     }
   )

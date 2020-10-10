@@ -115,7 +115,7 @@ module.exports.isEnableAfterCommonActionValid = isEnableAfterCommonActionValid;
   });
   deviceTypeOptionValid({
     value: _.get(page, "browserSettings.deviceType"),
-    prependKey: "browserOptions."
+    prependKey: "browserSettings."
   });
   fullPageOptionValid({
     value: _.get(page, "screenshotOptions.fullPage"),

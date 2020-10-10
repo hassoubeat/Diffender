@@ -160,6 +160,23 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /projects/{projectId}/pages
             Method: post
+  # Pageの更新
+  PutPageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/pages/PutPageFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /projects/{projectId}/pages/{pageId}
+            Method: put
   # UserOptionの取得
   GetUserOptionFunction:
     Type: AWS::Serverless::Function
