@@ -39,6 +39,32 @@ export default function PageList(props = null) {
     await updatePagesSortMap(projectId, pagesSortMap);
   }
 
+  // ページのコピーイベント
+  const handleCopyPage = async (pageId) => {
+    const copyPage = await api.getPage({
+      projectId: projectId,
+      pageId: pageId
+    });
+    if (!window.confirm(`ページ「${copyPage.name}」をコピーしますか？`)) return;
+    try {
+      copyPage.name = `${copyPage.name}_copy`;
+      await api.postPage({
+        projectId: projectId,
+        request: {
+          body: copyPage
+        }
+      })
+      toast.successToast(
+        { message: "ページのコピーが完了しました" }
+      );
+      await updatePageList();
+    } catch (error) {
+      toast.errorToast(
+        { message: "ページのコピーに失敗しました" }
+      );
+    }
+  }
+
   useEffect( () => {
     updatePageList();
   }, [updatePageList]);
@@ -68,6 +94,10 @@ export default function PageList(props = null) {
                 {page.description}
               </div>
               <div className={styles.actions}>
+                <i className="far fa-copy" onClick={(e) => {
+                  e.stopPropagation()
+                  handleCopyPage(page.id)
+                }}></i>
                 <i className="fa fa-arrows-alt draggable"></i>
               </div>
             </div>
