@@ -36,9 +36,32 @@
       background-color: #F4F4F4;
     }
 
+    .main {
+      display: flex;
+
+      .title {
+        color: $LINK_COLOR;
+        flex: 1 1 0;
+      }
+    }
+
     .description {
       font-size: 12px;
       color: $PLANE_TEXT_COLOR;
+    }
+
+    .actions {
+      text-align: right;
+
+      :global .draggable {
+        color: $MAIN_COLOR;
+        padding: 0 10px;
+        cursor: grab;
+  
+        &:active {
+          cursor: grabbing;
+        }
+      }
     }
   }
 }

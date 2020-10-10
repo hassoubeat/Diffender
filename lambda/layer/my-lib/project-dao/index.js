@@ -60,7 +60,8 @@ async function postProject(postObject) {
         description: postObject.description,
         beforeCommonActions: postObject.beforeCommonActions,
         afterCommonActions: postObject.afterCommonActions,
-        projectTieUserId: postObject.projectTieUserId
+        projectTieUserId: postObject.projectTieUserId,
+        pagesSortMap: postObject.pagesSortMap
       }
     }
   )
@@ -82,6 +83,7 @@ async function updateProject(updateObj) {
         description = :description, 
         beforeCommonActions = :beforeCommonActions, 
         afterCommonActions = :afterCommonActions, 
+        pagesSortMap= :pagesSortMap, 
       `,
       ExpressionAttributeNames: {
         // nameが予約語と被っているため、プレースホルダーで対応
@@ -91,7 +93,8 @@ async function updateProject(updateObj) {
         ":name": updateObj.name,
         ":description": updateObj.description,
         ":beforeCommonActions": updateObj.beforeCommonActions,
-        ":afterCommonActions": updateObj.afterCommonActions
+        ":afterCommonActions": updateObj.afterCommonActions,
+        ":pagesSortMap": updateObj.pagesSortMap
       }
     }
   )
