@@ -177,6 +177,23 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /projects/{projectId}/pages/{pageId}
             Method: put
+  # Pageの削除
+  DeletePageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/pages/DeletePageFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /projects/{projectId}/pages/{pageId}
+            Method: delete
   # UserOptionの取得
   GetUserOptionFunction:
     Type: AWS::Serverless::Function
