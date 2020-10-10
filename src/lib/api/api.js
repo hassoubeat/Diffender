@@ -56,7 +56,7 @@ export async function getPageList({projectId, request}) {
 }
 
 // ページの取得
-export async function getPage(projectId, pageId, request) {
+export async function getPage({projectId, pageId, request}) {
   request = await requestSetup(request);
   return await API.get(DIFFENDER_API_NAME, `/projects/${projectId}/pages/${pageId}`, request);
 }
@@ -65,6 +65,12 @@ export async function getPage(projectId, pageId, request) {
 export async function postPage({projectId, request}) {
   request = await requestSetup(request);
   return await API.post(DIFFENDER_API_NAME, `/projects/${projectId}/pages`, request);
+}
+
+// ページの更新
+export async function putPage({projectId, pageId, request}) {
+  request = await requestSetup(request);
+  return await API.put(DIFFENDER_API_NAME, `/projects/${projectId}/pages/${pageId}`, request)
 }
 
 // ユーザオプションの取得

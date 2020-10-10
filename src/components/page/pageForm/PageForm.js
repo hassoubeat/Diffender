@@ -57,7 +57,10 @@ export default function PageForm(props = null) {
 
     // ページ情報の取得
     const asyncSetPage = async () => {
-      const page = await getPage(pageId);
+      const page = await api.getPage({
+        projectId: projectId,
+        pageId: pageId
+      });
       reset(page);
       setIsLoading(false);
     }
@@ -65,14 +68,16 @@ export default function PageForm(props = null) {
   }, [isUpdate, pageId, projectId, reset, setValue]);
 
   // submit成功時の処理
-  const onSubmit = async (data) => { 
+  const onSubmit = async (page) => { 
+    const eventName = (isUpdate) ? "更新" : "登録";
+
     toast.infoToast(
-      { message: "ページの登録リクエストを送信しました" }
+      { message: `ページの${eventName}リクエストを送信しました` }
     );
 
     try {    
-      data.actions = data.actions || [];
-      data.actions.forEach((action) => {
+      page.actions = page.actions || [];
+      page.actions.forEach((action) => {
         // TODO 数値型のキャスト変換
         // ReactHookFormで数値の自動キャストに対応していないため、手動キャスト
         // 自動キャストを追加するかの議論は https://github.com/react-hook-form/react-hook-form/issues/615
@@ -80,21 +85,39 @@ export default function PageForm(props = null) {
         if (action.millisecond) action.millisecond = Number(action.millisecond);
       });
 
-      // ページの登録
-      await api.postPage({
-        projectId: projectId,
-        request: {
-          body: data
-        }
-      });
+      if (isUpdate) {
+        // ページの更新
+        const updatePage = await api.getPage({
+          projectId: projectId,
+          pageId: pageId
+        })
+        await api.putPage({
+          projectId: projectId, 
+          pageId: pageId, 
+          request : {
+            body: {
+              ...updatePage,
+              ...page
+            }
+          }
+        });
+      } else {
+        // ページの登録
+        await api.postPage({
+          projectId: projectId,
+          request: {
+            body: page
+          }
+        });
+      }
       toast.successToast(
-        { message: "ページの登録が完了しました" }
+        { message: `ページの${eventName}が完了しました` }
       );
       if(postSuccessCallback) postSuccessCallback();
     } catch (error) {
       console.log(error.response);
       toast.errorToast(
-        { message: "ページの登録に失敗しました" }
+        { message: `ページの${eventName}に失敗しました` }
       );
     }
   };
@@ -217,27 +240,6 @@ export default function PageForm(props = null) {
       </form>
     </React.Fragment>
   );
-
-  async function getPage(pageId) {
-    console.log(pageId);
-    // TODO API呼び出し
-    return {
-      name: "test3",
-      description: "",
-      browserSettings: {
-        deviceType: "iPhone5",
-        deviceSize: "1200x900"
-      },
-      screenshotOptions: {
-        fullPage: false
-      },
-      actions: [],
-      isEnableBeforeCommonAction: true,
-      isEnableAfterCommonAction: true,
-      beforeCommonActions: [],
-      afterCommonActions: []
-    }
-  }
 
   async function deletePage(pageId, successCallback) {
     console.log(pageId);
