@@ -19,7 +19,7 @@ module.exports.getRequetBody = (event) => {
     return JSON.parse(event.body);
   } catch (error)  {
     error.statusCode = 400;
-    error.message = "Request body is empty.";
+    error.message = "Request body is empty or Not JSON format.";
     throw error;
   }
 }
@@ -32,3 +32,4 @@ module.exports.checkResouceOwner = ({loginUserId, resouceUserId}) => {
     throw error;
   }
 }
+

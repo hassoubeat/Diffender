@@ -61,7 +61,7 @@ describe('lambda共通処理 異常系のテスト群', () => {
       result = error;
     }
     expect(result.statusCode).toBe(400);
-    expect(result.message).toBe("Request body is empty.");
+    expect(result.message).toBe("Request body is empty or Not JSON format.");
   });
 
   test('リソースオーナーのチェック処理のテスト チェック失敗', async () => {
