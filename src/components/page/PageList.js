@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Modal from 'react-modal';
 import PageForm from './pageForm/PageForm';
@@ -20,18 +20,18 @@ export default function PageList(props = null) {
   const [isLoading, setIsLoading] = useState(true);
   const [isDisplayPageFormModal, setIsDisplayPageFormModal] = useState(false);
 
-  useEffect( () => {
-    // Page一覧を取得して、Stateを更新
-    const asyncUpdatePageList = async () => {
-      setPageList(
-        await api.getPageList({
-          projectId:projectId
-        })
-      );
-      setIsLoading(false);
-    };
-    asyncUpdatePageList();
+  // ページ一覧の取得・ソート
+  const updatePageList = useCallback( async () => {
+    const pageList = await api.getPageList({
+      projectId:projectId
+    });
+    setPageList(pageList);
+    setIsLoading(false);
   }, [projectId]);
+
+  useEffect( () => {
+    updatePageList();
+  }, [updatePageList]);
 
   if (isLoading) return (
     <Loading/>
@@ -67,8 +67,14 @@ export default function PageList(props = null) {
         <p></p>
         <PageForm
           projectId={projectId} 
-          postSuccessCallback={ () => {setIsDisplayPageFormModal(false)} }
-          deleteSuccessCallback={ () => {setIsDisplayPageFormModal(false)} }
+          postSuccessCallback={ () => {
+            setIsDisplayPageFormModal(false)
+            updatePageList()
+          }}
+          deleteSuccessCallback={ () => {
+            setIsDisplayPageFormModal(false)
+            updatePageList()
+          }}
         />
         <div className="closeModalButton" onClick={() => {setIsDisplayPageFormModal(false)}}>✕</div>
       </Modal>
