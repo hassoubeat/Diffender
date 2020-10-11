@@ -79,6 +79,12 @@ export async function deletePage({projectId, pageId, request}) {
   return await API.del(DIFFENDER_API_NAME, `/projects/${projectId}/pages/${pageId}`, request)
 }
 
+// ページのSS取得テスト
+export async function testPage({projectId, request}) {
+  request = await requestSetup(request);
+  return await API.post(DIFFENDER_API_NAME, `/projects/${projectId}/pages/test`, request)
+}
+
 // ユーザオプションの取得
 export async function getUserOption(request) {  
   request = await requestSetup(request);
