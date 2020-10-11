@@ -1,0 +1,27 @@
+@import 'styles/constant';
+
+.screenshotTest {
+  border-radius: 8px;
+  padding: 8px;
+  margin: 10px 0;
+  text-align: center;
+
+  .requestButton {
+    margin: 0px 4px;
+    color: #707070;
+    background-color: $LIGHT_GRAY_COLOR;
+  }
+
+  .screenshotResult {
+    border-radius: 8px;
+    padding: 8px;
+    margin: 10px 0;
+    background-color: $LIGHT_GRAY_COLOR;
+
+    .screenshot {
+      max-width: 90%;
+      max-height: 800px;
+      border: 2px solid $MAIN_COLOR;
+    }
+  }
+}
