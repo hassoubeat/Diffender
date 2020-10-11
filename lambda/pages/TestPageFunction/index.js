@@ -82,7 +82,9 @@ exports.lambda_handler = async (event, context) => {
     response.body = JSON.stringify({
       message: error.message
     });
-  } 
+  } finally {
+    await puppeteerWrapper.closePuppeteer();
+  }
   return response;
 };
 

@@ -4,9 +4,11 @@ process.env['HOME'] = '/opt/nodejs/';
 const chromium = require('chrome-aws-lambda');
 const puppeteer = chromium.puppeteer;
 
+let browser = null;
+
 // Puppeteerオブジェクトの初期化・取得
 async function initPuppeteer(page) {
-  var browser = await puppeteer.launch({
+  browser = await puppeteer.launch({
     args: chromium.args.concat(['--lang=ja']),
     defaultViewport: chromium.defaultViewport,
     executablePath: await chromium.executablePath,
@@ -59,6 +61,15 @@ module.exports.browserAction = browserAction;
 
 // スクリーンショット撮影
 async function screenshots(puppeteerPage, screenshotOptions) {
-  return await puppeteerPage.screenshot(screenshotOptions);
+  return await puppeteerPage.screenshot({
+    ...screenshotOptions,
+    type: 'jpeg'
+  });
 }
 module.exports.screenshots = screenshots;
+
+// Puppeteerオブジェクトのクローズ
+async function closePuppeteer() {
+  await browser.close();
+}
+module.exports.closePuppeteer = closePuppeteer;
