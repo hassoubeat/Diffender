@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FormProvider, useForm } from "react-hook-form";
 import BrowserOptionsForm from './_BrowserSettingsForm';
 import ScreenshotOptionsForm from './_ScreenshotOptionsForm';
+import ScreenshotTest from './_ScreenshotTest';
 import ActionForm from 'components/action/ActionForm';
 import Accordion from 'components/util/accordion/Accordion';
 import UtilInput from 'components/util/input/Input';
@@ -243,6 +244,7 @@ export default function PageForm(props = null) {
               />共通アクションを実行する
             </div>
           </Accordion>
+          <ScreenshotTest projectId={projectId} />
           <div className={styles.actionArea}>
             <span className={styles.postButton} onClick={
               handleSubmit(onSubmit, onSubmitError)
