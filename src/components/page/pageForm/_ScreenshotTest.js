@@ -13,7 +13,8 @@ export default function ScreenshotTest(props = null) {
 
   // State setup
   const [isAPICalling, setIsAPICalling] = useState(false);
-  const [screenshotUrl, setScreenshotUrl] = useState(null)
+  const [screenshotUrl, setScreenshotUrl] = useState(null);
+  const [screenshotZoom, setScreenshotZoom] = useState(false);
 
   // Hook setup
   const { handleSubmit } = useFormContext();
@@ -100,9 +101,12 @@ export default function ScreenshotTest(props = null) {
             {isAPICalling ?
               <Loading/> : 
               <img 
-                className={styles.screenshot}
+                className={`${styles.screenshot} ${(screenshotZoom) ? styles.zoom : ""}`}
                 src={screenshotUrl} 
                 alt="screenshot"
+                onClick={() => {
+                  setScreenshotZoom(!screenshotZoom)
+                }}
               />
             }
           </div>
