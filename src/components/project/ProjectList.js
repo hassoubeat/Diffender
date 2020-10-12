@@ -8,9 +8,7 @@ import Loading from 'components/common/Loading';
 
 import {  setLoadedPorjectList, selectLoadedPorjectList　} from 'app/appSlice';
 
-import * as bucketSort from 'lib/util/bucketSort';
-import * as api from 'lib/api/api';
-import * as toast from 'lib/util/toast';
+import * as projectModel from 'lib/project/model';
 import styles from './ProjectList.module.scss';
 
 // モーダルの展開先エレメントの指定
@@ -33,19 +31,15 @@ export default function ProjectList() {
 
   // プロジェクト一覧の取得、及びStateの更新
   const updateProjectList = useCallback( async () => {
-    const projectsSortMap = await getProjectsSortMap();
-    const projectList = await getProjectList();
-    const sortedObj = bucketSort.sort(projectList, projectsSortMap, "id");
-    const sortedProjectList = sortedObj.noSortedList.concat(sortedObj.sortedList);
-    setProjectList(sortedProjectList);
-    dispatch(setLoadedPorjectList(sortedProjectList));
+    const projectList = await projectModel.getProjectList();
+    setProjectList(projectList);
+    dispatch(setLoadedPorjectList(projectList));
     setIsLoading(false);
   }, [dispatch]);
 
   // プロジェクト一覧の順序入れ替えイベント
   const handleSort = async () => {
-    const projectsSortMap = bucketSort.generateSortMap(projectList, "id");
-    await updateProjectsSortMap(projectsSortMap);
+    projectModel.updateProjectListSortMap(projectList);
     dispatch(setLoadedPorjectList(projectList));
   }
 
@@ -71,7 +65,7 @@ export default function ProjectList() {
         >
           {
             // プロジェクト一覧をフィルタリングしながら表示
-            filterProjectList(projectList, searchWord).map( (project) => (
+            projectModel.filterProjectList(projectList, searchWord).map( (project) => (
               <div key={project.id} id={project.id} className={styles.projectItem} onClick={() => {history.push(`/projects/${project.id}`)}}>
                 <div className={styles.main}>
                   <span className={styles.title}>
@@ -112,40 +106,4 @@ export default function ProjectList() {
         }}>+</div>
     </React.Fragment>
   );
-
-  function filterProjectList(projectList, searchWord) {
-    return projectList.filter((project) => {
-      // プロジェクト名に検索ワードが含まれる要素のみフィルタリング
-      return project.name.match(searchWord);
-    });
-  }
-
-  // プロジェクトソートマップの取得
-  async function getProjectsSortMap() {
-    const userOption = await api.getUserOption();
-    return userOption.projectsSortMap || {};
-  }
-
-  // プロジェクトソートマップの更新
-  async function updateProjectsSortMap(updateProjectsSortMap) {
-    const userOption = await api.getUserOption();
-    userOption.projectsSortMap = updateProjectsSortMap;
-    const request = {
-      body: { ...userOption }
-    }
-    await api.putUserOption(request);
-  }
-
-  // プロジェクト一覧の取得
-  async function getProjectList() {
-    let projectList = [];
-    try {
-      projectList = await api.getProjectList({});
-    } catch (error) {
-      toast.errorToast(
-        { message: "プロジェクト一覧の取得に失敗しました" }
-      );
-    }
-    return　projectList;
-  }
 }
