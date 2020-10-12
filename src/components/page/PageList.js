@@ -29,17 +29,15 @@ export default function PageList(props = null) {
 
   // redux-state setup
   const loadedPageListMap = useSelector(selectLoadedPageListMap);
-  const loadedPageList = loadedPageListMap[projectId];
+  const pageList = _.cloneDeep(loadedPageListMap[projectId]);
 
-  const [isLoading, setIsLoading] = useState(!loadedPageList);
+  const [isLoading, setIsLoading] = useState(!pageList);
   const [searchWord, setSearchWord] = useState("");
-  const [pageList, setPageList] = useState((loadedPageList) ? _.cloneDeep(loadedPageList) : []);
   const [isDisplayPageFormModal, setIsDisplayPageFormModal] = useState(false);
 
   // ページ一覧の取得・ソート
   const updatePageList = useCallback( async () => {
     const pageList = await pageModel.getPageList(projectId);
-    setPageList(pageList);
     dispatch(setLoadedPageListMap(_.cloneDeep({
       ...loadedPageListMap,
       [projectId]: pageList
@@ -49,15 +47,15 @@ export default function PageList(props = null) {
 
   // ページ一覧の順序入れ替えイベント
   const handleSort = async (e) => {
-    const sortedProjectList = arrayWrapper.moveAt(_.cloneDeep(loadedPageList), e.oldIndex, e.newIndex);
-    await pageModel.updatePageListSortMap({
-      projectId: projectId,
-      pageList: sortedProjectList
-    });
+    const sortedProjectList = arrayWrapper.moveAt(pageList, e.oldIndex, e.newIndex);
     dispatch(setLoadedPageListMap(_.cloneDeep({
       ...loadedPageListMap,
       [projectId]: sortedProjectList
     })));
+    await pageModel.updatePageListSortMap({
+      projectId: projectId,
+      pageList: sortedProjectList
+    });
   }
 
   // ページのコピーイベント
@@ -100,7 +98,7 @@ export default function PageList(props = null) {
     <React.Fragment>
       <div className={styles.pageList}>
         <input className={styles.searchBox} type="text" placeholder="search" onChange={(e) => setSearchWord(e.target.value)} />
-        <ReactSortable list={pageList} setList={setPageList} handle=".draggable"
+        <ReactSortable list={pageList} setList={() => {}} handle=".draggable"
           onEnd={ async (event) => {await handleSort(event)} }
         >
           {pageModel.searchPageList(pageList, searchWord).map( (page) => (

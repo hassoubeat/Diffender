@@ -24,26 +24,25 @@ export default function ProjectList() {
 
   // redux-state setup
   const loadedProjectList = useSelector(selectLoadedProjectList);
+  const projectList = (loadedProjectList) ? _.cloneDeep(loadedProjectList) : [];
 
   // state setup
   const [isLoading, setIsLoading] = useState(!loadedProjectList);
   const [searchWord, setSearchWord] = useState("");
-  const [projectList, setProjectList] = useState((loadedProjectList) ? _.cloneDeep(loadedProjectList) : []);
   const [isDisplayProjectFormModal, setDisplayProjectFormModal] = useState(false);
 
   // プロジェクト一覧の取得、及びStateの更新
   const updateProjectList = useCallback( async () => {
     const updateProjectList = await projectModel.getProjectList();
     dispatch(setLoadedProjectList(_.cloneDeep(updateProjectList)));
-    setProjectList(updateProjectList);
     setIsLoading(false);
   }, [dispatch]);
 
   // プロジェクト一覧の順序入れ替えイベント
   const handleSort = async (e) => {
-    const sortedProjectList = arrayWrapper.moveAt([...loadedProjectList], e.oldIndex, e.newIndex);
+    const sortedProjectList = arrayWrapper.moveAt(projectList, e.oldIndex, e.newIndex);
+    dispatch(setLoadedProjectList(_.cloneDeep(sortedProjectList)));    
     await projectModel.updateProjectListSortMap(sortedProjectList);
-    dispatch(setLoadedProjectList(sortedProjectList));    
   }
 
   useEffect( () => {
@@ -63,7 +62,7 @@ export default function ProjectList() {
     <React.Fragment>
       <div className={styles.projectList}>
         <input className={styles.searchBox} type="text" placeholder="search" onChange={(e) => setSearchWord(e.target.value)} />
-        <ReactSortable list={projectList} setList={setProjectList} handle=".draggable"
+        <ReactSortable list={projectList} setList={() => {}} handle=".draggable"
           onEnd={ async (event) => {await handleSort(event)} }
         >
           {
