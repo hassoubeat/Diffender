@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { ReactSortable } from "react-sortablejs";
 import { useHistory } from 'react-router-dom';
 import Modal from 'react-modal';
 import ProjectForm from './ProjectForm';
 import Loading from 'components/common/Loading';
+
+import {  setLoadedPorjectList, selectLoadedPorjectList　} from 'app/appSlice';
 
 import * as bucketSort from 'lib/util/bucketSort';
 import * as api from 'lib/api/api';
@@ -14,10 +17,18 @@ import styles from './ProjectList.module.scss';
 Modal.setAppElement('#root');
 
 export default function ProjectList() {
-  // Stateの定義
-  const [isLoading, setIsLoading] = useState(true);
+
+  // hook setup
+  const history = useHistory();
+  const dispatch = useDispatch();
+
+  // redux-state setup
+  const loadedPorjectList = useSelector(selectLoadedPorjectList);
+
+  // state setup
+  const [isLoading, setIsLoading] = useState(!loadedPorjectList);
   const [searchWord, setSearchWord] = useState("");
-  const [projectList, setProjectList] = useState([]);
+  const [projectList, setProjectList] = useState(loadedPorjectList || []);
   const [isDisplayProjectFormModal, setDisplayProjectFormModal] = useState(false);
 
   // プロジェクト一覧の取得、及びStateの更新
@@ -27,23 +38,25 @@ export default function ProjectList() {
     const sortedObj = bucketSort.sort(projectList, projectsSortMap, "id");
     const sortedProjectList = sortedObj.noSortedList.concat(sortedObj.sortedList);
     setProjectList(sortedProjectList);
+    dispatch(setLoadedPorjectList(sortedProjectList));
     setIsLoading(false);
-  }, []);
+  }, [dispatch]);
 
   // プロジェクト一覧の順序入れ替えイベント
   const handleSort = async () => {
     const projectsSortMap = bucketSort.generateSortMap(projectList, "id");
     await updateProjectsSortMap(projectsSortMap);
+    dispatch(setLoadedPorjectList(projectList));
   }
 
   useEffect( () => {
     const asyncUpdateProjectList = async () => {
+      // 既にProjectListが一度読み込まれていれば読み込みしない
+      if (loadedPorjectList) return;
       await updateProjectList();
     };
     asyncUpdateProjectList();
-  }, [updateProjectList]);
-
-  const history = useHistory();
+  }, [updateProjectList, loadedPorjectList]);
 
   if (isLoading) return (
     <Loading/>

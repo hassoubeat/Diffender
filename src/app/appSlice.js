@@ -15,7 +15,9 @@ export const appSlice = createSlice({
     // サイドバーの表示有無
     isDisplaySidebar: appStates.isDisplaySidebar,
     // パンくずリスト
-    breadcrumbs: []
+    breadcrumbs: [],
+    // 読み込み済のプロジェクト一覧
+    loadedPorjectList: null
   },
   reducers: {
     // 状態：WindowDOMに関する状態
@@ -33,7 +35,11 @@ export const appSlice = createSlice({
     // 状態：パンくずリストの値セット
     setBreadcrumbs: (state, action) => {
       state.breadcrumbs = action.payload;
-    }
+    },
+    // 状態：読み込み済のプロジェクト一覧の変更
+    setLoadedPorjectList: (state, action) => {
+      state.loadedPorjectList = action.payload;
+    },
   },
 });
 
@@ -41,17 +47,18 @@ export const appSlice = createSlice({
 export const { 
   setWindow,
   setDisplaySidebar,
-  setBreadcrumbs
+  setBreadcrumbs,
+  setLoadedPorjectList
  } = appSlice.actions;
 
 // ステートをuseSelectorフックから呼び出し可能に
 export const selectWindow = (state) => state.app.window;
 export const selectIsDisplaySidebar = (state) => state.app.isDisplaySidebar;
 export const selectBreadcrumbs = (state) => state.app.breadcrumbs;
+export const selectLoadedPorjectList = (state) => state.app.loadedPorjectList;
 
 // Reducerのエクスポート
 export default appSlice.reducer;
-
 
 // localStorageからアプリのStateを取得する
 function lsGetAppStates() {
