@@ -17,7 +17,7 @@ export const appSlice = createSlice({
     // パンくずリスト
     breadcrumbs: [],
     // 読み込み済のプロジェクト一覧
-    loadedPorjectList: null,
+    loadedProjectList: null,
     // 読み込み済のページ一覧
     loadedPageListMap: {}
   },
@@ -39,8 +39,8 @@ export const appSlice = createSlice({
       state.breadcrumbs = action.payload;
     },
     // 状態：読み込み済のプロジェクト一覧の変更
-    setLoadedPorjectList: (state, action) => {
-      state.loadedPorjectList = action.payload;
+    setLoadedProjectList: (state, action) => {
+      state.loadedProjectList = action.payload;
     },
     // 状態：読み込み済のページ一覧の変更
     setLoadedPageListMap: (state, action) => {
@@ -54,7 +54,7 @@ export const {
   setWindow,
   setDisplaySidebar,
   setBreadcrumbs,
-  setLoadedPorjectList,
+  setLoadedProjectList,
   setLoadedPageListMap,
  } = appSlice.actions;
 
@@ -62,7 +62,7 @@ export const {
 export const selectWindow = (state) => state.app.window;
 export const selectIsDisplaySidebar = (state) => state.app.isDisplaySidebar;
 export const selectBreadcrumbs = (state) => state.app.breadcrumbs;
-export const selectLoadedPorjectList = (state) => state.app.loadedPorjectList;
+export const selectLoadedProjectList = (state) => state.app.loadedProjectList;
 export const selectLoadedPageListMap = (state) => state.app.loadedPageListMap;
 
 // Reducerのエクスポート

@@ -6,9 +6,11 @@ import Modal from 'react-modal';
 import ProjectForm from './ProjectForm';
 import Loading from 'components/common/Loading';
 
-import {  setLoadedPorjectList, selectLoadedPorjectList　} from 'app/appSlice';
+import {  setLoadedProjectList, selectLoadedProjectList} from 'app/appSlice';
 
+import _ from 'lodash';
 import * as projectModel from 'lib/project/model';
+import * as arrayWrapper from 'lib/util/arrayWrapper';
 import styles from './ProjectList.module.scss';
 
 // モーダルの展開先エレメントの指定
@@ -21,36 +23,37 @@ export default function ProjectList() {
   const dispatch = useDispatch();
 
   // redux-state setup
-  const loadedPorjectList = useSelector(selectLoadedPorjectList);
+  const loadedProjectList = useSelector(selectLoadedProjectList);
 
   // state setup
-  const [isLoading, setIsLoading] = useState(!loadedPorjectList);
+  const [isLoading, setIsLoading] = useState(!loadedProjectList);
   const [searchWord, setSearchWord] = useState("");
-  const [projectList, setProjectList] = useState(loadedPorjectList || []);
+  const [projectList, setProjectList] = useState((loadedProjectList) ? _.cloneDeep(loadedProjectList) : []);
   const [isDisplayProjectFormModal, setDisplayProjectFormModal] = useState(false);
 
   // プロジェクト一覧の取得、及びStateの更新
   const updateProjectList = useCallback( async () => {
-    const projectList = await projectModel.getProjectList();
-    setProjectList(projectList);
-    dispatch(setLoadedPorjectList(projectList));
+    const updateProjectList = await projectModel.getProjectList();
+    dispatch(setLoadedProjectList(_.cloneDeep(updateProjectList)));
+    setProjectList(updateProjectList);
     setIsLoading(false);
   }, [dispatch]);
 
   // プロジェクト一覧の順序入れ替えイベント
-  const handleSort = async () => {
-    projectModel.updateProjectListSortMap(projectList);
-    dispatch(setLoadedPorjectList(projectList));
+  const handleSort = async (e) => {
+    const sortedProjectList = arrayWrapper.moveAt([...loadedProjectList], e.oldIndex, e.newIndex);
+    await projectModel.updateProjectListSortMap(sortedProjectList);
+    dispatch(setLoadedProjectList(sortedProjectList));    
   }
 
   useEffect( () => {
     const asyncUpdateProjectList = async () => {
       // 既にProjectListが一度読み込まれていれば読み込みしない
-      if (loadedPorjectList) return;
+      if (loadedProjectList) return;
       await updateProjectList();
     };
     asyncUpdateProjectList();
-  }, [updateProjectList, loadedPorjectList]);
+  }, [updateProjectList, loadedProjectList]);
 
   if (isLoading) return (
     <Loading/>
@@ -94,11 +97,13 @@ export default function ProjectList() {
           プロジェクトとは「テスト」を実行する単位です。<br />
           サイト別、テストの目的別にプロジェクトを作成することをおすすめします。
         </small>
-        <ProjectForm successPostCallback={ () => {
+        <ProjectForm 
+          successPostCallback={ async () => {
             // プロジェクト登録成功時にモーダルを閉じてプロジェクト一覧を更新する
-            setDisplayProjectFormModal(false)
-            updateProjectList()
-        }} />
+            setDisplayProjectFormModal(false);
+            await updateProjectList();
+          }} 
+        />
         <div className="closeModalButton" onClick={() => {setDisplayProjectFormModal(false)}}>✕</div>
       </Modal>
       <div className="fixLowerRightButton" onClick={() => {
