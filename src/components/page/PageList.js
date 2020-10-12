@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { ReactSortable } from "react-sortablejs";
 import { useHistory } from 'react-router-dom';
 import Modal from 'react-modal';
 import PageForm from './pageForm/PageForm';
 import Loading from 'components/common/Loading';
+
+import {  setLoadedPageListMap, selectLoadedPageListMap　} from 'app/appSlice';
 
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
@@ -15,12 +18,19 @@ import styles from './PageList.module.scss';
 Modal.setAppElement('#root');
 
 export default function PageList(props = null) {
-  // propsの展開
+  // hook setup
+  const history = useHistory();
+  const dispatch = useDispatch();
+
+  // props setup
   const projectId = props.projectId;
 
+  // redux-state setup
+  const loadedPageListMap = useSelector(selectLoadedPageListMap);
+
+  const [isLoading, setIsLoading] = useState(!loadedPageListMap[projectId]);
   const [searchWord, setSearchWord] = useState("");
-  const [pageList, setPageList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [pageList, setPageList] = useState(loadedPageListMap[projectId] || []);
   const [isDisplayPageFormModal, setIsDisplayPageFormModal] = useState(false);
 
   // ページ一覧の取得・ソート
@@ -30,6 +40,10 @@ export default function PageList(props = null) {
     const sortedObj = bucketSort.sort(pageList, pagesSortMap, "id");
     const sortedPageList = sortedObj.noSortedList.concat(sortedObj.sortedList);
     setPageList(sortedPageList);
+    dispatch(setLoadedPageListMap({
+      ...loadedPageListMap,
+      [projectId]: sortedPageList
+    }));
     setIsLoading(false);
   }, [projectId]);
 
@@ -37,6 +51,10 @@ export default function PageList(props = null) {
   const handleSort = async () => {
     const pagesSortMap = bucketSort.generateSortMap(pageList, "id");
     await updatePagesSortMap(projectId, pagesSortMap);
+    dispatch(setLoadedPageListMap({
+      ...loadedPageListMap,
+      [projectId]: pageList
+    }));
   }
 
   // ページのコピーイベント
@@ -66,10 +84,10 @@ export default function PageList(props = null) {
   }
 
   useEffect( () => {
+    // 既にページ一覧が一度読み込まれていれば読み込みしない
+    if (loadedPageListMap[projectId]) return;
     updatePageList();
   }, [updatePageList]);
-
-  const history = useHistory();
 
   if (isLoading) return (
     <Loading/>
