@@ -31,13 +31,13 @@ export default function PageInfo(props = null) {
             }));
           }}
           deleteSuccessCallback={ async () => {
+            history.push(`/projects/${projectId}/pages`);
             const pageList = await pageModel.getPageList(projectId);
             dispatch(setLoadedPageList({
               projectId: projectId,
               pageList: pageList
             }));
-            history.push(`/projects/${projectId}/pages`)} 
-          }
+          }}
         />
       </div>  
     </React.Fragment>
