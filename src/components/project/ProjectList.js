@@ -39,7 +39,7 @@ export default function ProjectList() {
   // プロジェクト一覧の取得、及びStateの更新
   const updateProjectList = useCallback( async () => {
     const updateProjectList = await projectModel.getProjectList();
-    dispatch(setLoadedProjectList(_.cloneDeep(updateProjectList)));
+    dispatch(setLoadedProjectList(updateProjectList));
     dispatch(updateInitialLoadState({
       key: 'projectList',
       value: true
