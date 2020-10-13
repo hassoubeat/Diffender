@@ -6,7 +6,12 @@ import Modal from 'react-modal';
 import PageForm from './pageForm/PageForm';
 import Loading from 'components/common/Loading';
 
-import {  setLoadedPageListMap, selectLoadedPageListMap　} from 'app/appSlice';
+import { 
+  updateInitialLoadState, 
+  setLoadedPageList, 
+  selectInitialLoadState,
+  selectLoadedPageListMap　
+} from 'app/domainSlice';
 
 import _ from 'lodash';
 import * as pageModel from 'lib/page/model';
@@ -28,33 +33,40 @@ export default function PageList(props = null) {
   const projectId = props.projectId;
 
   // redux-state setup
-  const loadedPageListMap = useSelector(selectLoadedPageListMap);
-  const pageList = _.cloneDeep(loadedPageListMap[projectId]);
+  const initialLoadState = useSelector(selectInitialLoadState);
+  const isLoadedPageList = _.get(initialLoadState, `pageListMap.${projectId}`, false);
 
-  const [isLoading, setIsLoading] = useState(!pageList);
+  const loadedPageListMap = useSelector(selectLoadedPageListMap);
+  const pageList = _.cloneDeep(
+    _.get(loadedPageListMap, projectId, [])
+  );
+
   const [searchWord, setSearchWord] = useState("");
   const [isDisplayPageFormModal, setIsDisplayPageFormModal] = useState(false);
 
   // ページ一覧の取得・ソート
   const updatePageList = useCallback( async () => {
     const pageList = await pageModel.getPageList(projectId);
-    dispatch(setLoadedPageListMap(_.cloneDeep({
-      ...loadedPageListMap,
-      [projectId]: pageList
-    })));
-    setIsLoading(false);
-  }, [projectId, dispatch, loadedPageListMap]);
+    dispatch(setLoadedPageList({
+      projectId: projectId,
+      pageList: pageList
+    }));
+    dispatch(updateInitialLoadState({
+      key: `pageListMap.${projectId}`,
+      value: true
+    }));
+  }, [projectId, dispatch]);
 
   // ページ一覧の順序入れ替えイベント
   const handleSort = async (e) => {
-    const sortedProjectList = arrayWrapper.moveAt(pageList, e.oldIndex, e.newIndex);
-    dispatch(setLoadedPageListMap(_.cloneDeep({
-      ...loadedPageListMap,
-      [projectId]: sortedProjectList
-    })));
+    const sortedPageList = arrayWrapper.moveAt(pageList, e.oldIndex, e.newIndex);
+    dispatch(setLoadedPageList({
+      projectId: projectId,
+      pageList: sortedPageList
+    }));
     await pageModel.updatePageListSortMap({
       projectId: projectId,
-      pageList: sortedProjectList
+      pageList: sortedPageList
     });
   }
 
@@ -90,7 +102,7 @@ export default function PageList(props = null) {
     updatePageList();
   }, [updatePageList, loadedPageListMap, projectId]);
 
-  if (isLoading) return (
+  if (!isLoadedPageList) return (
     <Loading/>
   );
 

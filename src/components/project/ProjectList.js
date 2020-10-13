@@ -6,7 +6,12 @@ import Modal from 'react-modal';
 import ProjectForm from './ProjectForm';
 import Loading from 'components/common/Loading';
 
-import {  setLoadedProjectList, selectLoadedProjectList} from 'app/appSlice';
+import { 
+  updateInitialLoadState, 
+  setLoadedProjectList, 
+  selectInitialLoadState, 
+  selectLoadedProjectList
+} from 'app/domainSlice';
 
 import _ from 'lodash';
 import * as projectModel from 'lib/project/model';
@@ -23,11 +28,11 @@ export default function ProjectList() {
   const dispatch = useDispatch();
 
   // redux-state setup
-  const loadedProjectList = useSelector(selectLoadedProjectList);
-  const projectList = (loadedProjectList) ? _.cloneDeep(loadedProjectList) : [];
+  const initialLoadState = useSelector(selectInitialLoadState);
+  const isLoadedProjectList = _.get(initialLoadState, 'projectList', false);
+  const projectList = _.cloneDeep(useSelector(selectLoadedProjectList));
 
   // state setup
-  const [isLoading, setIsLoading] = useState(!loadedProjectList);
   const [searchWord, setSearchWord] = useState("");
   const [isDisplayProjectFormModal, setDisplayProjectFormModal] = useState(false);
 
@@ -35,7 +40,10 @@ export default function ProjectList() {
   const updateProjectList = useCallback( async () => {
     const updateProjectList = await projectModel.getProjectList();
     dispatch(setLoadedProjectList(_.cloneDeep(updateProjectList)));
-    setIsLoading(false);
+    dispatch(updateInitialLoadState({
+      key: 'projectList',
+      value: true
+    }));
   }, [dispatch]);
 
   // プロジェクト一覧の順序入れ替えイベント
@@ -48,13 +56,13 @@ export default function ProjectList() {
   useEffect( () => {
     const asyncUpdateProjectList = async () => {
       // 既にProjectListが一度読み込まれていれば読み込みしない
-      if (loadedProjectList) return;
+      if (isLoadedProjectList) return;
       await updateProjectList();
     };
     asyncUpdateProjectList();
-  }, [updateProjectList, loadedProjectList]);
+  }, [updateProjectList, isLoadedProjectList]);
 
-  if (isLoading) return (
+  if (!isLoadedProjectList) return (
     <Loading/>
   );
 

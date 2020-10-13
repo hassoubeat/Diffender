@@ -1,12 +1,11 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PageForm from './pageForm/PageForm';
 import styles from './PageInfo.module.scss';
 
-import { setLoadedPageListMap, selectLoadedPageListMap } from 'app/appSlice';
+import { setLoadedPageList } from 'app/domainSlice';
 
-import _ from 'lodash';
 import * as pageModel from 'lib/page/model';
 
 export default function PageInfo(props = null) {
@@ -18,9 +17,6 @@ export default function PageInfo(props = null) {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  // redux-state setup
-  const loadedPageListMap = useSelector(selectLoadedPageListMap);
-
   return (
     <React.Fragment>
       <div className={styles.pageInfo}>
@@ -29,17 +25,17 @@ export default function PageInfo(props = null) {
           pageId={pageId} 
           postSuccessCallback={ async () => {
             const pageList = await pageModel.getPageList(projectId);
-            dispatch(setLoadedPageListMap(_.cloneDeep({
-              ...loadedPageListMap,
-              [projectId]: pageList
-            })));
+            dispatch(setLoadedPageList({
+              projectId: projectId,
+              pageList: pageList
+            }));
           }}
           deleteSuccessCallback={ async () => {
             const pageList = await pageModel.getPageList(projectId);
-            dispatch(setLoadedPageListMap(_.cloneDeep({
-              ...loadedPageListMap,
-              [projectId]: pageList
-            })));
+            dispatch(setLoadedPageList({
+              projectId: projectId,
+              pageList: pageList
+            }));
             history.push(`/projects/${projectId}/pages`)} 
           }
         />

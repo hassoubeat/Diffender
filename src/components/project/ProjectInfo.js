@@ -7,9 +7,8 @@ import ScreenshotRequestForm from './ScreenshotRequestForm';
 import ResultList from 'components/result/ResultList';
 import styles from './ProjectInfo.module.scss';
 
-import { setLoadedProjectList } from 'app/appSlice';
+import { setLoadedProjectList } from 'app/domainSlice';
 
-import _ from 'lodash';
 import * as projectModel from 'lib/project/model';
 
 // モーダルの展開先エレメントの指定
@@ -41,11 +40,11 @@ export default function ProjectInfo(props = null) {
           projectId={projectId} 
           successPostCallback={ async () => {
             const projectList = await projectModel.getProjectList();
-            dispatch(setLoadedProjectList(_.cloneDeep(projectList)));
+            dispatch(setLoadedProjectList(projectList));
           }}
           successDeleteCallback={ async  () => {
             const projectList = await projectModel.getProjectList();
-            dispatch(setLoadedProjectList(_.cloneDeep(projectList)));
+            dispatch(setLoadedProjectList(projectList));
             history.push('/projects');
           }} 
         />
