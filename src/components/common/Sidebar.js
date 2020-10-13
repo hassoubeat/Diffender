@@ -3,9 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { setDisplaySidebar, selectWindow, selectIsDisplaySidebar } from 'app/appSlice';
 import { 
-  selectCurrentUser, 
-  setIsLogin, 
-  setCurrentUser
+  selectCurrentUser,
 } from 'app/userSlice';
 import { isSpWindowSize } from 'lib/util/window';
 import { signOut } from 'lib/auth/cognitoAuth'
@@ -28,8 +26,7 @@ export default function Sidebar() {
 
     try {
       await signOut();
-      dispatch(setCurrentUser({}));
-      dispatch(setIsLogin(false));
+      dispatch({ type: "logout" });
       toast.successToast({
         message: 'サインアウトが完了しました',
       });

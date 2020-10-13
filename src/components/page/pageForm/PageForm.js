@@ -1,4 +1,5 @@
 import React, { useState, useEffect, createContext } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FormProvider, useForm } from "react-hook-form";
 import BrowserOptionsForm from './_BrowserSettingsForm';
@@ -9,6 +10,11 @@ import Accordion from 'components/util/accordion/Accordion';
 import UtilInput from 'components/util/input/Input';
 import Loading from 'components/common/Loading';
 
+import { 
+  selectLoadedPageListMap　
+} from 'app/domainSlice';
+
+import _ from 'lodash';
 import * as toast from 'lib/util/toast';
 import * as api from 'lib/api/api';
 import styles from './PageForm.module.scss';
@@ -16,16 +22,23 @@ import styles from './PageForm.module.scss';
 export const PageContext = createContext();
 
 export default function PageForm(props = null) {
-
-  // パラメータ取得
+  // props setup
   const isUpdate = !!props.pageId;
   const projectId = props.projectId;
   const pageId = props.pageId;
   const postSuccessCallback = props.postSuccessCallback;
   const deleteSuccessCallback = props.deleteSuccessCallback;
 
-  // 入力フォーム用のState定義
-  const [isLoading, setIsLoading] = useState(true);
+  // redux-state setup
+  const loadedPageListMap = useSelector(selectLoadedPageListMap);
+  const pageList = _.get(loadedPageListMap, projectId, []);
+  const reduxStatePage = pageList.find( (page) => {
+    return page.id === pageId;
+  });
+
+  // state setup
+  const [isLoading, setIsLoading] = useState(isUpdate);
+
   // ReactHookForm setup
   const reactHookFormMethods = useForm({
     mode: 'onChange',
@@ -58,7 +71,8 @@ export default function PageForm(props = null) {
 
     // ページ情報の取得
     const asyncSetPage = async () => {
-      const page = await api.getPage({
+      // ReduxStateを優先、なかったらAPIで取得
+      const page = reduxStatePage || await api.getPage({
         projectId: projectId,
         pageId: pageId
       });
@@ -66,7 +80,7 @@ export default function PageForm(props = null) {
       setIsLoading(false);
     }
     asyncSetPage();
-  }, [isUpdate, pageId, projectId, reset, setValue]);
+  }, [isUpdate, pageId, projectId, reset, setValue, reduxStatePage]);
 
   // submit成功時の処理
   const onSubmit = async (page) => { 

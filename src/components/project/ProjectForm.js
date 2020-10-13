@@ -1,22 +1,33 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { useForm, FormProvider } from "react-hook-form";
 import UtilInput from 'components/util/input/Input';
 import Accordion from 'components/util/accordion/Accordion';
 import Loading from 'components/common/Loading';
 import ActionForm from 'components/action/ActionForm';
 
+import {  
+  selectLoadedProjectList
+} from 'app/domainSlice';
+
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
 import styles from './ProjectForm.module.scss';
 
 export default function ProjectForm(props = null) {
-  // props展開
+  // props setup
   const isUpdate = !!props.projectId;
   const projectId = props.projectId;
   const successPostCallback = props.successPostCallback;
   const successDeleteCallback = props.successDeleteCallback;
 
-  // 入力フォーム用のState定義
+  // redux-state setup
+  const projectList = useSelector(selectLoadedProjectList);
+  const reduxStateProject = projectList.find( (project) => {
+    return project.id === projectId;
+  });
+
+  // state setup
   const [isLoading, setIsLoading] = useState(isUpdate);
 
   // ReactHookForm setup
@@ -36,7 +47,8 @@ export default function ProjectForm(props = null) {
     const asyncSetProject = async () => {
       let updateProject = {};
       try {
-        updateProject = await api.getProject({
+        // ReduxStateを優先、なかったらAPIで取得
+        updateProject = reduxStateProject || await api.getProject({
           projectId: projectId
         })
       } catch (error) {
@@ -48,8 +60,7 @@ export default function ProjectForm(props = null) {
       setIsLoading(false);
     }
     asyncSetProject();
-    
-  }, [projectId, isUpdate, reset]);
+  }, [projectId, isUpdate, reset, reduxStateProject]);
 
   const onSubmit = async (project) => {
     const eventName = (isUpdate) ? "更新" : "登録";

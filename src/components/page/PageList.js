@@ -1,13 +1,23 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { ReactSortable } from "react-sortablejs";
 import { useHistory } from 'react-router-dom';
 import Modal from 'react-modal';
 import PageForm from './pageForm/PageForm';
 import Loading from 'components/common/Loading';
 
+import { 
+  updateInitialLoadState, 
+  setLoadedPageList, 
+  selectInitialLoadState,
+  selectLoadedPageListMap　
+} from 'app/domainSlice';
+
+import _ from 'lodash';
+import * as pageModel from 'lib/page/model';
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
-import * as bucketSort from 'lib/util/bucketSort';
+import * as arrayWrapper from 'lib/util/arrayWrapper';
 
 import styles from './PageList.module.scss';
 
@@ -15,28 +25,49 @@ import styles from './PageList.module.scss';
 Modal.setAppElement('#root');
 
 export default function PageList(props = null) {
-  // propsの展開
+  // hook setup
+  const history = useHistory();
+  const dispatch = useDispatch();
+
+  // props setup
   const projectId = props.projectId;
 
+  // redux-state setup
+  const initialLoadState = useSelector(selectInitialLoadState);
+  const isLoadedPageList = _.get(initialLoadState, `pageListMap.${projectId}`, false);
+
+  const loadedPageListMap = useSelector(selectLoadedPageListMap);
+  const pageList = _.cloneDeep(
+    _.get(loadedPageListMap, projectId, [])
+  );
+
   const [searchWord, setSearchWord] = useState("");
-  const [pageList, setPageList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isDisplayPageFormModal, setIsDisplayPageFormModal] = useState(false);
 
   // ページ一覧の取得・ソート
   const updatePageList = useCallback( async () => {
-    const pagesSortMap = await getPagesSortMap(projectId);
-    const pageList = await getPageList(projectId);
-    const sortedObj = bucketSort.sort(pageList, pagesSortMap, "id");
-    const sortedPageList = sortedObj.noSortedList.concat(sortedObj.sortedList);
-    setPageList(sortedPageList);
-    setIsLoading(false);
-  }, [projectId]);
+    const pageList = await pageModel.getPageList(projectId);
+    dispatch(setLoadedPageList({
+      projectId: projectId,
+      pageList: pageList
+    }));
+    dispatch(updateInitialLoadState({
+      key: `pageListMap.${projectId}`,
+      value: true
+    }));
+  }, [projectId, dispatch]);
 
   // ページ一覧の順序入れ替えイベント
-  const handleSort = async () => {
-    const pagesSortMap = bucketSort.generateSortMap(pageList, "id");
-    await updatePagesSortMap(projectId, pagesSortMap);
+  const handleSort = async (e) => {
+    const sortedPageList = arrayWrapper.moveAt(pageList, e.oldIndex, e.newIndex);
+    dispatch(setLoadedPageList({
+      projectId: projectId,
+      pageList: sortedPageList
+    }));
+    await pageModel.updatePageListSortMap({
+      projectId: projectId,
+      pageList: sortedPageList
+    });
   }
 
   // ページのコピーイベント
@@ -66,12 +97,12 @@ export default function PageList(props = null) {
   }
 
   useEffect( () => {
+    // 既にページ一覧が一度読み込まれていれば読み込みしない
+    if (loadedPageListMap[projectId]) return;
     updatePageList();
-  }, [updatePageList]);
+  }, [updatePageList, loadedPageListMap, projectId]);
 
-  const history = useHistory();
-
-  if (isLoading) return (
+  if (!isLoadedPageList) return (
     <Loading/>
   );
 
@@ -79,10 +110,10 @@ export default function PageList(props = null) {
     <React.Fragment>
       <div className={styles.pageList}>
         <input className={styles.searchBox} type="text" placeholder="search" onChange={(e) => setSearchWord(e.target.value)} />
-        <ReactSortable list={pageList} setList={setPageList} handle=".draggable"
+        <ReactSortable list={pageList} setList={() => {}} handle=".draggable"
           onEnd={ async (event) => {await handleSort(event)} }
         >
-          {filterPageList(pageList, searchWord).map( (page) => (
+          {pageModel.searchPageList(pageList, searchWord).map( (page) => (
             <div key={page.id} id={page.id} className={styles.pageItem}
                   onClick={() => {history.push(`/projects/${projectId}/pages/${page.id}`)}} >
               <div className={styles.main}>
@@ -134,48 +165,4 @@ export default function PageList(props = null) {
         }}>+</div>
     </React.Fragment>
   );
-
-  function filterPageList(pageList, searchWord) {
-    return pageList.filter((page) => {
-      // プロジェクト名に検索ワードが含まれる要素のみフィルタリング
-      return page.name.match(searchWord);
-    });
-  }
-
-  // プロジェクトソートマップの取得
-  async function getPagesSortMap(projectId) {
-    const project = await api.getProject({
-      projectId: projectId
-    });
-    return project.pagesSortMap || {};
-  }
-
-  // プロジェクトソートマップの更新
-  async function updatePagesSortMap(projectId, updatePagesSortMap) {
-    const project = await api.getProject({
-      projectId: projectId
-    });
-    project.pagesSortMap = updatePagesSortMap;
-    await api.putProject({
-      projectId: projectId,
-      request: {
-        body: project
-      }
-    });
-  }
-
-  // ページ一覧の取得
-  async function getPageList(projectId) {
-    let pageList = [];
-    try {
-      pageList = await api.getPageList({
-        projectId: projectId
-      });
-    } catch (error) {
-      toast.errorToast(
-        { message: "プロジェクト一覧の取得に失敗しました" }
-      );
-    }
-    return　pageList;
-  }
 }

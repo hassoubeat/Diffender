@@ -52,7 +52,6 @@ export const selectBreadcrumbs = (state) => state.app.breadcrumbs;
 // Reducerのエクスポート
 export default appSlice.reducer;
 
-
 // localStorageからアプリのStateを取得する
 function lsGetAppStates() {
   let appStates = JSON.parse(localStorage.getItem("AppStates"));

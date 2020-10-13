@@ -1,14 +1,21 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PageForm from './pageForm/PageForm';
 import styles from './PageInfo.module.scss';
 
+import { setLoadedPageList } from 'app/domainSlice';
+
+import * as pageModel from 'lib/page/model';
+
 export default function PageInfo(props = null) {
-  // props展開
+  // props setup
   const projectId = props.projectId;
   const pageId = props.pageId;
 
+  // hook setup
   const history = useHistory();
+  const dispatch = useDispatch();
 
   return (
     <React.Fragment>
@@ -16,7 +23,21 @@ export default function PageInfo(props = null) {
         <PageForm 
           projectId={projectId} 
           pageId={pageId} 
-          deleteSuccessCallback={ () => {history.push(`/projects/${projectId}/pages`)} }
+          postSuccessCallback={ async () => {
+            const pageList = await pageModel.getPageList(projectId);
+            dispatch(setLoadedPageList({
+              projectId: projectId,
+              pageList: pageList
+            }));
+          }}
+          deleteSuccessCallback={ async () => {
+            history.push(`/projects/${projectId}/pages`);
+            const pageList = await pageModel.getPageList(projectId);
+            dispatch(setLoadedPageList({
+              projectId: projectId,
+              pageList: pageList
+            }));
+          }}
         />
       </div>  
     </React.Fragment>
