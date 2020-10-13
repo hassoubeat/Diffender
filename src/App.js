@@ -65,7 +65,7 @@ function App() {
       dispatch(setIsInitialize(false));
     };
     getLoginUser();
-  }, [dispatch]);
+  }, [dispatch, isIntialize]);
 
   // ログイン状態の初期化中はレンダリングを行わない
   if (isIntialize) return <React.Fragment>Loading...</React.Fragment>;
