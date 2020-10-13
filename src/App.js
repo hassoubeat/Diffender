@@ -23,6 +23,7 @@ import ResetPassword from 'components/auth/ResetPassword';
 import Sidebar from 'components/common/Sidebar';
 import NotFound404 from 'components/common/NotFound';
 import Main from 'components/Main';
+import Loading from 'components/common/Loading';
 
 
 function App() {
@@ -68,7 +69,9 @@ function App() {
   }, [dispatch, isIntialize]);
 
   // ログイン状態の初期化中はレンダリングを行わない
-  if (isIntialize) return <React.Fragment>Loading...</React.Fragment>;
+  if (isIntialize) return (
+    <Loading/>
+  );
 
   return (
     <div className={`App ${(isDisplaySidebar ? '' : 'AppSidebarHidden')}`}>
