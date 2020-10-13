@@ -43,9 +43,9 @@ export default function ProjectInfo(props = null) {
             dispatch(setLoadedProjectList(projectList));
           }}
           successDeleteCallback={ async  () => {
+            history.push('/projects');
             const projectList = await projectModel.getProjectList();
             dispatch(setLoadedProjectList(projectList));
-            history.push('/projects');
           }} 
         />
         <div className={styles.relateResultArea}>
