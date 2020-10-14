@@ -28,8 +28,7 @@ export default function ProjectList() {
   const dispatch = useDispatch();
 
   // redux-state setup
-  const initialLoadState = useSelector(selectInitialLoadState);
-  const isProjects = _.get(initialLoadState, 'projectList', false);
+  const isLoadedProjectList = useSelector(selectInitialLoadState('projectList'));
   const projectList = _.cloneDeep(useSelector(selectProjects));
 
   // state setup
@@ -56,13 +55,13 @@ export default function ProjectList() {
   useEffect( () => {
     const asyncUpdateProjectList = async () => {
       // 既にProjectListが一度読み込まれていれば読み込みしない
-      if (isProjects) return;
+      if (isLoadedProjectList) return;
       await updateProjectList();
     };
     asyncUpdateProjectList();
-  }, [updateProjectList, isProjects]);
+  }, [updateProjectList, isLoadedProjectList]);
 
-  if (!isProjects) return (
+  if (!isLoadedProjectList) return (
     <Loading/>
   );
 

@@ -55,14 +55,18 @@ export const {
  } = domainSlice.actions;
 
 // ステートをuseSelectorフックから呼び出し可能に
-export const selectInitialLoadState = (state) => state.domain.initialLoadState;
+export const selectInitialLoadState = (key) => {
+  return (state) => {
+    return (key) ? _.get(state.domain.initialLoadState, key, false) : state.domain.initialLoadState; 
+  };
+};
 export const selectProjects = (state) => {
   return Object.values(state.domain.projects);
 };
 export const selectLoadedPageListMap = (state) => state.domain.loadedPageListMap;
 
 // 特定のプロジェクトを取得
-export const selectLoadedProject = (projectId) => {
+export const selectProject = (projectId) => {
   return (state) => {
     return _.get(state.domain.projects, projectId);
   };
