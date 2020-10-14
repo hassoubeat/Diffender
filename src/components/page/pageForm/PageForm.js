@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FormProvider, useForm } from "react-hook-form";
 import BrowserOptionsForm from './_BrowserSettingsForm';
@@ -11,10 +11,11 @@ import UtilInput from 'components/util/input/Input';
 import Loading from 'components/common/Loading';
 
 import { 
-  selectLoadedPageListMap　
+  setPage,
+  deletePage,
+  selectPage
 } from 'app/domainSlice';
 
-import _ from 'lodash';
 import * as toast from 'lib/util/toast';
 import * as api from 'lib/api/api';
 import styles from './PageForm.module.scss';
@@ -29,12 +30,11 @@ export default function PageForm(props = null) {
   const postSuccessCallback = props.postSuccessCallback;
   const deleteSuccessCallback = props.deleteSuccessCallback;
 
+  // hook setup
+  const dispatch = useDispatch();
+
   // redux-state setup
-  const loadedPageListMap = useSelector(selectLoadedPageListMap);
-  const pageList = _.get(loadedPageListMap, projectId, []);
-  const reduxStatePage = pageList.find( (page) => {
-    return page.id === pageId;
-  });
+  const reduxStatePage = useSelector(selectPage(pageId));
 
   // state setup
   const [isLoading, setIsLoading] = useState(isUpdate);
@@ -56,7 +56,7 @@ export default function PageForm(props = null) {
       isEnableAfterCommonAction: true
     }
   });
-  const {register, errors, reset, watch, setValue, handleSubmit} = reactHookFormMethods;
+  const {register, errors, reset, watch, handleSubmit} = reactHookFormMethods;
 
   // watch
   const isEnableBeforeCommonAction = watch("isEnableBeforeCommonAction");
@@ -64,23 +64,25 @@ export default function PageForm(props = null) {
 
   useEffect( () => {
     // 更新でない場合は終了
-    if (!isUpdate) {
-      setIsLoading(false);
-      return;
-    }
+    if (!isUpdate) return;
 
     // ページ情報の取得
     const asyncSetPage = async () => {
       // ReduxStateを優先、なかったらAPIで取得
-      const page = reduxStatePage || await api.getPage({
-        projectId: projectId,
-        pageId: pageId
-      });
-      reset(page);
+      if (reduxStatePage) {
+        reset(reduxStatePage);
+      } else {
+        const page = await api.getPage({
+          projectId: projectId,
+          pageId: pageId
+        });
+        dispatch(setPage(page))
+        reset(page);
+      }
       setIsLoading(false);
     }
     asyncSetPage();
-  }, [isUpdate, pageId, projectId, reset, setValue, reduxStatePage]);
+  }, [isUpdate, pageId, projectId, dispatch, reset, reduxStatePage]);
 
   // submit成功時の処理
   const onSubmit = async (page) => { 
@@ -106,24 +108,28 @@ export default function PageForm(props = null) {
           projectId: projectId,
           pageId: pageId
         })
-        await api.putPage({
-          projectId: projectId, 
-          pageId: pageId, 
-          request : {
-            body: {
-              ...updatePage,
-              ...page
+        dispatch(setPage(
+          await api.putPage({
+            projectId: projectId, 
+            pageId: pageId, 
+            request : {
+              body: {
+                ...updatePage,
+                ...page
+              }
             }
-          }
-        });
+          })
+        ))
       } else {
         // ページの登録
-        await api.postPage({
-          projectId: projectId,
-          request: {
-            body: page
-          }
-        });
+        dispatch(setPage(
+          await api.postPage({
+            projectId: projectId,
+            request: {
+              body: page
+            }
+          })
+        ))
       }
       toast.successToast(
         { message: `ページの${eventName}が完了しました` }
@@ -161,6 +167,7 @@ export default function PageForm(props = null) {
         { message: "ページの削除が完了しました" }
       );
       if (deleteSuccessCallback) deleteSuccessCallback();
+      dispatch(deletePage(pageId));
     } catch (error) {
       toast.errorToast(
         { message: "ページの削除に失敗しました" }
