@@ -25,12 +25,12 @@ import styles from './PageList.module.scss';
 Modal.setAppElement('#root');
 
 export default function PageList(props = null) {
+  // props setup
+  const projectId = props.projectId;
+
   // hook setup
   const history = useHistory();
   const dispatch = useDispatch();
-
-  // props setup
-  const projectId = props.projectId;
 
   // redux-state setup
   const isLoadedPageList = useSelector(selectInitialLoadState(`pageListMap.${projectId}`));  
@@ -87,10 +87,13 @@ export default function PageList(props = null) {
   }
 
   useEffect( () => {
-    // 既にページ一覧が一度読み込まれていれば読み込みしない
-    if (isLoadedPageList) return;
-    updatePageList();
-  }, [updatePageList, pageList, isLoadedPageList]);
+    const asyncUpdatePageList = async () => {
+      // 既にページ一覧が一度読み込まれていれば読み込みしない
+      if (isLoadedPageList) return;
+      await updatePageList();
+    };
+    asyncUpdatePageList();
+  }, [updatePageList, isLoadedPageList]);
 
   if (!isLoadedPageList) return (
     <Loading/>
