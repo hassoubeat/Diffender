@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useForm, FormProvider } from "react-hook-form";
 import UtilInput from 'components/util/input/Input';
 import Accordion from 'components/util/accordion/Accordion';
@@ -7,7 +7,9 @@ import Loading from 'components/common/Loading';
 import ActionForm from 'components/action/ActionForm';
 
 import {  
-  selectLoadedProjectList
+  addProjects,
+  deleteProjects,
+  selectLoadedProject
 } from 'app/domainSlice';
 
 import * as api from 'lib/api/api';
@@ -21,11 +23,11 @@ export default function ProjectForm(props = null) {
   const successPostCallback = props.successPostCallback;
   const successDeleteCallback = props.successDeleteCallback;
 
+  // hook setup
+  const dispatch = useDispatch();
+
   // redux-state setup
-  const projectList = useSelector(selectLoadedProjectList);
-  const reduxStateProject = projectList.find( (project) => {
-    return project.id === projectId;
-  });
+  const reduxStateProject = useSelector(selectLoadedProject(projectId));
 
   // state setup
   const [isLoading, setIsLoading] = useState(isUpdate);
@@ -86,21 +88,25 @@ export default function ProjectForm(props = null) {
         const updateProject = await api.getProject({
           projectId: projectId
         })
-        await api.putProject({
-          projectId: projectId, 
-          request : {
-            body: {
-              ...updateProject,
-              ...project
+        dispatch(addProjects(
+          await api.putProject({
+            projectId: projectId, 
+            request : {
+              body: {
+                ...updateProject,
+                ...project
+              }
             }
-          }
-        });
+          })
+        ));
       } else {
-        await api.postProject({
-          request: {
-            body: project
-          }
-        });
+        dispatch(addProjects(
+          await api.postProject({
+            request: {
+              body: project
+            }
+          })
+        ));
       }
       toast.successToast(
         { message: `プロジェクトの${eventName}が完了しました` }
@@ -131,6 +137,7 @@ export default function ProjectForm(props = null) {
       await api.deleteProject({
         projectId: projectId
       });
+      dispatch(deleteProjects(projectId));
       toast.successToast(
         { message: "プロジェクトの削除が完了しました" }
       );

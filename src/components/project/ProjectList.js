@@ -8,9 +8,9 @@ import Loading from 'components/common/Loading';
 
 import { 
   updateInitialLoadState, 
-  setLoadedProjectList, 
+  setProjects, 
   selectInitialLoadState, 
-  selectLoadedProjectList
+  selectProjects
 } from 'app/domainSlice';
 
 import _ from 'lodash';
@@ -29,8 +29,8 @@ export default function ProjectList() {
 
   // redux-state setup
   const initialLoadState = useSelector(selectInitialLoadState);
-  const isLoadedProjectList = _.get(initialLoadState, 'projectList', false);
-  const projectList = _.cloneDeep(useSelector(selectLoadedProjectList));
+  const isProjects = _.get(initialLoadState, 'projectList', false);
+  const projectList = _.cloneDeep(useSelector(selectProjects));
 
   // state setup
   const [searchWord, setSearchWord] = useState("");
@@ -39,30 +39,30 @@ export default function ProjectList() {
   // プロジェクト一覧の取得、及びStateの更新
   const updateProjectList = useCallback( async () => {
     const updateProjectList = await projectModel.getProjectList();
-    dispatch(setLoadedProjectList(updateProjectList));
+    dispatch(setProjects(updateProjectList));
     dispatch(updateInitialLoadState({
       key: 'projectList',
       value: true
     }));
   }, [dispatch]);
 
-  // プロジェクト一覧の順序入れ替えイベント
+  // プロジェクト一覧の順序入れ替え
   const handleSort = async (e) => {
     const sortedProjectList = arrayWrapper.moveAt(projectList, e.oldIndex, e.newIndex);
-    dispatch(setLoadedProjectList(_.cloneDeep(sortedProjectList)));    
+    dispatch(setProjects(sortedProjectList));
     await projectModel.updateProjectListSortMap(sortedProjectList);
   }
 
   useEffect( () => {
     const asyncUpdateProjectList = async () => {
       // 既にProjectListが一度読み込まれていれば読み込みしない
-      if (isLoadedProjectList) return;
+      if (isProjects) return;
       await updateProjectList();
     };
     asyncUpdateProjectList();
-  }, [updateProjectList, isLoadedProjectList]);
+  }, [updateProjectList, isProjects]);
 
-  if (!isLoadedProjectList) return (
+  if (!isProjects) return (
     <Loading/>
   );
 

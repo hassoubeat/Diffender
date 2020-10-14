@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Modal from 'react-modal';
 import ProjectForm from './ProjectForm';
 import ScreenshotRequestForm from './ScreenshotRequestForm';
 import ResultList from 'components/result/ResultList';
 import styles from './ProjectInfo.module.scss';
-
-import { setLoadedProjectList } from 'app/domainSlice';
-
-import * as projectModel from 'lib/project/model';
 
 // モーダルの展開先エレメントの指定
 Modal.setAppElement('#root');
@@ -20,7 +15,6 @@ export default function ProjectInfo(props = null) {
 
   // hook setup
   const history = useHistory();
-  const dispatch = useDispatch();
 
   // state setup
   const [isDisplayScreenshotRequestFormModal, setIsDisplayScreenshotRequestFormModal] = useState(false);
@@ -38,14 +32,8 @@ export default function ProjectInfo(props = null) {
         </div>
         <ProjectForm 
           projectId={projectId} 
-          successPostCallback={ async () => {
-            const projectList = await projectModel.getProjectList();
-            dispatch(setLoadedProjectList(projectList));
-          }}
           successDeleteCallback={ async  () => {
             history.push('/projects');
-            const projectList = await projectModel.getProjectList();
-            dispatch(setLoadedProjectList(projectList));
           }} 
         />
         <div className={styles.relateResultArea}>

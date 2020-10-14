@@ -8,7 +8,7 @@ export const domainSlice = createSlice({
     initialLoadState: {
     },
     // プロジェクト一覧
-    loadedProjectList: [],
+    projects: {},
     // ページ一覧
     loadedPageListMap: {}
   },
@@ -19,8 +19,23 @@ export const domainSlice = createSlice({
       _.set(state.initialLoadState, key, value);
     },
     // 状態：プロジェクト一覧 セット
-    setLoadedProjectList: (state, action) => {
-      state.loadedProjectList = action.payload;
+    setProjects: (state, action) => {
+      const projectList = action.payload;
+      const projectListObject = projectList.reduce((result, project) => {
+        result[project.id] = project;
+        return result;
+      }, {});
+      state.projects = projectListObject;
+    },
+    // 状態：プロジェクト一覧 追加・変更
+    addProjects: (state, action) => {
+      const project = action.payload;
+      state.projects[project.id] = project;
+    },
+    // 状態：プロジェクト一覧 削除
+    deleteProjects: (state, action) => {
+      const projectId = action.payload;
+      delete state.projects[projectId];
     },
     // 状態：ページ一覧 セット
     setLoadedPageList: (state, action) => {
@@ -33,14 +48,25 @@ export const domainSlice = createSlice({
 // ActionCreaterのエクスポート
 export const { 
   updateInitialLoadState,
-  setLoadedProjectList,
+  setProjects,
+  addProjects,
+  deleteProjects,
   setLoadedPageList
  } = domainSlice.actions;
 
 // ステートをuseSelectorフックから呼び出し可能に
 export const selectInitialLoadState = (state) => state.domain.initialLoadState;
-export const selectLoadedProjectList = (state) => state.domain.loadedProjectList;
+export const selectProjects = (state) => {
+  return Object.values(state.domain.projects);
+};
 export const selectLoadedPageListMap = (state) => state.domain.loadedPageListMap;
+
+// 特定のプロジェクトを取得
+export const selectLoadedProject = (projectId) => {
+  return (state) => {
+    return _.get(state.domain.projects, projectId);
+  };
+} 
 
 // Reducerのエクスポート
 export default domainSlice.reducer;
