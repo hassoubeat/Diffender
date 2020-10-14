@@ -10,11 +10,11 @@ export const domainSlice = createSlice({
     // プロジェクト一覧
     projects: {},
     // ページ一覧
-    loadedPageListMap: {}
+    pages: {}
   },
   reducers: {
     // 状態：初回ロード状態の更新
-    updateInitialLoadState: (state, action) => {
+    setInitialLoadState: (state, action) => {
       const {key, value} = action.payload;
       _.set(state.initialLoadState, key, value);
     },
@@ -38,39 +38,77 @@ export const domainSlice = createSlice({
       delete state.projects[projectId];
     },
     // 状態：ページ一覧 セット
-    setLoadedPageList: (state, action) => {
-      const {projectId, pageList} = action.payload;
-      _.set(state.loadedPageListMap, projectId, pageList);
-    }
+    setPages: (state, action) => {
+      const pageList = action.payload;
+      const pageListObject = pageList.reduce((result, page) => {
+        result[page.id] = page;
+        return result;
+      }, {});
+      state.pages = {
+        ...pageListObject,
+        ...state.pages
+      };
+    },
+    // 状態 ページ一覧にページセット
+    setPage: (state, action) => {
+      const page = action.payload;
+      state.pages[page.id] = page;
+    },
+    // 状態 ページ一覧から指定要素の削除
+    deletePage: (state, action) => {
+      const pageId = action.payload;
+      delete state.pages[pageId];
+    },
   },
 });
 
 // ActionCreaterのエクスポート
 export const { 
-  updateInitialLoadState,
+  setInitialLoadState,
   setProjects,
   addProjects,
   deleteProjects,
-  setLoadedPageList
+  setPages,
+  setPage,
+  deletePage
  } = domainSlice.actions;
 
-// ステートをuseSelectorフックから呼び出し可能に
+
+ // ロード状態のState取得セレクタ
 export const selectInitialLoadState = (key) => {
   return (state) => {
     return (key) ? _.get(state.domain.initialLoadState, key, false) : state.domain.initialLoadState; 
   };
 };
+
+// プロジェクト一覧のState取得セレクタ
 export const selectProjects = (state) => {
   return Object.values(state.domain.projects);
 };
-export const selectLoadedPageListMap = (state) => state.domain.loadedPageListMap;
+export const selectPages = (state) => state.domain.pages;
 
-// 特定のプロジェクトを取得
+// 指定したプロジェクトをプロジェクト一覧から取得するセレクタ
 export const selectProject = (projectId) => {
   return (state) => {
     return _.get(state.domain.projects, projectId);
   };
-} 
+}
+
+// 指定したプロジェクトに紐づくページ一覧を取得するセレクタ
+export const selectPagesByProjectId = (projectId) => {
+  return (state) => {
+    return Object.values(state.domain.pages).filter((page) => {
+      return (page.pageTieProjectId === projectId)
+    });
+  };
+}
+
+// 指定したページをページ一覧を取得するセレクタ
+export const selectPage = (pageId) => {
+  return (state) => {
+    return _.get(state.domain.pages, pageId);
+  };
+}
 
 // Reducerのエクスポート
 export default domainSlice.reducer;

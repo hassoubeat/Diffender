@@ -7,7 +7,7 @@ import ProjectForm from './ProjectForm';
 import Loading from 'components/common/Loading';
 
 import { 
-  updateInitialLoadState, 
+  setInitialLoadState, 
   setProjects, 
   selectInitialLoadState, 
   selectProjects
@@ -39,7 +39,7 @@ export default function ProjectList() {
   const updateProjectList = useCallback( async () => {
     const updateProjectList = await projectModel.getProjectList();
     dispatch(setProjects(updateProjectList));
-    dispatch(updateInitialLoadState({
+    dispatch(setInitialLoadState({
       key: 'projectList',
       value: true
     }));

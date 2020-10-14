@@ -7,10 +7,10 @@ import PageForm from './pageForm/PageForm';
 import Loading from 'components/common/Loading';
 
 import { 
-  updateInitialLoadState, 
-  setLoadedPageList, 
+  setInitialLoadState, 
+  setPages, 
   selectInitialLoadState,
-  selectLoadedPageListMap　
+  selectPagesByProjectId
 } from 'app/domainSlice';
 
 import _ from 'lodash';
@@ -33,25 +33,18 @@ export default function PageList(props = null) {
   const projectId = props.projectId;
 
   // redux-state setup
-  const initialLoadState = useSelector(selectInitialLoadState);
-  const isLoadedPageList = _.get(initialLoadState, `pageListMap.${projectId}`, false);
+  const isLoadedPageList = useSelector(selectInitialLoadState(`pageListMap.${projectId}`));  
+  const pageList = _.cloneDeep(useSelector(selectPagesByProjectId(projectId)));
 
-  const loadedPageListMap = useSelector(selectLoadedPageListMap);
-  const pageList = _.cloneDeep(
-    _.get(loadedPageListMap, projectId, [])
-  );
-
+  // state seteup
   const [searchWord, setSearchWord] = useState("");
   const [isDisplayPageFormModal, setIsDisplayPageFormModal] = useState(false);
 
-  // ページ一覧の取得・ソート
+  // ページ一覧の取得
   const updatePageList = useCallback( async () => {
     const pageList = await pageModel.getPageList(projectId);
-    dispatch(setLoadedPageList({
-      projectId: projectId,
-      pageList: pageList
-    }));
-    dispatch(updateInitialLoadState({
+    dispatch(setPages(pageList));
+    dispatch(setInitialLoadState({
       key: `pageListMap.${projectId}`,
       value: true
     }));
@@ -60,10 +53,7 @@ export default function PageList(props = null) {
   // ページ一覧の順序入れ替えイベント
   const handleSort = async (e) => {
     const sortedPageList = arrayWrapper.moveAt(pageList, e.oldIndex, e.newIndex);
-    dispatch(setLoadedPageList({
-      projectId: projectId,
-      pageList: sortedPageList
-    }));
+    dispatch(setPages(sortedPageList));
     await pageModel.updatePageListSortMap({
       projectId: projectId,
       pageList: sortedPageList
@@ -98,9 +88,9 @@ export default function PageList(props = null) {
 
   useEffect( () => {
     // 既にページ一覧が一度読み込まれていれば読み込みしない
-    if (loadedPageListMap[projectId]) return;
+    if (isLoadedPageList) return;
     updatePageList();
-  }, [updatePageList, loadedPageListMap, projectId]);
+  }, [updatePageList, pageList, isLoadedPageList]);
 
   if (!isLoadedPageList) return (
     <Loading/>
