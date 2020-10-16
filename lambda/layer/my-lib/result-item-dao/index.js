@@ -79,11 +79,12 @@ async function updateResultItem(updateObject) {
       UpdateExpression: `
         Set 
         #name = :name, 
-        status = :status, 
+        #status = :status, 
       `,
       ExpressionAttributeNames: {
-        // nameが予約語と被っているため、プレースホルダーで対応
-        '#name': 'name'  
+        // 予約語と被っているため、プレースホルダーで対応
+        '#name': 'name',
+        '#status': 'status',
       },
       ExpressionAttributeValues: {
         ":name": updateObject.name, 
