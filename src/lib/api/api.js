@@ -49,6 +49,12 @@ export async function deleteProject({projectId, request}) {
   return await API.del(DIFFENDER_API_NAME, `/projects/${projectId}`, request)
 }
 
+// スクリーンショットの取得リクエスト(プロジェクト)
+export async function ScreenshotQueingProject({projectId, request}) {
+  request = await requestSetup(request);
+  return await API.post(DIFFENDER_API_NAME, `/projects/${projectId}/screenshot`, request)
+}
+
 // ページ一覧の取得
 export async function getPageList({projectId, request}) {
   request = await requestSetup(request);
