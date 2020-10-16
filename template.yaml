@@ -289,6 +289,28 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /userOption
             Method: put
+  # スクリーンショット取得処理
+  ScreenshotProcessFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/screenshots/ScreenshotProcessFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+        - S3CrudPolicy:
+            BucketName: !Ref DiffenderS3
+      Layers:
+        - !Ref PuppeteerLayer
+      Timeout: 30 # SQSの可視性タイムアウトと揃える
+      MemorySize: 1600 # Puppeteerを動かす以上最低必要なメモリ
+      Events:
+        SQSQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt ScreenshotProcessSQS.Arn
+            BatchSize: 1
     
   # Puppeteer(chrome-aws-lambda)の関連ライブラリのレイヤー
   PuppeteerLayer:
