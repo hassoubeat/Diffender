@@ -24,6 +24,17 @@ module.exports.getRequetBody = (event) => {
   }
 }
 
+// SQSのレコード取得
+module.exports.getSQSRecord = (event, index=0) => {
+  try {
+    return JSON.parse(event.Records[index].body);
+  } catch (error)  {
+    error.statusCode = 500;
+    error.message = "Queue data is empty or Not JSON format.";
+    throw error;
+  }
+}
+
 // リソースオーナーをチェックする
 module.exports.checkResouceOwner = ({loginUserId, resouceUserId}) => {
   if (loginUserId !== resouceUserId) {

@@ -24,6 +24,30 @@ describe('lambda共通処理 正常系のテスト群', () => {
     });
   });
 
+  test('eventからSQSレコード取得処理のテスト', async () => {
+    const event = {
+      Records: [{}]
+    }
+    event.Records[0].body = JSON.stringify({
+      id: "ResultItem-4",
+      name: "test1",
+      status: "WAIT",
+      resultItemTieResultId: "Result-5",
+      resultItemTiePageId: "Page-71",
+      resultItemTieUserId: "86dcb95f-efff-4e49-badd-74b5b9de1b85"
+    });
+
+    const project = lambdaCommon.getSQSRecord(event);
+    expect(project).toEqual({
+      id: "ResultItem-4",
+      name: "test1",
+      status: "WAIT",
+      resultItemTieResultId: "Result-5",
+      resultItemTiePageId: "Page-71",
+      resultItemTieUserId: "86dcb95f-efff-4e49-badd-74b5b9de1b85"
+    });
+  });
+
   test('リソースオーナーのチェック処理のテスト', async () => {
     expect(() => {
       lambdaCommon.checkResouceOwner({
@@ -62,6 +86,17 @@ describe('lambda共通処理 異常系のテスト群', () => {
     }
     expect(result.statusCode).toBe(400);
     expect(result.message).toBe("Request body is empty or Not JSON format.");
+  });
+
+  test('eventからSQSレコード取得処理のテスト 取得失敗', async () => {
+    const event = {};
+    try {
+      lambdaCommon.getSQSRecord(event);
+    } catch (error) {
+      result = error;
+    }
+    expect(result.statusCode).toBe(500);
+    expect(result.message).toBe("Queue data is empty or Not JSON format.");
   });
 
   test('リソースオーナーのチェック処理のテスト チェック失敗', async () => {
