@@ -46,7 +46,10 @@ exports.lambda_handler = async (event, context) => {
       const resultItem = {
         id: await resultItemDao.generateResultItemId(),
         name: page.name,
-        status: "WAIT",
+        status: {
+          type: "WAIT",
+          message: "Waiting for screenshots."
+        },
         resultItemTieResultId: postResult.id,
         resultItemTiePageId: page.id,
         resultItemTieUserId: user.sub
@@ -56,7 +59,11 @@ exports.lambda_handler = async (event, context) => {
       await resultItemDao.postResultItem(resultItem);
 
       // SQSにスクリーンショット取得処理をキューイング
-      await sqsDao.sendScreenshotProcessSQS(resultItem);
+      await sqsDao.sendScreenshotProcessSQS({
+        project: project,
+        page: page,
+        resultItem: resultItem
+      });
     }
 
     response.body = JSON.stringify(
