@@ -14,6 +14,7 @@
         "result-dao": "file:./result-dao",
         "result-validator": "file:./result-validator",
         "result-item-dao": "file:./result-item-dao",
+        "s3-dao": "file:./s3-dao",
         "sqs-dao": "file:./sqs-dao",
         "lambda-common": "file:./lambda-common"
     },
