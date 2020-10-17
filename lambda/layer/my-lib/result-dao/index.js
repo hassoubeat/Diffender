@@ -25,14 +25,16 @@ async function getResultListByUserId(userId, isSortASC = true) {
 module.exports.getResultListByUserId = getResultListByUserId;
 
 // プロジェクトに紐づくリザルト一覧の取得
-async function getResultListByProjectId(projectId, isSortASC = true) {
+async function getResultListByProjectId(userId, projectId, isSortASC = true) {
   const result =  await dynamoDBDao.query(
     dynamoDBClient,
     {
       TableName: TABLE_NAME,
       IndexName: "ResultsByProjectIdSearchIndex",
       KeyConditionExpression: "resultTieProjectId=:resultTieProjectId",
+      FilterExpression: "resultTieUserId=:resultTieUserId",
       ExpressionAttributeValues: {
+        ":resultTieUserId": userId,
         ":resultTieProjectId": projectId
       },
       ScanIndexForward: isSortASC
