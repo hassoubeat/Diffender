@@ -10,7 +10,9 @@ export const domainSlice = createSlice({
     // プロジェクト一覧
     projects: {},
     // ページ一覧
-    pages: {}
+    pages: {},
+    // リザルト一覧
+    results: {}
   },
   reducers: {
     // 状態：初回ロード状態の更新
@@ -59,6 +61,28 @@ export const domainSlice = createSlice({
       const pageId = action.payload;
       delete state.pages[pageId];
     },
+    // 状態：リザルト一覧 セット
+    setResults: (state, action) => {
+      const resultList = action.payload;
+      const resultListObject = resultList.reduce((returnObject, result) => {
+        returnObject[result.id] = result;
+        return returnObject;
+      }, {});
+      state.results = {
+        ...resultListObject,
+        ...state.results
+      };
+    },
+    // 状態 リザルト一覧にページセット
+    setResult: (state, action) => {
+      const result = action.payload;
+      state.results[result.id] = result;
+    },
+    // 状態 リザルト一覧から指定要素の削除
+    deleteResult: (state, action) => {
+      const resultId = action.payload;
+      delete state.results[resultId];
+    },
   },
 });
 
@@ -70,7 +94,10 @@ export const {
   deleteProjects,
   setPages,
   setPage,
-  deletePage
+  deletePage,
+  setResults,
+  setResult,
+  deleteResult
  } = domainSlice.actions;
 
 
@@ -107,6 +134,37 @@ export const selectPagesByProjectId = (projectId) => {
 export const selectPage = (pageId) => {
   return (state) => {
     return _.get(state.domain.pages, pageId);
+  };
+}
+
+// リザルト一覧のState取得セレクタ
+export const selectResults = ({projectId}) => {
+  if (projectId) {
+    return (state) => {
+      return Object.values(state.domain.results).filter((result) => {
+        return (result.resultTieProjectId === projectId)
+      });
+    };
+  } else {
+    return (state) => {
+      return Object.values(state.domain.results);
+    }
+  }
+};
+
+// 指定したリザルトをプロジェクト一覧から取得するセレクタ
+export const selectResult = (resultId) => {
+  return (state) => {
+    return _.get(state.domain.results, resultId);
+  };
+}
+
+// 指定したプロジェクトに紐づくリザルト一覧を取得するセレクタ
+export const selectResultsByProjectId = (projectId) => {
+  return (state) => {
+    return Object.values(state.domain.results).filter((result) => {
+      return (result.resultTieProjectId === projectId)
+    });
   };
 }
 
