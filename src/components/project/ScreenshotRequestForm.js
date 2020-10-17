@@ -1,7 +1,12 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { useForm } from "react-hook-form";
 import UtilInput from 'components/util/input/Input';
 import styles from './ScreenshotRequestForm.module.scss';
+
+import {  
+  setResult
+} from 'app/domainSlice';
 
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
@@ -10,6 +15,9 @@ export default function ScreenshotRequest(props = null) {
   // props setup
   const projectId = props.projectId;
   const requestSuccessCallback = props.requestSuccessCallback;
+
+  // hook setup
+  const dispatch = useDispatch();
 
   // ReactHookForm setup
   const {register, errors, handleSubmit} = useForm({
@@ -26,12 +34,14 @@ export default function ScreenshotRequest(props = null) {
       { message: `スクリーンショット取得リクエストを送信しました` }
     );
     try {
-      await api.ScreenshotQueingProject({
-        projectId: projectId,
-        request: {
-          body: data
-        }
-      });
+      dispatch(setResult(
+        await api.ScreenshotQueingProject({
+          projectId: projectId,
+          request: {
+            body: data
+          }
+        })
+      ));
       toast.successToast(
         { message: `スクリーンショット取得リクエストが完了しました` }
       );
@@ -42,7 +52,6 @@ export default function ScreenshotRequest(props = null) {
         { message: `スクリーンショット取得リクエストに失敗しました` }
       );
     }
-
   }
 
   // submit error hander
