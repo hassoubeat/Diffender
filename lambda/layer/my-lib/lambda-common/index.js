@@ -13,6 +13,21 @@ module.exports.getPathParameter = (event, key) => {
   }
 }
 
+// クエリパラメータの取得
+module.exports.getQueryStringParamter = (event, key) => {
+  try {
+    const queryParam = event.queryStringParameters[key];
+    if (queryParam === undefined) throw new Error();
+    return queryParam;
+  } catch (error) {
+    console.error(error);
+
+    error.statusCode = 400;
+    error.message = `NotFound QueryStringParameter: ${key}`;
+    throw error;
+  }
+}
+
 // リクエストボディの取得
 module.exports.getRequetBody = (event) => {
   try {
