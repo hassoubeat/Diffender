@@ -1,6 +1,17 @@
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
 
+// リザルト一覧をソート
+export function sort(resultList) {
+  // 降順でソート
+  resultList.sort( (a, b) =>  {
+    if( a.createDtUnix > b.createDtUnix ) return -1;
+    if( a.createDtUnix < b.createDtUnix ) return 1;
+    return 0;
+  });
+  return resultList;
+}
+
 // リザルト一覧のフィルタリング
 export function filterResultList(resultList, filterObj) {
   return resultList.filter((result) => { 

@@ -13,7 +13,11 @@ import {
 } from 'app/domainSlice';
 
 import _ from 'lodash';
-import * as resultModel from 'lib/result/model';
+import {
+  sort,
+  filterResultList,
+  getResultList
+} from 'lib/result/model';
 import styles from './ResultList.module.scss';
 
 // モーダルの展開先エレメントの指定
@@ -30,9 +34,10 @@ export default function ResultList(props = null) {
   // redux-state setup
   const initialLoadStateKey = (projectId) ?  `resultList_${projectId}` : "resultList";
   const isLoadedResultList = useSelector(selectInitialLoadState(initialLoadStateKey));
-  const resultList = _.cloneDeep(useSelector(selectResults({
+  const resultList = sort(_.cloneDeep(useSelector(selectResults({
     projectId: projectId
-  })));
+  }))));
+  console.log(resultList);
 
   const [searchWord, setSearchWord] = useState("");
   const [isSearchScreenshotResultFilter, setIsSearchScreenshotResultFilter] = useState(true);
@@ -43,7 +48,7 @@ export default function ResultList(props = null) {
   const updateResultList = useCallback( async () => {
     const queryStringsObject = {};
     if (projectId) queryStringsObject.projectId = projectId;
-    const updateResultList = await resultModel.getResultList({
+    const updateResultList = await getResultList({
       queryStringsObject: queryStringsObject
     });
     dispatch(setResults(updateResultList));
@@ -97,7 +102,7 @@ export default function ResultList(props = null) {
           </div>
         </div>
         {/* フィルタリングを行いながら行いながらリザルト一覧を展開 */}
-        {resultModel.filterResultList(resultList, filterObj).map( (result) => (
+        {filterResultList(resultList, filterObj).map( (result) => (
           <Link key={result.id} to={`/results/${result.id}`}>
             <div className={`${styles.resultItem} ${result.resultType}`}>
               {result.name}
