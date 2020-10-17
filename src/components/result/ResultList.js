@@ -37,7 +37,6 @@ export default function ResultList(props = null) {
   const resultList = sort(_.cloneDeep(useSelector(selectResults({
     projectId: projectId
   }))));
-  console.log(resultList);
 
   const [searchWord, setSearchWord] = useState("");
   const [isSearchScreenshotResultFilter, setIsSearchScreenshotResultFilter] = useState(true);
