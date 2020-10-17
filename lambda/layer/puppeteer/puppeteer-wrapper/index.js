@@ -54,7 +54,7 @@ async function browserAction(puppeteerPage, action) {
       break;
     }
     default:
-      e.log(action);
+      console.log(action);
   }
 }
 module.exports.browserAction = browserAction;

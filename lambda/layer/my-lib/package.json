@@ -4,14 +4,19 @@
     "version": "0.0.1",
     "private": true,
     "dependencies": {
+        "action-validator": "file:./action-validator",
         "dynamodb-dao": "file:./dynamodb-dao",
-        "user-option-dao": "file:./user-option-dao",
         "project-dao": "file:./project-dao",
-        "page-dao": "file:./page-dao",
         "project-validator": "file:./project-validator",
-        "lambda-common": "file:./lambda-common",
+        "page-dao": "file:./page-dao",
         "page-validator": "file:./page-validator",
-        "action-validator": "file:./action-validator"
+        "user-option-dao": "file:./user-option-dao",
+        "result-dao": "file:./result-dao",
+        "result-validator": "file:./result-validator",
+        "result-item-dao": "file:./result-item-dao",
+        "s3-dao": "file:./s3-dao",
+        "sqs-dao": "file:./sqs-dao",
+        "lambda-common": "file:./lambda-common"
     },
     "scripts": {}
 }

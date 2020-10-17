@@ -1,5 +1,6 @@
 import Amplify, { API } from 'aws-amplify';
 import { getCurrentUser } from 'lib/auth/cognitoAuth';
+const querystring = require('querystring');
 
 const DIFFENDER_API_NAME = process.env.REACT_APP_AWS_APP_API_NAME;
 const DIFFENDER_API_ENDPOINT = process.env.REACT_APP_AWS_APP_API_ENDPOINT;
@@ -49,6 +50,12 @@ export async function deleteProject({projectId, request}) {
   return await API.del(DIFFENDER_API_NAME, `/projects/${projectId}`, request)
 }
 
+// スクリーンショットの取得リクエスト(プロジェクト)
+export async function ScreenshotQueingProject({projectId, request}) {
+  request = await requestSetup(request);
+  return await API.post(DIFFENDER_API_NAME, `/projects/${projectId}/screenshot`, request)
+}
+
 // ページ一覧の取得
 export async function getPageList({projectId, request}) {
   request = await requestSetup(request);
@@ -83,6 +90,12 @@ export async function deletePage({projectId, pageId, request}) {
 export async function testPage({projectId, request}) {
   request = await requestSetup(request);
   return await API.post(DIFFENDER_API_NAME, `/projects/${projectId}/pages/test`, request)
+}
+
+// リザルト一覧の取得
+export async function getResultList({queryStringsObject, request}) {
+  request = await requestSetup(request);
+  return await API.get(DIFFENDER_API_NAME, `/results?${querystring.stringify(queryStringsObject)}`, request);
 }
 
 // ユーザオプションの取得

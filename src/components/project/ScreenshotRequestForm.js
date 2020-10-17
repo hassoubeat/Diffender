@@ -1,51 +1,108 @@
-import React, { useState } from 'react';
-import * as toast from 'lib/util/toast';
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { useForm } from "react-hook-form";
+import UtilInput from 'components/util/input/Input';
 import styles from './ScreenshotRequestForm.module.scss';
 
+import {  
+  setResult
+} from 'app/domainSlice';
+
+import * as api from 'lib/api/api';
+import * as toast from 'lib/util/toast';
+
 export default function ScreenshotRequest(props = null) {
-  // パラメータ取得
+  // props setup
   const projectId = props.projectId;
   const requestSuccessCallback = props.requestSuccessCallback;
-  // 入力フォーム用のState定義
-  const [resultName, setResultName] = useState("");
+
+  // hook setup
+  const dispatch = useDispatch();
+
+  // ReactHookForm setup
+  const {register, errors, handleSubmit} = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      name: "",
+      description: ""
+    }
+  });
+
+  // submit hander
+  const onSubmit = async (data) => {
+    toast.infoToast(
+      { message: `スクリーンショット取得リクエストを送信しました` }
+    );
+    try {
+      dispatch(setResult(
+        await api.ScreenshotQueingProject({
+          projectId: projectId,
+          request: {
+            body: data
+          }
+        })
+      ));
+      toast.successToast(
+        { message: `スクリーンショット取得リクエストが完了しました` }
+      );
+      if (requestSuccessCallback) requestSuccessCallback();
+    } catch (error) {
+      console.log(error.response);
+      toast.errorToast(
+        { message: `スクリーンショット取得リクエストに失敗しました` }
+      );
+    }
+  }
+
+  // submit error hander
+  const onSubmitError = (error) => {
+    console.table(error);
+    console.log(error)
+    toast.errorToast(
+      { message: "入力エラーが存在します" }
+    )
+  }
 
   return (
     <React.Fragment>
       <div className={styles.screenshotRequestForm}>
         <div className={styles.inputArea}>
-          {/* リザルト名の入力フォーム */}
-          <div className={styles.inputItem}>
-            <label className={styles.inputLabel}>
-              リザルト名
-            </label>
-            <div>
-              <input className={styles.inputText} type="text" placeholder=" 例：20200701の定期チェック_example.com" 
-                onChange={(e) => {setResultName(e.target.value)}} 
-              />
-            </div>
-          </div>
+          <UtilInput
+            label="リザルト名" 
+            placeholder="20200701の定期チェック_example.com" 
+            type="text" 
+            name="name" 
+            errorMessages={ (errors.name) && [errors.name.message] } 
+            inputRef={ register({
+              maxLength : {
+                value: 30,
+                message: '最大30文字で入力してください'
+              }
+            })}
+          />
+          <UtilInput
+            label="リザルトの説明" 
+            placeholder="2020年7月分の差分チェック用" 
+            type="text" 
+            name="description" 
+            errorMessages={ (errors.description) && [errors.description.message] } 
+            inputRef={ register({
+              maxLength : {
+                value: 50,
+                message: '最大50文字で入力してください'
+              }
+            })}
+          />
           <div className={styles.actionArea}>
-            <span className={styles.postButton} onClick={
-              async () => { await screenshotRequest({
-                projectId: projectId,
-                resultName: resultName
-              }, requestSuccessCallback)}
-            }>取得</span>
+            <span 
+              className={styles.postButton} 
+              onClick={
+                handleSubmit(onSubmit, onSubmitError)
+              } 
+            >取得</span>
           </div>
         </div>
       </div>
     </React.Fragment>
   );
-
-  async function screenshotRequest(postObj, successCallback) {
-    console.log(postObj);
-    toast.infoToast(
-      { message: "スクリーンショットの取得リクエストを送信しました" }
-    );
-    // TODO APIの呼び出し
-    toast.infoToast(
-      { message: "スクリーンショットの取得リクエストの受付が完了しました" }
-    );
-    if(successCallback) successCallback();
-  }
 }

@@ -38,8 +38,7 @@ export default function ProjectInfo(props = null) {
         />
         <div className={styles.relateResultArea}>
           <div className={styles.title}>関連するリザルト</div>
-          {/* TODO 検索条件をpropsとして渡す */}
-          <ResultList />
+          <ResultList projectId={projectId} isDisplayDiffRequestForm={true} />
         </div>
       </div>
       <Modal 

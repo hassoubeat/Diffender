@@ -25,7 +25,7 @@ export default function DiffRequestForm(props = null) {
               <select className={styles.inputSelect} type="select"
                 onChange={(e) => { setOriginResultId(e.target.value) }} >
                 <option value=""> --リザルトを選択してください-- </option>
-                { resultList.map( (result) => (　<option key={result.Id} value={result.Id}>{result.resultName}</option>　)) }
+                { resultList.map( (result) => (　<option key={result.id} value={result.id}>{result.name}</option>　)) }
               </select>
             </div>
           </div>
@@ -38,7 +38,7 @@ export default function DiffRequestForm(props = null) {
               <select className={styles.inputSelect} type="select" 
                 onChange={(e) => { setTargetResultId(e.target.value) }}>
                 <option value=""> --リザルトを選択してください-- </option>
-                { resultList.map( (result) => (　<option key={result.Id} value={result.Id}>{result.resultName}</option>　)) }
+                { resultList.map( (result) => (　<option key={result.id} value={result.id}>{result.name}</option>　)) }
               </select>
             </div>
           </div>

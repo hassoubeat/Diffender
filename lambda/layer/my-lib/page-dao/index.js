@@ -89,8 +89,6 @@ async function updatePage(updateObject) {
         actions = :actions, 
         isEnableBeforeCommonAction = :isEnableBeforeCommonAction, 
         isEnableAfterCommonAction = :isEnableAfterCommonAction, 
-        pageTieUserId = :pageTieUserId, 
-        pageTieProjectId = :pageTieProjectId, 
       `,
       ExpressionAttributeNames: {
         // nameが予約語と被っているため、プレースホルダーで対応
@@ -103,9 +101,7 @@ async function updatePage(updateObject) {
         ":screenshotOptions": updateObject.screenshotOptions, 
         ":actions": updateObject.actions, 
         ":isEnableBeforeCommonAction": updateObject.isEnableBeforeCommonAction, 
-        ":isEnableAfterCommonAction": updateObject.isEnableAfterCommonAction, 
-        ":pageTieUserId": updateObject.pageTieUserId, 
-        ":pageTieProjectId": updateObject.pageTieProjectId, 
+        ":isEnableAfterCommonAction": updateObject.isEnableAfterCommonAction
       }
     }
   )

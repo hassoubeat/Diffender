@@ -57,7 +57,7 @@
     }
 
     // TODO 暫定版。最終的にはSVGアイコンでSSとDIFFを表現する
-    &:global.SS:before {
+    &:global.SCREENSHOT:before {
       content: " S ";
     }
     &:global.DIFF:before {

@@ -1,42 +1,91 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Modal from 'react-modal';
 import DiffRequestForm from './DiffRequestForm';
+import Loading from 'components/common/Loading';
+
+import { 
+  setInitialLoadState, 
+  setResults, 
+  selectInitialLoadState, 
+  selectResults
+} from 'app/domainSlice';
+
+import _ from 'lodash';
+import {
+  sort,
+  filterResultList,
+  getResultList
+} from 'lib/result/model';
 import styles from './ResultList.module.scss';
 
 // モーダルの展開先エレメントの指定
 Modal.setAppElement('#root');
 
-export default function ReusltList(props = null) {
-  // propsの展開
-  // TODO 検索条件を取得
+export default function ResultList(props = null) {
+  // props setup
+  const projectId = props.projectId;
+  const isDisplayDiffRequestForm = props.isDisplayDiffRequestForm || false;
+
+  // hook setup
+  const dispatch = useDispatch();
+
+  // redux-state setup
+  const initialLoadStateKey = (projectId) ?  `resultList_${projectId}` : "resultList";
+  const isLoadedResultList = useSelector(selectInitialLoadState(initialLoadStateKey));
+  const resultList = sort(_.cloneDeep(useSelector(selectResults({
+    projectId: projectId
+  }))));
 
   const [searchWord, setSearchWord] = useState("");
   const [isSearchScreenshotResultFilter, setIsSearchScreenshotResultFilter] = useState(true);
   const [isSearchDiffResultFilter, setIsSearchDiffResultFilter] = useState(true);
-  const [resultList, setResultList] = useState([]);
   const [isDisplayDiffRequestFormModal, setIsDisplayDiffRequestFormModal] = useState(false);
+
+  // リザルト一覧の取得、及びStateの更新
+  const updateResultList = useCallback( async () => {
+    const queryStringsObject = {};
+    if (projectId) queryStringsObject.projectId = projectId;
+    const updateResultList = await getResultList({
+      queryStringsObject: queryStringsObject
+    });
+    dispatch(setResults(updateResultList));
+    dispatch(setInitialLoadState({
+      key: initialLoadStateKey,
+      value: true
+    }));
+  }, [dispatch, projectId, initialLoadStateKey]);
 
   useEffect( () => {
     // プロジェクト一覧を取得して、Stateを更新
     const asyncUpdateResultList = async () => {
-      setResultList(await getResultList());
+      // 既にResultListが一度読み込まれていれば読み込みしない
+      if (isLoadedResultList) return;
+      await updateResultList();
     };
     asyncUpdateResultList();
-  }, []);
+  }, [isLoadedResultList, updateResultList]);
 
   const filterObj = {
     searchWord: searchWord,
     isSearchScreenshotResultFilter: isSearchScreenshotResultFilter,
     isSearchDiffResultFilter: isSearchDiffResultFilter
   }
+
+  if (!isLoadedResultList) return (
+    <Loading/>
+  );
+
   return (
     <React.Fragment>
       <div className={styles.resultList}>
         <div className={styles.actionArea}>
-          <button className={`button ${styles.diffRequestButton}`} onClick={
-            async () => { setIsDisplayDiffRequestFormModal(true) }
-          }>Diffの取得</button>
+          { isDisplayDiffRequestForm &&
+            <button className={`button ${styles.diffRequestButton}`} onClick={
+              async () => { setIsDisplayDiffRequestFormModal(true) }
+            }>Diffの取得</button>
+          }
         </div>
         <div className={styles.actions}>
           <input className={styles.searchBox} type="text" placeholder="search" onChange={(e) => setSearchWord(e.target.value)} />
@@ -53,11 +102,11 @@ export default function ReusltList(props = null) {
         </div>
         {/* フィルタリングを行いながら行いながらリザルト一覧を展開 */}
         {filterResultList(resultList, filterObj).map( (result) => (
-          <Link key={result.Id} to={`/results/${result.Id}`}>
+          <Link key={result.id} to={`/results/${result.id}`}>
             <div className={`${styles.resultItem} ${result.resultType}`}>
-              {result.resultName}
+              {result.name}
               <div className={styles.createDate}>
-                {result.createDate}
+                {result.createDt}
               </div>
             </div>
           </Link>
@@ -81,43 +130,4 @@ export default function ReusltList(props = null) {
       </Modal>
     </React.Fragment>
   );
-
-  function filterResultList(resultList, filterObj) {
-    return resultList.filter((result) => { 
-      return (
-        // プロジェクト名に検索ワードが含まれる要素のみフィルタリング
-        !!result.resultName.match(filterObj.searchWord) &&
-        (
-          // スクリーンショットリザルトのフィルタリング
-          (filterObj.isSearchScreenshotResultFilter && result.resultType === "SS") ||
-          // Diffリザルトのフィルタリング
-          (filterObj.isSearchDiffResultFilter && result.resultType === "DIFF")
-        )
-      );
-    });
-  }
-
-  async function getResultList() {
-    // TODO いずれlibにAPIを実装してそちらからデータを取得
-    return [
-      {
-        Id: "result-1",
-        resultName: "リザルト1",
-        resultType: "SS",
-        createDate: "2020/07/01 15:30:15"
-      },
-      {
-        Id: "result-2",
-        resultName: "リザルト2",
-        resultType: "DIFF",
-        createDate: "2020/07/01 15:30:30"
-      },
-      {
-        Id: "result-3",
-        resultName: "リザルト3",
-        resultType: "SS",
-        createDate: "2020/07/01 15:30:45"
-      },
-    ];
-  }
 }

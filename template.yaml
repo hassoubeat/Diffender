@@ -12,6 +12,7 @@ Globals:
       Variables:
         DIFFENDER_DYNAMODB_TABLE_NAME: !Ref DiffenderDynamoDB
         DIFFENDER_S3_BUCKET_NAME: !Ref DiffenderS3
+        DIFFENDER_SCREENSHOT_PROCESS_SQS: !Ref ScreenshotProcessSQS
         TZ: 'Asia/Tokyo'
 
 Parameters:
@@ -109,6 +110,26 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /projects/{projectId}
             Method: delete
+  # Projectのスクリーンショット取得キューリクエスト
+  ScreenshotQueingProjectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/projects/ScreenshotQueingProjectFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+        - SQSSendMessagePolicy:
+            QueueName:
+              !GetAtt ScreenshotProcessSQS.QueueName
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /projects/{projectId}/screenshot
+            Method: post
   # Page一覧の取得
   GetPageListFunction:
     Type: AWS::Serverless::Function
@@ -217,6 +238,24 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /projects/{projectId}/pages/test
             Method: post
+
+  # Projectsの一覧取得
+  GetResultListFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/results/GetResultListFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /results
+            Method: get
   # UserOptionの取得
   GetUserOptionFunction:
     Type: AWS::Serverless::Function
@@ -268,6 +307,28 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /userOption
             Method: put
+  # スクリーンショット取得処理
+  ScreenshotProcessFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/screenshots/ScreenshotProcessFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+        - S3CrudPolicy:
+            BucketName: !Ref DiffenderS3
+      Layers:
+        - !Ref PuppeteerLayer
+      Timeout: 30 # SQSの可視性タイムアウトと揃える
+      MemorySize: 1600 # Puppeteerを動かす以上最低必要なメモリ
+      Events:
+        SQSQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt ScreenshotProcessSQS.Arn
+            BatchSize: 1
     
   # Puppeteer(chrome-aws-lambda)の関連ライブラリのレイヤー
   PuppeteerLayer:
@@ -441,6 +502,27 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2
+
+  # スクリーンショット取得処理のキュー
+  ScreenshotProcessSQS:
+    Type: AWS::SQS::Queue
+    Properties:
+      # 可視性タイムアウト
+      VisibilityTimeout: 30
+      # メッセージをキューに貯めておく期間
+      MessageRetentionPeriod: 86400
+      # DLQの設定
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt ScreenshotProcessDLQ.Arn
+        maxReceiveCount: 1
+  # スクリーンショット取得処理のデッドレターキュー
+  ScreenshotProcessDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      # 可視性タイムアウト
+      VisibilityTimeout: 30
+      # メッセージをキューに貯めておく期間
+      MessageRetentionPeriod: 86400
   
   # 本アプリで利用するCognitoユーザプール
   DiffenderUserPool:
