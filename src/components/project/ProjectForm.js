@@ -6,8 +6,8 @@ import Accordion from 'components/util/accordion/Accordion';
 import ActionForm from 'components/action/ActionForm';
 
 import {  
-  addProjects,
-  deleteProjects,
+  setProject,
+  deleteProject,
   selectProject
 } from 'app/domainSlice';
 
@@ -68,7 +68,7 @@ export default function ProjectForm(props = null) {
         const updateProject = await api.getProject({
           projectId: projectId
         })
-        dispatch(addProjects(
+        dispatch(setProject(
           await api.putProject({
             projectId: projectId, 
             request : {
@@ -80,7 +80,7 @@ export default function ProjectForm(props = null) {
           })
         ));
       } else {
-        dispatch(addProjects(
+        dispatch(setProject(
           await api.postProject({
             request: {
               body: project
@@ -121,7 +121,7 @@ export default function ProjectForm(props = null) {
         { message: "プロジェクトの削除が完了しました" }
       );
       if (successDeleteCallback) successDeleteCallback();
-      dispatch(deleteProjects(projectId));
+      dispatch(deleteProject(projectId));
     } catch (error) {
       toast.errorToast(
         { message: "プロジェクトの削除に失敗しました" }

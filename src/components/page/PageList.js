@@ -8,13 +8,21 @@ import Loading from 'components/common/Loading';
 
 import { 
   setInitialLoadState, 
+  setProject,
   setPages, 
+  setPage, 
   selectInitialLoadState,
-  selectPagesByProjectId
+  selectPagesByProjectId,
+  selectProject
 } from 'app/domainSlice';
 
 import _ from 'lodash';
-import * as pageModel from 'lib/page/model';
+import {
+  searchPageList,
+  updatePageListSortMap,
+  sortPageList,
+  getPageList
+} from 'lib/page/model';
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
 import * as arrayWrapper from 'lib/util/arrayWrapper';
@@ -34,7 +42,12 @@ export default function PageList(props = null) {
 
   // redux-state setup
   const isLoadedPageList = useSelector(selectInitialLoadState(`pageListMap.${projectId}`));  
-  const pageList = _.cloneDeep(useSelector(selectPagesByProjectId(projectId)));
+  const project = _.cloneDeep(useSelector( selectProject(projectId) ));
+  const pagesSortMap = project.pagesSortMap || {};
+  const pageList = sortPageList(
+    _.cloneDeep(useSelector(selectPagesByProjectId(projectId))),
+    pagesSortMap
+  );
 
   // state seteup
   const [searchWord, setSearchWord] = useState("");
@@ -42,8 +55,9 @@ export default function PageList(props = null) {
 
   // ページ一覧の取得
   const updatePageList = useCallback( async () => {
-    const pageList = await pageModel.getPageList(projectId);
-    dispatch(setPages(pageList));
+    dispatch(setPages(
+      await getPageList(projectId)
+    ));
     dispatch(setInitialLoadState({
       key: `pageListMap.${projectId}`,
       value: true
@@ -52,11 +66,16 @@ export default function PageList(props = null) {
 
   // ページ一覧の順序入れ替えイベント
   const handleSort = async (e) => {
-    const sortedPageList = arrayWrapper.moveAt(pageList, e.oldIndex, e.newIndex);
-    dispatch(setPages(sortedPageList));
-    await pageModel.updatePageListSortMap({
+    const updatePagesSortMap = updatePageListSortMap(
+      arrayWrapper.moveAt(pageList, e.oldIndex, e.newIndex)
+    );
+    project.pagesSortMap = updatePagesSortMap;
+    dispatch(setProject(project));
+    await api.putProject({
       projectId: projectId,
-      pageList: sortedPageList
+      request: {
+        body: project
+      }
     });
   }
 
@@ -68,17 +87,17 @@ export default function PageList(props = null) {
     });
     if (!window.confirm(`ページ「${copyPage.name}」をコピーしますか？`)) return;
     try {
-      copyPage.name = `${copyPage.name}_copy`;
-      await api.postPage({
-        projectId: projectId,
-        request: {
-          body: copyPage
-        }
-      })
+      dispatch(setPage(
+        await api.postPage({
+          projectId: projectId,
+          request: {
+            body: copyPage
+          }
+        })
+      ));
       toast.successToast(
         { message: "ページのコピーが完了しました" }
       );
-      await updatePageList();
     } catch (error) {
       toast.errorToast(
         { message: "ページのコピーに失敗しました" }
@@ -106,7 +125,7 @@ export default function PageList(props = null) {
         <ReactSortable list={pageList} setList={() => {}} handle=".draggable"
           onEnd={ async (event) => {await handleSort(event)} }
         >
-          {pageModel.searchPageList(pageList, searchWord).map( (page) => (
+          {searchPageList(pageList, searchWord).map( (page) => (
             <div key={page.id} id={page.id} className={styles.pageItem}
                   onClick={() => {history.push(`/projects/${projectId}/pages/${page.id}`)}} >
               <div className={styles.main}>

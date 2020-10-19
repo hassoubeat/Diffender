@@ -11,25 +11,18 @@ export function searchPageList(pageList, searchWord) {
 }
 
 // ページソートマップの更新
-export async function updatePageListSortMap({projectId, pageList}) {
-  const project = await api.getProject({
-    projectId: projectId
-  });
-  project.pagesSortMap = bucketSort.generateSortMap(pageList, "id");;
-  await api.putProject({
-    projectId: projectId,
-    request: {
-      body: project
-    }
-  });
+export function updatePageListSortMap(pageList) {
+  return bucketSort.generateSortMap(pageList, "id");
 }
 
 // ページ一覧をソート
-export async function sortPageList({projectId, pageList}) {
-  const project = await api.getProject({
-    projectId: projectId
+export function sortPageList(pageList, pagesSortMap={}) {
+  // 降順でソート
+  pageList.sort( (a, b) =>  {
+    if( a.createDtUnix > b.createDtUnix ) return -1;
+    if( a.createDtUnix < b.createDtUnix ) return 1;
+    return 0;
   });
-  const pagesSortMap = project.pagesSortMap || {};
   const sortedObj = bucketSort.sort(pageList, pagesSortMap, "id");
   return sortedObj.noSortedList.concat(sortedObj.sortedList);
 }
@@ -46,8 +39,5 @@ export async function getPageList(projectId) {
       { message: "ページ一覧の取得に失敗しました" }
     );
   }
-  return　sortPageList({
-    projectId: projectId,
-    pageList: pageList
-  });
+  return　pageList;
 }
