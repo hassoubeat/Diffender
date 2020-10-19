@@ -44,19 +44,19 @@ export default function ProjectForm(props = null) {
     if (isUpdate) reset(project);
   }, [isUpdate, project, reset]);
 
-  const onSubmit = async (project) => {
+  const onSubmit = async (inputProject) => {
     const eventName = (isUpdate) ? "更新" : "登録";
 
     // TODO 数値型のキャスト変換
     // ReactHookFormで数値の自動キャストに対応していないため、手動キャスト
     // 自動キャストを追加するかの議論は https://github.com/react-hook-form/react-hook-form/issues/615
     // 自動キャストが実装された場合は対応して本処理を除外
-    project.beforeCommonActions = project.beforeCommonActions || [];
-    project.beforeCommonActions.forEach((action) => {
+    inputProject.beforeCommonActions = inputProject.beforeCommonActions || [];
+    inputProject.beforeCommonActions.forEach((action) => {
       if (action.millisecond) action.millisecond = Number(action.millisecond);
     });
-    project.afterCommonActions = project.afterCommonActions || [];
-    project.afterCommonActions.forEach((action) => {
+    inputProject.afterCommonActions = inputProject.afterCommonActions || [];
+    inputProject.afterCommonActions.forEach((action) => {
       if (action.millisecond) action.millisecond = Number(action.millisecond);
     });
 
@@ -65,16 +65,13 @@ export default function ProjectForm(props = null) {
     );
     try {
       if (isUpdate) {
-        const updateProject = await api.getProject({
-          projectId: projectId
-        })
         dispatch(setProject(
           await api.putProject({
             projectId: projectId, 
             request : {
               body: {
-                ...updateProject,
-                ...project
+                ...project,
+                ...inputProject
               }
             }
           })
@@ -83,7 +80,7 @@ export default function ProjectForm(props = null) {
         dispatch(setProject(
           await api.postProject({
             request: {
-              body: project
+              body: inputProject
             }
           })
         ));
