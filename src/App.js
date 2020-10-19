@@ -4,12 +4,11 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { selectIsDisplaySidebar, setWindow } from 'app/appSlice';
 
 import { 
-  selectIsInitialize, 
-  setIsInitialize, 
+  selectIsUserInitializeComplete, 
+  setIsUserInitializeComplete, 
   setIsLogin, 
   setCurrentUser,
-  setCurrentUserOption,
-  selectIsLogin 
+  setCurrentUserOption
 } from 'app/userSlice';
 
 import { 
@@ -41,8 +40,7 @@ function App() {
   const dispatch = useDispatch();
 
   // Redux-Stateの取得
-  const isIntialize = useSelector(selectIsInitialize);
-  const isLogin = useSelector(selectIsLogin);
+  const isUserInitializeComplete = useSelector(selectIsUserInitializeComplete);
   const isDisplaySidebar = useSelector(selectIsDisplaySidebar);
 
   useEffect( () => {
@@ -61,6 +59,8 @@ function App() {
     // 初回画面表示時にStateにセット
     updateStateWindow();
 
+    if (isUserInitializeComplete) return;
+
     // ログインユーザ設定
     const getLoginUser = async () => {
       let currentUser = null;
@@ -69,7 +69,7 @@ function App() {
       } catch (error) {
         console.log(error);
       }
-      if (currentUser || isLogin) {
+      if (currentUser) {
         // ログイン時は初期表示に必要なデータをReduxにセット
         dispatch(setCurrentUser({...currentUser.getSignInUserSession().getIdToken().payload}));
         dispatch(setCurrentUserOption( await api.getUserOption() ));
@@ -78,13 +78,13 @@ function App() {
         dispatch(setIsLogin(true));
       }
       // ログイン状態の初期化完了
-      dispatch(setIsInitialize(false));
+      dispatch(setIsUserInitializeComplete(true));
     };
     getLoginUser();
-  }, [dispatch, isIntialize, isLogin]);
+  }, [dispatch, isUserInitializeComplete]);
 
   // ログイン状態の初期化中はレンダリングを行わない
-  if (isIntialize) return (
+  if (!isUserInitializeComplete) return (
     <Loading/>
   );
 

@@ -5,8 +5,7 @@ import UtilInput from 'components/util/input/Input';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { 
-  setIsLogin, 
-  setCurrentUser
+  setIsUserInitializeComplete
 } from 'app/userSlice';
 import * as toast from 'lib/util/toast';
 import styles from './SignIn.module.scss';
@@ -24,7 +23,7 @@ export default function SignIn(props = null) {
   // サインインボタン押下時のイベント
   const handleSignIn = async () => {
     try {
-      const result = await signIn(
+      await signIn(
         user.userId,
         user.password
       );
@@ -36,9 +35,8 @@ export default function SignIn(props = null) {
         if (error.response.status === 404) await api.postUserOption();
       }
       
-      // ReduxStateにログインしたユーザ情報をセット
-      dispatch(setCurrentUser({...result.attributes}));
-      dispatch(setIsLogin(true));
+      // ReduxStateのユーザ情報の初期化を再実施
+      dispatch(setIsUserInitializeComplete(false));
 
       toast.successToast({
         message: 'サインインしました',
