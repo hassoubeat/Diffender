@@ -12,7 +12,8 @@ import {
 } from 'app/userSlice';
 
 import { 
-  setProjects
+  setProjects,
+  setResults
 } from 'app/domainSlice';
 
 import { getCurrentUser } from 'lib/auth/cognitoAuth'
@@ -71,6 +72,7 @@ function App() {
         dispatch(setCurrentUser({...currentUser.getSignInUserSession().getIdToken().payload}));
         dispatch(setCurrentUserOption( await api.getUserOption() ));
         dispatch(setProjects( await api.getProjectList({}) ));
+        dispatch(setResults( await api.getResultList({}) ));
         dispatch(setIsLogin(true));
       }
       // ログイン状態の初期化完了
