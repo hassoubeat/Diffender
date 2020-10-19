@@ -15,6 +15,12 @@ export function updateProjectListSortMap(projectList) {
 
 // プロジェクト一覧をソート
 export function sortProjectList(projectList, projectSortMap={}) {
+  // 降順でソート
+  projectList.sort( (a, b) =>  {
+    if( a.createDtUnix > b.createDtUnix ) return -1;
+    if( a.createDtUnix < b.createDtUnix ) return 1;
+    return 0;
+  });
   const sortedObj = bucketSort.sort(projectList, projectSortMap, "id");
   return sortedObj.noSortedList.concat(sortedObj.sortedList);
 }
