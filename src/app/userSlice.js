@@ -4,14 +4,14 @@ import _ from 'lodash';
 export const userSlice = createSlice({
   name: 'user',
   initialState: {
-    isInitialize: true,
+    isUserInitializeComplete: false,
     isLogin: false,
     currentUser: {},
     currentUserOption: {}
   },
   reducers: {
-    setIsInitialize: (state, action) => {
-      state.isInitialize = action.payload;
+    setIsUserInitializeComplete: (state, action) => {
+      state.isUserInitializeComplete = action.payload;
     },
     setIsLogin: (state, action) => {
       state.isLogin = action.payload;
@@ -30,7 +30,7 @@ export const userSlice = createSlice({
 
 // ActionCreaterのエクスポート
 export const { 
-  setIsInitialize, 
+  setIsUserInitializeComplete, 
   setIsLogin, 
   setCurrentUser, 
   setCurrentUserOption,
@@ -38,7 +38,7 @@ export const {
 } = userSlice.actions;
 
 // ステートをuseSelectorフックから呼び出し可能に
-export const selectIsInitialize = (state) => state.user.isInitialize;
+export const selectIsUserInitializeComplete = (state) => state.user.isUserInitializeComplete;
 export const selectIsLogin = (state) => state.user.isLogin;
 export const selectCurrentUser = (state) => state.user.currentUser;
 export const selectCurrentUserOption = (state) => state.user.currentUserOption;
