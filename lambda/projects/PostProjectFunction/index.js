@@ -20,8 +20,8 @@ exports.lambda_handler = async (event, context) => {
 
     postProject.projectTieUserId = user.sub;
     postProject.id = await projectDao.generateProjectId();
-    postProject.beforeCommonActions = [];
-    postProject.afterCommonActions = [];
+    postProject.beforeCommonActions = postProject.beforeCommonActions || [];
+    postProject.afterCommonActions = postProject.afterCommonActions || [];
     postProject.pagesSortMap = {};
     
     projectValidator.projectValid(postProject);
