@@ -1,20 +1,26 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState  } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { ReactSortable } from "react-sortablejs";
 import { useHistory } from 'react-router-dom';
 import Modal from 'react-modal';
 import ProjectForm from './ProjectForm';
-import Loading from 'components/common/Loading';
 
 import { 
-  setInitialLoadState, 
-  setProjects, 
-  selectInitialLoadState, 
+  setProjectsSortMap,
+  selectCurrentUserOption
+} from 'app/userSlice';
+
+import { 
   selectProjects
 } from 'app/domainSlice';
 
 import _ from 'lodash';
-import * as projectModel from 'lib/project/model';
+import {
+  filterProjectList,
+  updateProjectListSortMap,
+  sortProjectList
+} from 'lib/project/model';
+import * as api from 'lib/api/api';
 import * as arrayWrapper from 'lib/util/arrayWrapper';
 import styles from './ProjectList.module.scss';
 
@@ -28,42 +34,28 @@ export default function ProjectList() {
   const dispatch = useDispatch();
 
   // redux-state setup
-  const isLoadedProjectList = useSelector(selectInitialLoadState('projectList'));
-  const projectList = _.cloneDeep(useSelector(selectProjects));
+  const userOption = _.cloneDeep(useSelector(selectCurrentUserOption));
+  const projectsSortMap = userOption.projectsSortMap || {};
+  const projectList = sortProjectList(
+    _.cloneDeep(useSelector(selectProjects)),
+    projectsSortMap
+  );
 
   // state setup
   const [searchWord, setSearchWord] = useState("");
   const [isDisplayProjectFormModal, setDisplayProjectFormModal] = useState(false);
 
-  // プロジェクト一覧の取得、及びStateの更新
-  const updateProjectList = useCallback( async () => {
-    const updateProjectList = await projectModel.getProjectList();
-    dispatch(setProjects(updateProjectList));
-    dispatch(setInitialLoadState({
-      key: 'projectList',
-      value: true
-    }));
-  }, [dispatch]);
-
   // プロジェクト一覧の順序入れ替え
   const handleSort = async (e) => {
-    const sortedProjectList = arrayWrapper.moveAt(projectList, e.oldIndex, e.newIndex);
-    dispatch(setProjects(sortedProjectList));
-    await projectModel.updateProjectListSortMap(sortedProjectList);
+    const updateProjectsSortMap = updateProjectListSortMap(
+      arrayWrapper.moveAt(projectList, e.oldIndex, e.newIndex)
+    );
+    dispatch(setProjectsSortMap(updateProjectsSortMap));
+    userOption.projectsSortMap = updateProjectsSortMap;
+    await api.putUserOption({
+      body: userOption
+    });
   }
-
-  useEffect( () => {
-    const asyncUpdateProjectList = async () => {
-      // 既にProjectListが一度読み込まれていれば読み込みしない
-      if (isLoadedProjectList) return;
-      await updateProjectList();
-    };
-    asyncUpdateProjectList();
-  }, [updateProjectList, isLoadedProjectList]);
-
-  if (!isLoadedProjectList) return (
-    <Loading/>
-  );
 
   return (
     <React.Fragment>
@@ -74,7 +66,7 @@ export default function ProjectList() {
         >
           {
             // プロジェクト一覧をフィルタリングしながら表示
-            projectModel.filterProjectList(projectList, searchWord).map( (project) => (
+            filterProjectList(projectList, searchWord).map( (project) => (
               <div key={project.id} id={project.id} className={styles.projectItem} onClick={() => {history.push(`/projects/${project.id}`)}}>
                 <div className={styles.main}>
                   <span className={styles.title}>
@@ -107,7 +99,6 @@ export default function ProjectList() {
           successPostCallback={ async () => {
             // プロジェクト登録成功時にモーダルを閉じてプロジェクト一覧を更新する
             setDisplayProjectFormModal(false);
-            await updateProjectList();
           }} 
         />
         <div className="closeModalButton" onClick={() => {setDisplayProjectFormModal(false)}}>✕</div>

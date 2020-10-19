@@ -30,12 +30,12 @@ export const domainSlice = createSlice({
       state.projects = projectListObject;
     },
     // 状態：プロジェクト一覧 追加・変更
-    addProjects: (state, action) => {
+    setProject: (state, action) => {
       const project = action.payload;
       state.projects[project.id] = project;
     },
     // 状態：プロジェクト一覧 削除
-    deleteProjects: (state, action) => {
+    deleteProject: (state, action) => {
       const projectId = action.payload;
       delete state.projects[projectId];
     },
@@ -90,8 +90,8 @@ export const domainSlice = createSlice({
 export const { 
   setInitialLoadState,
   setProjects,
-  addProjects,
-  deleteProjects,
+  setProject,
+  deleteProject,
   setPages,
   setPage,
   deletePage,

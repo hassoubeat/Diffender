@@ -2,12 +2,20 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { selectIsDisplaySidebar, setWindow } from 'app/appSlice';
+
 import { 
   selectIsInitialize, 
   setIsInitialize, 
   setIsLogin, 
-  setCurrentUser
+  setCurrentUser,
+  setCurrentUserOption
 } from 'app/userSlice';
+
+import { 
+  setProjects,
+  setResults
+} from 'app/domainSlice';
+
 import { getCurrentUser } from 'lib/auth/cognitoAuth'
 import queryString from 'query-string';
 
@@ -24,6 +32,8 @@ import Sidebar from 'components/common/Sidebar';
 import NotFound404 from 'components/common/NotFound';
 import Main from 'components/Main';
 import Loading from 'components/common/Loading';
+
+import * as api from 'lib/api/api';
 
 
 function App() {
@@ -58,8 +68,11 @@ function App() {
         console.log(error);
       }
       if (currentUser) {
-        // IdToken内のユーザ情報をReduxStateに格納
+        // ログイン時は初期表示に必要なデータをReduxにセット
         dispatch(setCurrentUser({...currentUser.getSignInUserSession().getIdToken().payload}));
+        dispatch(setCurrentUserOption( await api.getUserOption() ));
+        dispatch(setProjects( await api.getProjectList({}) ));
+        dispatch(setResults( await api.getResultList({}) ));
         dispatch(setIsLogin(true));
       }
       // ログイン状態の初期化完了

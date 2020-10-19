@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm, FormProvider } from "react-hook-form";
 import UtilInput from 'components/util/input/Input';
 import Accordion from 'components/util/accordion/Accordion';
-import Loading from 'components/common/Loading';
 import ActionForm from 'components/action/ActionForm';
 
 import {  
-  addProjects,
-  deleteProjects,
+  setProject,
+  deleteProject,
   selectProject
 } from 'app/domainSlice';
 
@@ -27,10 +26,7 @@ export default function ProjectForm(props = null) {
   const dispatch = useDispatch();
 
   // redux-state setup
-  const reduxStateProject = useSelector(selectProject(projectId));
-
-  // state setup
-  const [isLoading, setIsLoading] = useState(isUpdate);
+  const project = useSelector(selectProject(projectId));
 
   // ReactHookForm setup
   const reactHookFormMethods = useForm({
@@ -45,29 +41,8 @@ export default function ProjectForm(props = null) {
   const {register, errors, reset, handleSubmit} = reactHookFormMethods;
 
   useEffect( () => {
-    if (!isUpdate) return;
-    const asyncSetProject = async () => {
-      let updateProject = {};
-      try {
-        // ReduxStateを優先、なかったらAPIで取得
-        if (reduxStateProject) {
-          updateProject = reduxStateProject;
-        } else {
-          updateProject = await api.getProject({
-            projectId: projectId
-          });
-          dispatch( addProjects(updateProject) );
-        }
-      } catch (error) {
-        toast.errorToast(
-          { message: "プロジェクトの取得に失敗しました" }
-        );
-      }
-      reset(updateProject);
-      setIsLoading(false);
-    }
-    asyncSetProject();
-  }, [projectId, isUpdate, reset, dispatch, reduxStateProject]);
+    if (isUpdate) reset(project);
+  }, [isUpdate, project, reset]);
 
   const onSubmit = async (project) => {
     const eventName = (isUpdate) ? "更新" : "登録";
@@ -93,7 +68,7 @@ export default function ProjectForm(props = null) {
         const updateProject = await api.getProject({
           projectId: projectId
         })
-        dispatch(addProjects(
+        dispatch(setProject(
           await api.putProject({
             projectId: projectId, 
             request : {
@@ -105,7 +80,7 @@ export default function ProjectForm(props = null) {
           })
         ));
       } else {
-        dispatch(addProjects(
+        dispatch(setProject(
           await api.postProject({
             request: {
               body: project
@@ -146,17 +121,13 @@ export default function ProjectForm(props = null) {
         { message: "プロジェクトの削除が完了しました" }
       );
       if (successDeleteCallback) successDeleteCallback();
-      dispatch(deleteProjects(projectId));
+      dispatch(deleteProject(projectId));
     } catch (error) {
       toast.errorToast(
         { message: "プロジェクトの削除に失敗しました" }
       );
     }
   }
-
-  if (isLoading) return (
-    <Loading/>
-  );
 
   return (
     <React.Fragment>
