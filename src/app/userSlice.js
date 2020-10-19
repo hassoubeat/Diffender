@@ -6,6 +6,7 @@ export const userSlice = createSlice({
     isInitialize: true,
     isLogin: false,
     currentUser: {},
+    currentUserOptions: {}
   },
   reducers: {
     setIsInitialize: (state, action) => {
@@ -16,17 +17,21 @@ export const userSlice = createSlice({
     },
     setCurrentUser: (state, action) => {
       state.currentUser = action.payload;
-    }
+    },
+    setCurrentUserOptions: (state, action) => {
+      state.currentUserOptions = action.payload;
+    },
   },
 });
 
 // ActionCreaterのエクスポート
-export const { setIsInitialize, setIsLogin, setCurrentUser } = userSlice.actions;
+export const { setIsInitialize, setIsLogin, setCurrentUser, setCurrentUserOptions } = userSlice.actions;
 
 // ステートをuseSelectorフックから呼び出し可能に
 export const selectIsInitialize = (state) => state.user.isInitialize;
 export const selectIsLogin = (state) => state.user.isLogin;
 export const selectCurrentUser = (state) => state.user.currentUser;
+export const selectCurrentUserOptions = (state) => state.user.currentUserOptions;
 
 // Reducerのエクスポート
 export default userSlice.reducer;

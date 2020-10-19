@@ -6,7 +6,8 @@ import {
   selectIsInitialize, 
   setIsInitialize, 
   setIsLogin, 
-  setCurrentUser
+  setCurrentUser,
+  setCurrentUserOptions
 } from 'app/userSlice';
 import { getCurrentUser } from 'lib/auth/cognitoAuth'
 import queryString from 'query-string';
@@ -24,6 +25,8 @@ import Sidebar from 'components/common/Sidebar';
 import NotFound404 from 'components/common/NotFound';
 import Main from 'components/Main';
 import Loading from 'components/common/Loading';
+
+import * as api from 'lib/api/api';
 
 
 function App() {
@@ -60,6 +63,7 @@ function App() {
       if (currentUser) {
         // IdToken内のユーザ情報をReduxStateに格納
         dispatch(setCurrentUser({...currentUser.getSignInUserSession().getIdToken().payload}));
+        dispatch(setCurrentUserOptions( await api.getUserOption() ));
         dispatch(setIsLogin(true));
       }
       // ログイン状態の初期化完了
