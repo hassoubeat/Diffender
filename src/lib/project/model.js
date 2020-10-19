@@ -11,20 +11,17 @@ export function filterProjectList(projectList, searchWord) {
 }
 
 // プロジェクトソートマップの更新
-export async function updateProjectListSortMap(projectList) {
-  const userOption = await api.getUserOption();
-  userOption.projectsSortMap = bucketSort.generateSortMap(projectList, "id");;
+export async function updateProjectListSortMap(projectList, userOption) {
+  userOption.projectsSortMap = bucketSort.generateSortMap(projectList, "id");
   const request = {
     body: userOption
   }
-  await api.putUserOption(request);
+  return await api.putUserOption(request);
 }
 
 // プロジェクト一覧をソート
-export async function sortProjectList(projectList) {
-  const userOption = await api.getUserOption();
-  const projectsSortMap = userOption.projectsSortMap || {};
-  const sortedObj = bucketSort.sort(projectList, projectsSortMap, "id");
+export function sortProjectList(projectList, projectSortMap={}) {
+  const sortedObj = bucketSort.sort(projectList, projectSortMap, "id");
   return sortedObj.noSortedList.concat(sortedObj.sortedList);
 }
 
