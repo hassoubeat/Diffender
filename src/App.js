@@ -8,7 +8,8 @@ import {
   setIsInitialize, 
   setIsLogin, 
   setCurrentUser,
-  setCurrentUserOption
+  setCurrentUserOption,
+  selectIsLogin 
 } from 'app/userSlice';
 
 import { 
@@ -41,6 +42,7 @@ function App() {
 
   // Redux-Stateの取得
   const isIntialize = useSelector(selectIsInitialize);
+  const isLogin = useSelector(selectIsLogin);
   const isDisplaySidebar = useSelector(selectIsDisplaySidebar);
 
   useEffect( () => {
@@ -67,7 +69,7 @@ function App() {
       } catch (error) {
         console.log(error);
       }
-      if (currentUser) {
+      if (currentUser || isLogin) {
         // ログイン時は初期表示に必要なデータをReduxにセット
         dispatch(setCurrentUser({...currentUser.getSignInUserSession().getIdToken().payload}));
         dispatch(setCurrentUserOption( await api.getUserOption() ));
@@ -79,7 +81,7 @@ function App() {
       dispatch(setIsInitialize(false));
     };
     getLoginUser();
-  }, [dispatch, isIntialize]);
+  }, [dispatch, isIntialize, isLogin]);
 
   // ログイン状態の初期化中はレンダリングを行わない
   if (isIntialize) return (
