@@ -98,6 +98,34 @@ export async function getResultList({queryStringsObject, request}) {
   return await API.get(DIFFENDER_API_NAME, `/results?${querystring.stringify(queryStringsObject)}`, request);
 }
 
+// リザルトの取得
+export async function getResult({resultId, request}) {
+  // TODO 必要になった際に実装
+  throw new Error("getResult() unimplemented.");
+  // request = await requestSetup(request);
+  // return await API.get(DIFFENDER_API_NAME, `/results/${resultId}`, request);
+}
+
+// リザルトの登録
+export async function postResult({request}) {
+  // TODO 必要になった際に実装
+  throw new Error("postResult() unimplemented.");
+  // request = await requestSetup(request);
+  // return await API.post(DIFFENDER_API_NAME, `/results`, request);
+}
+
+// リザルトの更新
+export async function putResult({resultId, request}) {
+  request = await requestSetup(request);
+  return await API.put(DIFFENDER_API_NAME, `/results/${resultId}`, request);
+}
+
+// リザルトの削除
+export async function deleteResult({resultId, request}) {
+  request = await requestSetup(request);
+  return await API.del(DIFFENDER_API_NAME, `/results/${resultId}`, request)
+}
+
 // ユーザオプションの取得
 export async function getUserOption(request) {  
   request = await requestSetup(request);

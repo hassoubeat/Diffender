@@ -239,7 +239,7 @@ Resources:
             Path: /projects/{projectId}/pages/test
             Method: post
 
-  # Projectsの一覧取得
+  # Resultの一覧取得
   GetResultListFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -256,6 +256,40 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /results
             Method: get
+  # Resultの更新
+  PutResultFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/results/PutResultFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /results/{resultId}
+            Method: put
+  # Resultの削除
+  DeleteResultFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/results/DeleteResultFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /results/{resultId}
+            Method: delete
   # UserOptionの取得
   GetUserOptionFunction:
     Type: AWS::Serverless::Function

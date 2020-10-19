@@ -78,8 +78,13 @@
       background-color: #F4F4F4;
     }
 
-    .createDate {
+    .description {
       font-size: 12px;
+      color: $PLANE_TEXT_COLOR;
+    }
+
+    .createDate {
+      font-size: 10px;
       color: $PLANE_TEXT_COLOR;
     }
   }

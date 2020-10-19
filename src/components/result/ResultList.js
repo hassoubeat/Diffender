@@ -67,6 +67,9 @@ export default function ResultList(props = null) {
           <Link key={result.id} to={`/results/${result.id}`}>
             <div className={`${styles.resultItem} ${result.resultType}`}>
               {result.name}
+              <div className={styles.description}>
+                {result.description}
+              </div>
               <div className={styles.createDate}>
                 {result.createDt}
               </div>

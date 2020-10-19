@@ -1,135 +1,163 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useForm } from "react-hook-form";
+import UtilInput from 'components/util/input/Input';
+
+import {  
+  setResult,
+  deleteResult,
+  selectResult
+} from 'app/domainSlice';
+
+import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
+
 import styles from './ResultForm.module.scss';
 
 export default function ResultForm(props = null) {
-  // props展開
+  // props setup
   const isUpdate = !!props.resultId;
   const resultId = props.resultId;
   const successPostCallback = props.successPostCallback;
   const successDeleteCallback = props.successDeleteCallback;
 
-  // 入力フォーム用のState定義
-  const [resultType, setResultType] = useState("");
-  const [resultName, setResultName] = useState("");
+  // hook setup
+  const dispatch = useDispatch();
+
+  // redux-state setup
+  const result = useSelector(selectResult(resultId));
+
+  // ReactHookForm setup
+  const reactHookFormMethods = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      name: "",
+      description: ""
+    }
+  });
+  const {register, errors, reset, handleSubmit} = reactHookFormMethods;
 
   useEffect( () => {
-    if (!isUpdate) return;
-    const asyncSetResult = async () => {
-      const result = await getResult(props.resultId);;
-      setResultType(result.ResultType);
-      setResultName(result.ResultName);
+    if (isUpdate) reset(result);
+  }, [isUpdate, result, reset]);
+
+  const onSubmit = async (inputResult) => {
+    const eventName = (isUpdate) ? "更新" : "登録";
+    toast.infoToast(
+      { message: `リザルトの${eventName}リクエストを送信しました` }
+    );
+    try {
+      if (isUpdate) {
+        dispatch(setResult(
+          await api.putResult({
+            resultId: resultId, 
+            request : {
+              body: {
+                ...result,
+                ...inputResult
+              }
+            }
+          })
+        ));
+      } else {
+        dispatch(setResult(
+          await api.postResult({
+            request: {
+              body: result
+            }
+          })
+        ));
+      }
+      toast.successToast(
+        { message: `リザルトの${eventName}が完了しました` }
+      );
+      if (successPostCallback) successPostCallback();
+    } catch (error) {
+      console.log(error.response);
+      toast.errorToast(
+        { message: `リザルトの${eventName}に失敗しました` }
+      );
     }
-    asyncSetResult();
-  }, [props, isUpdate]);
+  }
+
+  const onSubmitError = (error) => {
+    console.table(error);
+    console.log(error)
+    toast.errorToast(
+      { message: "入力エラーが存在します" }
+    )
+  }
+
+  // 削除ボタン押下時の処理
+  const handleDeleteResult = async () => {
+    if (!window.confirm("リザルトを削除しますか？")) return;
+    toast.infoToast(
+      { message: "リザルトの削除リクエストを送信しました" }
+    );
+    try {
+      await api.deleteResult({
+        resultId: resultId
+      });
+      toast.successToast(
+        { message: "リザルトの削除が完了しました" }
+      );
+      if (successDeleteCallback) successDeleteCallback();
+      dispatch(deleteResult(resultId));
+    } catch (error) {
+      toast.errorToast(
+        { message: "リザルトの削除に失敗しました" }
+      );
+    }
+  }
 
   return (
     <React.Fragment>
       <div className={styles.resultForm}>
         <div className={styles.inputArea}>
-          {/* リザルト種別 */}
-          {(isUpdate) && 
-            <div className={styles.inputItem}>
-              <label className={styles.inputLabel}>
-                リザルト種別
-              </label>
-              <div>
-                {resultType}  
-              </div>
-            </div>
-          }
-          {/* リザルト名の入力フォーム */}
-          <div className={styles.inputItem}>
-            <label className={styles.inputLabel}>
-              リザルト名の説明
-            </label>
-            <div>
-              <input className={styles.inputText} type="text" placeholder=" 例： 20200701_定期テスト" value={resultName} 
-                onChange={(e) => {setResultName(e.target.value)}} 
-              />
-            </div>
-          </div>
+          <UtilInput
+            label="リザルト名" 
+            placeholder="20200701の定期チェック_example.com" 
+            type="text" 
+            name="name" 
+            errorMessages={ (errors.name) && [errors.name.message] } 
+            inputRef={ register({
+              required: "リザルト名は必須です",
+              maxLength : {
+                value: 30,
+                message: '最大30文字で入力してください'
+              }
+            })}
+          />
+          <UtilInput
+            label="リザルトの説明" 
+            placeholder="2020年7月分の差分チェック用" 
+            type="text" 
+            name="description" 
+            errorMessages={ (errors.description) && [errors.description.message] } 
+            inputRef={ register({
+              maxLength : {
+                value: 50,
+                message: '最大50文字で入力してください'
+              }
+            })}
+          />
           <div className={styles.actionArea}>
-            <span className={styles.postButton} onClick={async () => { await postResult(
-              {
-                resultName: resultName
-              },
-              successPostCallback
-            )}}>
+            <span className={styles.postButton} onClick={ 
+              handleSubmit(onSubmit, onSubmitError)
+            }>
               {(isUpdate) ? '更新' : '登録'}
             </span>
             {/* 更新時のみ削除ボタンを表示 */}
-            {(isUpdate) && <span className={styles.deleteButton} onClick={
-              async () => { 
-                await deleteResult(resultId, successDeleteCallback)
-              }
-            }>削除</span>}
+            {(isUpdate) && 
+              <span 
+                className={styles.deleteButton} 
+                onClick={
+                  async () => { handleDeleteResult() }
+                }
+              >削除</span>}
           </div>
         </div>
       </div>
     </React.Fragment>
   );
-
-  // // リザルト種別が「スクリーンショット」であるか判定する
-  // function isResultTypeSS(resultType) {
-  //   return (resultType === process.env.REACT_APP_RESULT_TYPE_SS);
-  // }
-
-  // // リザルト種別が「DIFF」であるか判定する
-  // function isResultTypeDIFF(resultType) {
-  //   return (resultType === process.env.REACT_APP_RESULT_TYPE_DIFF);
-  // }
-
-  // TODO バリデーション関数
-  // 全項目のバリデーションを実施して、結果を返却する
-  // function validate(validateObj, callback) {
-  //   let errorMessages = ({});
-  //   errorMessages.name = validate(validateObj.name, ["requre", "min"]);
-    
-
-  //   const errorLength = Object.keys(errorMessages).length;
-
-  //   return {
-  //     isSuccess: (errorLength === 0),
-  //     errorMessages: errorMessages,
-  //     errorLength: Object.keys(errorMessages).length
-  //   }
-  // }
-
-  async function getResult(resultId) {
-    // TODO APIの呼び出し
-    console.log(resultId);
-    return {
-      Id: "Result-1",
-      ResultName: "リザルト1",
-      ResultType: "SCREENSHOT"
-    }
-  }
-
-  async function postResult(postObj, successCallback) {
-    console.log(postObj);
-    toast.infoToast(
-      { message: "リクエストを送信しました" }
-    );
-    // TODO APIの呼び出し
-    // TODO 新規登録と更新で呼び出すAPIを変更
-    toast.infoToast(
-      { message: "リクエストが完了しました" }
-    );
-    if (successCallback) successCallback();
-  }
-
-  async function deleteResult(resultId, successCallback) {
-    console.log(resultId);
-    if (!window.confirm('リザルトを削除しますか？')) return;
-
-    toast.infoToast(
-      { message: "削除リクエストを送信しました" }
-    );
-    // TODO APIの呼び出し
-    toast.infoToast(
-      { message: "削除が完了しました" }
-    );
-    if (successCallback) successCallback();
-  }
 }
