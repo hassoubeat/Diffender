@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { selectIsDisplaySidebar, setWindow } from 'app/appSlice';
+
 import { 
   selectIsInitialize, 
   setIsInitialize, 
@@ -9,6 +10,11 @@ import {
   setCurrentUser,
   setCurrentUserOption
 } from 'app/userSlice';
+
+import { 
+  setProjects
+} from 'app/domainSlice';
+
 import { getCurrentUser } from 'lib/auth/cognitoAuth'
 import queryString from 'query-string';
 
@@ -61,9 +67,10 @@ function App() {
         console.log(error);
       }
       if (currentUser) {
-        // IdToken内のユーザ情報をReduxStateに格納
+        // ログイン時は初期表示に必要なデータをReduxにセット
         dispatch(setCurrentUser({...currentUser.getSignInUserSession().getIdToken().payload}));
         dispatch(setCurrentUserOption( await api.getUserOption() ));
+        dispatch(setProjects( await api.getProjectList({}) ));
         dispatch(setIsLogin(true));
       }
       // ログイン状態の初期化完了

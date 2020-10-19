@@ -23,7 +23,6 @@ export const userSlice = createSlice({
       state.currentUserOption = action.payload;
     },
     setProjectsSortMap: (state, action) => {
-      console.log(action.payload);
       _.set(state.currentUserOption, "projectsSortMap", action.payload);
     },
   },
