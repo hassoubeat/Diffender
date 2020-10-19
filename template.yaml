@@ -372,6 +372,17 @@ Resources:
       #     CognitoAuthorizer:
       #       UserPoolArn: !GetAtt DiffenderUserPool.Arn
 
+  # プロキシ統合の場合エラー時にヘッダーがセットされないため、エラー時にも返すように設定
+  GatewayResponseTimeout:
+    Type: AWS::ApiGateway::GatewayResponse
+    Properties:
+      ResponseParameters:
+        gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+        gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+      ResponseType: INTEGRATION_TIMEOUT
+      RestApiId: !Ref DiffenderApi
+      StatusCode: 504
+
   # 本アプリで利用するS3バケット
   DiffenderS3:
     Type: "AWS::S3::Bucket"

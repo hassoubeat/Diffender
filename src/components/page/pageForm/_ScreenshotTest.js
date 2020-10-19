@@ -51,15 +51,21 @@ export default function ScreenshotTest(props = null) {
       );
 
     } catch (error) {
-      console.log(error);
-
-      // TODO error.responseが取得できないためタイムアウト判定ができていない。要調査。
+      console.log(error.response);
 
       setIsAPICalling(false);
+
+      let toastMessage = "スクリーンショットの取得に失敗しました";
+      switch (error.response.status) {
+        case 504: {
+          toastMessage = "処理がタイムアウトしました(最大30秒)"
+          break;
+        }
+        default: {}
+      }
       toast.errorToast(
         { 
-          message: `スクリーンショットの取得に失敗しました<br>(処理時間が30秒を超えるとタイムアウトします)`,
-          timeout: 10000
+          message: toastMessage
         }
       );
     }
