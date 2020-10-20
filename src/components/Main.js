@@ -6,6 +6,7 @@ import ProjectList from 'components/project/ProjectList';
 import ProjectListQuickView from 'components/project/ProjectListQuickView';
 import ProjectInfo from 'components/project/ProjectInfo';
 import PageList from 'components/page/PageList';
+import PageListQuickView from 'components/page/PageListQuickView';
 import PageInfo from 'components/page/PageInfo';
 import ResultList from 'components/result/ResultList';
 import ResultInfo from 'components/result/ResultInfo';
@@ -21,12 +22,26 @@ export default function Main() {
         <Route exact path="/user" render={() => (
           <UserInfo />
         )} />
-        <Route exact path="/projects" component={ProjectList} />
+        <Route exact path="/projects" render={() => (
+          <div className={styles.flex}>
+            <div className={styles.quickView}>
+              <ProjectListQuickView />
+            </div>
+            <div className={styles.content}>
+              <ProjectList />
+            </div>
+          </div>
+        )} />
         <Route exact path="/projects/:projectId" render={({match}) => (
           <React.Fragment>
             <div className={styles.flex}>
-              <div className={styles.projectListQuickView}>
-                <ProjectListQuickView selectedProjectId={match.params.projectId} />
+              <div className={styles.quickView}>
+                <ProjectListQuickView projectId={match.params.projectId} />
+              </div>
+              <div className={styles.quickView}>
+                <PageListQuickView 
+                  projectId={match.params.projectId} 
+                />
               </div>
               <div className={styles.content}>
                 <ProjectInfo projectId={match.params.projectId} />
@@ -37,8 +52,13 @@ export default function Main() {
         <Route exact path="/projects/:projectId/pages" render={({match}) => (
           <React.Fragment>
             <div className={styles.flex}>
-              <div className={styles.projectListQuickView}>
-                <ProjectListQuickView selectedProjectId={match.params.projectId} />
+              <div className={styles.quickView}>
+                <ProjectListQuickView projectId={match.params.projectId} />
+              </div>
+              <div className={styles.quickView}>
+                <PageListQuickView 
+                  projectId={match.params.projectId} 
+                />
               </div>
               <div className={styles.content}>
                 <PageList projectId={match.params.projectId} />
@@ -49,8 +69,14 @@ export default function Main() {
         <Route exact path="/projects/:projectId/pages/:pageId" render={({match}) => (
           <React.Fragment>
             <div className={styles.flex}>
-              <div className={styles.projectListQuickView}>
-                <ProjectListQuickView selectedProjectId={match.params.projectId} />
+              <div className={styles.quickView}>
+                <ProjectListQuickView projectId={match.params.projectId} />
+              </div>
+              <div className={styles.quickView}>
+                <PageListQuickView 
+                  projectId={match.params.projectId} 
+                  selectedPageId={match.params.pageId} 
+                />
               </div>
               <div className={styles.content}>
                 <PageInfo projectId={match.params.projectId} pageId={match.params.pageId} />
