@@ -35,10 +35,28 @@ export default function Main() {
           </React.Fragment>
         )} />
         <Route exact path="/projects/:projectId/pages" render={({match}) => (
-          <PageList projectId={match.params.projectId} />
+          <React.Fragment>
+            <div className={styles.flex}>
+              <div className={styles.projectListQuickView}>
+                <ProjectListQuickView selectedProjectId={match.params.projectId} />
+              </div>
+              <div className={styles.content}>
+                <PageList projectId={match.params.projectId} />
+              </div>
+            </div>
+          </React.Fragment>
         )} />
         <Route exact path="/projects/:projectId/pages/:pageId" render={({match}) => (
-          <PageInfo projectId={match.params.projectId} pageId={match.params.pageId} />
+          <React.Fragment>
+            <div className={styles.flex}>
+              <div className={styles.projectListQuickView}>
+                <ProjectListQuickView selectedProjectId={match.params.projectId} />
+              </div>
+              <div className={styles.content}>
+                <PageInfo projectId={match.params.projectId} pageId={match.params.pageId} />
+              </div>
+            </div>
+          </React.Fragment>
         )} />
         <Route exact path="/results" component={ResultList} />
         <Route exact path="/results/:resultId" render={({match}) => (
