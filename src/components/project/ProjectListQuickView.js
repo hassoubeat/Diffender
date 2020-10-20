@@ -59,6 +59,14 @@ export default function ProjectListQuickView(props = null) {
           >
            <i className="fas fa-angle-double-left" /> close
           </div>
+          <div 
+            className={styles.projectListMenuItem}
+            onClick={ () => { 
+              history.push(`/projects`)}
+            }
+          >
+           <i className="fas fa-list"/> プロジェクト一覧
+          </div>
           {projectList.map( (project) => (
               <div 
                 key={project.id}
@@ -87,7 +95,7 @@ export default function ProjectListQuickView(props = null) {
         }}>
           <i className="fas fa-angle-double-right" />
           <div className={styles.label}>
-            Project
+            Projects
           </div>
         </div>
       }

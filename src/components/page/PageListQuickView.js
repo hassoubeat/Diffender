@@ -83,6 +83,14 @@ export default function ProjectListQuickView(props = null) {
           >
            <i className="fas fa-angle-double-left" /> close
           </div>
+          <div 
+            className={styles.pageListMenuItem}
+            onClick={ () => { 
+              history.push(`/projects/${projectId}/pages`)
+            }}
+          >
+           <i className="fas fa-list"/> ページ一覧
+          </div>
           {pageList.map( (page) => (
               <div 
                 key={page.id}
