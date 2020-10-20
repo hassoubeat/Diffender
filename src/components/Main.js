@@ -36,7 +36,7 @@ export default function Main() {
           <React.Fragment>
             <div className={styles.flex}>
               <div className={styles.quickView}>
-                <ProjectListQuickView projectId={match.params.projectId} />
+                <ProjectListQuickView selectedProjectId={match.params.projectId} />
               </div>
               <div className={styles.quickView}>
                 <PageListQuickView 
@@ -53,7 +53,7 @@ export default function Main() {
           <React.Fragment>
             <div className={styles.flex}>
               <div className={styles.quickView}>
-                <ProjectListQuickView projectId={match.params.projectId} />
+                <ProjectListQuickView selectedProjectId={match.params.projectId} />
               </div>
               <div className={styles.quickView}>
                 <PageListQuickView 
@@ -70,7 +70,7 @@ export default function Main() {
           <React.Fragment>
             <div className={styles.flex}>
               <div className={styles.quickView}>
-                <ProjectListQuickView projectId={match.params.projectId} />
+                <ProjectListQuickView selectedProjectId={match.params.projectId} />
               </div>
               <div className={styles.quickView}>
                 <PageListQuickView 
