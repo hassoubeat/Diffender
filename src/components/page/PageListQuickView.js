@@ -20,7 +20,7 @@ import {
   setLSItem,
   toBoolean
 } from 'lib/util/localStorage'
-import styles from './PageListQuickView.module.scss';
+import styles from 'styles/QuickView.module.scss';
 
 export default function ProjectListQuickView(props = null) {
   // props setup
@@ -74,7 +74,7 @@ export default function ProjectListQuickView(props = null) {
   return (
     <React.Fragment>
       {isDisplayMenu && 
-        <div className={`${styles.pageListQuickView}`}>
+        <div className={`${styles.quickView}`}>
           <div 
             className={styles.closeMenuItem}
             onClick={ () => { 
@@ -84,7 +84,7 @@ export default function ProjectListQuickView(props = null) {
            <i className="fas fa-angle-double-left" /> close
           </div>
           <div 
-            className={styles.pageListMenuItem}
+            className={styles.gotoListMenuItem}
             onClick={ () => { 
               history.push(`/projects/${projectId}/pages`)
             }}
@@ -96,7 +96,7 @@ export default function ProjectListQuickView(props = null) {
                 key={page.id}
                 id={page.id} 
                 className={`
-                  ${styles.pageItem} 
+                  ${styles.menuItem} 
                   ${(page.id === selectedPageId) && styles.selected}
                 `}
                 onClick={() => { 
@@ -114,7 +114,7 @@ export default function ProjectListQuickView(props = null) {
         </div>
       }
       {!isDisplayMenu && 
-        <div className={`${styles.closePageListQuickView}`} onClick={() => {
+        <div className={`${styles.closeQuickView}`} onClick={() => {
           handleDisplayMenuToggle();
         }}>
           <i className="fas fa-angle-double-right" />
