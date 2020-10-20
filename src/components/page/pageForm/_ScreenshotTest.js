@@ -3,6 +3,7 @@ import { useFormContext } from "react-hook-form";
 import Loading from 'components/common/Loading';
 import styles from './_ScreenshotTest.module.scss';
 
+import _ from 'lodash';
 import * as toast from 'lib/util/toast';
 import * as api from 'lib/api/api';
 
@@ -56,7 +57,7 @@ export default function ScreenshotTest(props = null) {
       setIsAPICalling(false);
 
       let toastMessage = "スクリーンショットの取得に失敗しました";
-      switch (error.response.status) {
+      switch (_.get(error, 'response.status')) {
         case 504: {
           toastMessage = "処理がタイムアウトしました(最大30秒)"
           break;

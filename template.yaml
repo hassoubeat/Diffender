@@ -419,23 +419,22 @@ Resources:
       Cors:
         AllowOrigin: "'*'"
         AllowHeaders: "'*'"
+      # TODO 恐らくAWS-SAM-CLI側のバグでGatewayResponsesがうまくデプロイされないときがある
+      # 同様の問題が発生しているIssue https://github.com/aws/aws-sam-cli/issues/1027
+      GatewayResponses:
+        # プロキシ統合の場合エラー時にヘッダーがセットされないため、エラー時にも返すように設定
+        INTEGRATION_TIMEOUT:
+          ResponseParameters:
+            Headers:
+              Access-Control-Allow-Origin: "'*'"
+              Access-Control-Allow-Headers: "'*'"
+          StatusCode: 504
       # Auth:
       #   AddDefaultAuthorizerToCorsPreflight: false
       #   DefaultAuthorizer: CognitoAuthorizer
       #   Authorizers:
       #     CognitoAuthorizer:
       #       UserPoolArn: !GetAtt DiffenderUserPool.Arn
-
-  # プロキシ統合の場合エラー時にヘッダーがセットされないため、エラー時にも返すように設定
-  GatewayResponseTimeout:
-    Type: AWS::ApiGateway::GatewayResponse
-    Properties:
-      ResponseParameters:
-        gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-        gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
-      ResponseType: INTEGRATION_TIMEOUT
-      RestApiId: !Ref DiffenderApi
-      StatusCode: 504
 
   # 本アプリで利用するS3バケット
   DiffenderS3:
