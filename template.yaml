@@ -363,6 +363,26 @@ Resources:
           Properties:
             Queue: !GetAtt ScreenshotProcessSQS.Arn
             BatchSize: 1
+  # スクリーンショット取得処理のDLQ
+  ScreenshotProcessDLQFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/screenshots/ScreenshotProcessDLQFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Layers:
+        - !Ref PuppeteerLayer
+      Timeout: 30 # SQSの可視性タイムアウトと揃える
+      MemorySize: 1600 # Puppeteerを動かす以上最低必要なメモリ
+      Events:
+        SQSQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt ScreenshotProcessDLQ.Arn
+            BatchSize: 1
     
   # Puppeteer(chrome-aws-lambda)の関連ライブラリのレイヤー
   PuppeteerLayer:
