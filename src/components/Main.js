@@ -9,6 +9,7 @@ import PageList from 'components/page/PageList';
 import PageListQuickView from 'components/page/PageListQuickView';
 import PageInfo from 'components/page/PageInfo';
 import ResultList from 'components/result/ResultList';
+import ResultListQuickView from 'components/result/ResultListQuickView';
 import ResultInfo from 'components/result/ResultInfo';
 import NotFound404 from 'components/common/NotFound';
 import styles from './Main.module.scss';
@@ -84,9 +85,29 @@ export default function Main() {
             </div>
           </React.Fragment>
         )} />
-        <Route exact path="/results" component={ResultList} />
+        <Route exact path="/results" render={() => (
+          <React.Fragment>
+            <div className={styles.flex}>
+              <div className={styles.quickView}>
+                <ResultListQuickView />
+              </div>
+              <div className={styles.content}>
+                <ResultList />
+              </div>
+            </div>
+          </React.Fragment>
+        )} />
         <Route exact path="/results/:resultId" render={({match}) => (
-          <ResultInfo resultId={match.params.resultId} />
+          <React.Fragment>
+            <div className={styles.flex}>
+              <div className={styles.quickView}>
+                <ResultListQuickView selectedResultId={match.params.resultId} />
+              </div>
+              <div className={styles.content}>
+                <ResultInfo resultId={match.params.resultId} />
+              </div>
+            </div>
+          </React.Fragment>
         )} />
         <Route component={NotFound404} />
       </Switch>
