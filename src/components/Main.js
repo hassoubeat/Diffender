@@ -3,6 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import Breadcrumbs from 'components/common/Breadcrumbs';
 import UserInfo from 'components/auth/UserInfo';
 import ProjectList from 'components/project/ProjectList';
+import ProjectListQuickView from 'components/project/ProjectListQuickView';
 import ProjectInfo from 'components/project/ProjectInfo';
 import PageList from 'components/page/PageList';
 import PageInfo from 'components/page/PageInfo';
@@ -22,7 +23,16 @@ export default function Main() {
         )} />
         <Route exact path="/projects" component={ProjectList} />
         <Route exact path="/projects/:projectId" render={({match}) => (
-          <ProjectInfo projectId={match.params.projectId} />
+          <React.Fragment>
+            <div className={styles.flex}>
+              <div className={styles.projectListQuickView}>
+                <ProjectListQuickView selectedProjectId={match.params.projectId} />
+              </div>
+              <div className={styles.content}>
+                <ProjectInfo projectId={match.params.projectId} />
+              </div>
+            </div>
+          </React.Fragment>
         )} />
         <Route exact path="/projects/:projectId/pages" render={({match}) => (
           <PageList projectId={match.params.projectId} />

@@ -18,3 +18,22 @@
     margin-left: 0;
   }
 }
+
+.flex {
+  display: flex;
+
+  .projectListQuickView {
+    min-height: 100vh;
+    border-right: 1px solid $LINE_COLOR;
+  }
+
+  @include mq(sp) {
+    .projectListQuickView {
+      display: none;
+    }
+  }
+
+  .content {
+    flex-grow: 1;
+  }
+}
