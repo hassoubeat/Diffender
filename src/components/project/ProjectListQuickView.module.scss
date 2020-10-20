@@ -1,0 +1,72 @@
+@import 'styles/constant';
+
+.projectListQuickView {
+  width: 200px;
+  height: 100%;
+  min-height: 100vh;
+  overflow: scroll;
+
+  .closeMenuItem , .projectListMenuItem {
+    position: relative;
+    font-size: 14px;
+    padding: 8px 20px 8px 8px;
+    border-bottom: 1px solid $LINE_COLOR; 
+    cursor: pointer;
+    &:hover {
+      color: $WHITE_TEXT_COLOR;
+      background-color: $LINK_COLOR;
+      transition: all 0.3s ease-in-out;
+    }
+  }
+
+  .projectItem {
+    position: relative;
+    padding: 8px 20px 8px 8px;
+    font-size: 14px;
+    color: $LINK_COLOR;
+    border-bottom: 1px solid $LINE_COLOR; 
+    cursor: pointer;
+
+    &.selected{
+      background-color: $MAIN_COLOR;
+
+      .main {
+        .title {
+          font-size: 14px;
+          color: $WHITE_TEXT_COLOR;
+          font-weight: bold;
+        }
+      }
+
+      &:hover {
+        color: $WHITE_TEXT_COLOR;
+        background-color: $MAIN_COLOR;
+      }
+    }
+
+    &:hover {
+      color: $LINK_COLOR;
+      background-color: #F4F4F4;
+    }
+  }
+}
+
+.closeProjectListQuickView {
+  width: 20px;
+  height: 100%;
+  min-height: 100vh;
+  color: $LINK_COLOR;
+  text-align: center;
+  cursor: pointer;
+
+  &:hover {
+    color: $WHITE_TEXT_COLOR;
+    background-color: $LINK_COLOR;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .label {
+    font-size: 13px;
+    writing-mode: vertical-rl;
+  }
+}
