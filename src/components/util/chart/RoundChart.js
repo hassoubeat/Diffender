@@ -18,7 +18,7 @@ export default function RoundChart(props = null) {
         outerRadius={(width / 2) - (width * 0.1)}
         fill="#8884d8"
         label={isDisplayLabel}
-        paddingAngle={5}
+        paddingAngle={0}
         dataKey="value"
       >
         {
