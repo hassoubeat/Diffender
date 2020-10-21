@@ -238,7 +238,6 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /projects/{projectId}/pages/test
             Method: post
-
   # Resultの一覧取得
   GetResultListFunction:
     Type: AWS::Serverless::Function
@@ -290,6 +289,23 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /results/{resultId}
             Method: delete
+  # ResultItemの一覧取得
+  GetResultItemListFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/resultItems/GetResultItemListFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /results/{resultId}/result-items
+            Method: get
   # UserOptionの取得
   GetUserOptionFunction:
     Type: AWS::Serverless::Function

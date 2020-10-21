@@ -1,25 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import RoundChart from 'components/util/chart/RoundChart';
+import Loading from 'components/common/Loading';
+
+import { 
+  selectIsLoadedResultItemsByResultId,
+  selectResultItemsByResultId,
+  fetchResultItemsByResultId
+} from 'app/domainSlice';
+
+
+import _ from "lodash";
 import styles from './_ResultProgressChart.module.scss';
 
+const RESULT_ITEM_STATUS_TYPE_SUCCESS = process.env.REACT_APP_RESULT_ITEM_STATUS_TYPE_SUCCESS;
+const RESULT_ITEM_STATUS_TYPE_ERROR = process.env.REACT_APP_RESULT_ITEM_STATUS_TYPE_ERROR;
+const RESULT_ITEM_STATUS_TYPE_WAIT = process.env.REACT_APP_RESULT_ITEM_STATUS_TYPE_WAIT;
+
 export default function ReusltList(props = null) {
-  // propsの展開
+  // props setup
   const resultId = props.resultId;
+
+  // hook setup
+  const dispatch = useDispatch();
+
+  // redux-state setup
+  const isLoadedResultItem = useSelector( selectIsLoadedResultItemsByResultId(resultId) );
+  const resultItemList = useSelector( selectResultItemsByResultId(resultId));
   
-  // Stateの設定
-  const [isLoading, setIsLoading] = useState(true);
-  const [progressState, setProgressState] = useState([]);
+  // state setup
+  const progressState = generateProgressState(resultItemList)
 
   useEffect( () => {
-    // プロジェクト一覧を取得して、Stateを更新
-    const updateProgressState = async () => {
-      setProgressState(await getProgressState(resultId));
-      setIsLoading(false);
-    };
-    updateProgressState();
-  }, [resultId]);
+    // 一度読み込みが完了している場合は再読み込みを実行しない
+    if (!isLoadedResultItem) dispatch( fetchResultItemsByResultId(resultId) );
+  }, [dispatch, resultId, isLoadedResultItem])
 
-  if(isLoading) return <span>Loading...</span>
+  if (!isLoadedResultItem) return (
+    <Loading/>
+  );
 
   return (
     <React.Fragment>
@@ -46,23 +65,46 @@ export default function ReusltList(props = null) {
     </React.Fragment>
   );
 
-  async function getProgressState(resultId) {
-    // TODO いずれlibにAPIを実装してそちらからデータを取得
+  function generateProgressState(resultItemList) {
+    let successItemTotal = 0;
+    let errorItemTotal = 0;
+    let waitItemTotal = 0;
+
+    resultItemList.forEach( (resultItem) => {
+      switch(_.get(resultItem, "status.type")) {
+        case RESULT_ITEM_STATUS_TYPE_SUCCESS: {
+          successItemTotal++;
+          break;
+        }
+        case RESULT_ITEM_STATUS_TYPE_ERROR: {
+          errorItemTotal++;
+          break;
+        }
+        case RESULT_ITEM_STATUS_TYPE_WAIT: {
+          waitItemTotal++;
+          break;
+        }
+        default: {
+          console.log(`unknown status [${resultItem.status.type}].`);
+        }
+      }
+    });
+
     return [
       {
-        type: "SUCCESS",
+        type: RESULT_ITEM_STATUS_TYPE_SUCCESS,
         name: "正常終了",
-        value: 15
+        value: successItemTotal
       },
       {
-        type: "ERROR",
+        type: RESULT_ITEM_STATUS_TYPE_ERROR,
         name: "エラー",
-        value: 10
+        value: errorItemTotal
       },
       {
-        type: "WAIT",
+        type: RESULT_ITEM_STATUS_TYPE_WAIT,
         name: "実行待ち",
-        value: 75
+        value: waitItemTotal
       }
     ]
   }

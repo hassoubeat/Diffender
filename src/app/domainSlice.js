@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import _ from 'lodash';
+import * as api from 'lib/api/api';
 
 export const domainSlice = createSlice({
   name: 'domain',
@@ -12,7 +13,9 @@ export const domainSlice = createSlice({
     // ページ一覧
     pages: {},
     // リザルト一覧
-    results: {}
+    results: {},
+    // リザルトアイテム一覧
+    resultItems: {}
   },
   reducers: {
     // 状態：初回ロード状態の更新
@@ -83,6 +86,18 @@ export const domainSlice = createSlice({
       const resultId = action.payload;
       delete state.results[resultId];
     },
+    // 状態：リザルトアイテム一覧 セット
+    setResultItems: (state, action) => {
+      const resultItemList = action.payload;
+      const resultItemListObject = resultItemList.reduce((returnObject, resultItem) => {
+        returnObject[resultItem.id] = resultItem;
+        return returnObject;
+      }, {});
+      state.resultItems = {
+        ...resultItemListObject,
+        ...state.resultItems
+      };
+    },
   },
 });
 
@@ -97,7 +112,8 @@ export const {
   deletePage,
   setResults,
   setResult,
-  deleteResult
+  deleteResult,
+  setResultItems
  } = domainSlice.actions;
 
 
@@ -166,6 +182,37 @@ export const selectResultsByProjectId = (projectId) => {
       return (result.resultTieProjectId === projectId)
     });
   };
+}
+
+// 指定したプロジェクトに紐づくリザルト一覧のロード状況取得するセレクタ
+export const selectIsLoadedResultItemsByResultId = (resultId) => {
+  return (state) => {
+    return _.get(state.domain.initialLoadState, `resultItemListMap.${resultId}`, false);
+  };
+}
+
+// 指定したプロジェクトに紐づくリザルト一覧を取得するセレクタ
+export const selectResultItemsByResultId = (resultId) => {
+  return (state) => {
+    return Object.values(state.domain.resultItems).filter((resultItem) => {
+      return (resultItem.resultItemTieResultId === resultId)
+    });
+  };
+}
+
+// リザルトアイテム一覧の取得とStateにセット
+export const fetchResultItemsByResultId = (resultId) => async (dispatch) => {
+  dispatch(
+    setResultItems(await api.getResultItemList({
+      resultId: resultId
+    }))
+  );
+  dispatch(
+    setInitialLoadState({
+      key: `resultItemListMap.${resultId}`,
+      value: true
+    })
+  );
 }
 
 // Reducerのエクスポート

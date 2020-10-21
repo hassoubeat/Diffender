@@ -126,6 +126,12 @@ export async function deleteResult({resultId, request}) {
   return await API.del(DIFFENDER_API_NAME, `/results/${resultId}`, request)
 }
 
+// リザルトアイテム一覧の取得
+export async function getResultItemList({resultId, request}) {
+  request = await requestSetup(request);
+  return await API.get(DIFFENDER_API_NAME, `/results/${resultId}/result-items`, request);
+}
+
 // ユーザオプションの取得
 export async function getUserOption(request) {  
   request = await requestSetup(request);

@@ -1,23 +1,37 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useHistory, Link } from 'react-router-dom';
 import ResultForm from './ResultForm';
 import ResultProgressChart from './_ResultProgressChart';
 import ResultItemList from 'components/resultItem/ResultItemList';
+
+import { selectResult } from 'app/domainSlice';
+
 import styles from './ResultInfo.module.scss';
 
 export default function ResultInfo(props = null) {
-  // props展開
+  // props setup
   const resultId = props.resultId;
   const history = useHistory();
+
+  // redux-state setup
+  const result = useSelector(selectResult(resultId));
 
   return (
     <React.Fragment>
       <div className={styles.resultInfo}>
+      <div className={styles.sctionTitle}>基本情報</div>
         <ResultForm resultId={resultId}
           successDeleteCallback={
             () => {history.push('/results/')} 
           }
         />
+        <div className={styles.sctionTitle}>関連情報</div>
+        <div className={styles.relationInfomation}>
+          <Link to={`/projects/${result.resultTieProjectId}`}>
+            <i className="fas fa-angle-double-right"/> リザルトを発行したプロジェクト
+          </Link>
+        </div>
         <div className={styles.sctionTitle}>レポート</div>
         {/* 進行状況円チャート */}
         <div className={styles.chartArea}>
