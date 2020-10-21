@@ -1,25 +1,39 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import Loading from 'components/common/Loading';
+
+import { 
+  selectIsLoadedResultItemsByResultId,
+  selectResultItemsByResultId,
+  fetchResultItemsByResultId
+} from 'app/domainSlice';
+
+import { 
+  sort,
+  filterResultItemList
+} from 'lib/resultItem/model'
+
 import styles from './ResultItemList.module.scss';
 
 export default function ResultItemList(props = null) {
-  // propsの展開
+  // props setup
   const resultId = props.resultId;
 
+  // hook setup
+  const dispatch = useDispatch();
+
+  // redux-state setup
+  const isLoadedResultItem = useSelector( selectIsLoadedResultItemsByResultId(resultId) );
+  const resultItemList = sort(
+    useSelector( selectResultItemsByResultId(resultId) )
+  );
+
   // Stateの設定
-  const [resultItemList, setResultItemList] = useState([]);
   const [searchWord, setSearchWord] = useState("");
   const [isDisplayResultProgressSuccess, setIsDisplayResultProgressSuccess] = useState(true);
   const [isDisplayResultProgressError, setIsDisplayResultProgressError] = useState(true);
   const [isDisplayResultProgressWait, setIsDisplayResultProgressWait] = useState(true);
-
-  useEffect( () => {
-    // ResultItem一覧を取得して、Stateを更新
-    const asyncUpdateResultItemList = async () => {
-      setResultItemList(await getResultItemList(resultId));
-    };
-    asyncUpdateResultItemList();
-  }, [resultId]);
 
   const filterObj = {
     searchWord: searchWord,
@@ -27,6 +41,15 @@ export default function ResultItemList(props = null) {
     isDisplayResultProgressError: isDisplayResultProgressError,
     isDisplayResultProgressWait: isDisplayResultProgressWait
   }
+
+  useEffect( () => {
+    // 一度読み込みが完了している場合は再読み込みを実行しない
+    if (!isLoadedResultItem) dispatch( fetchResultItemsByResultId(resultId) );
+  }, [dispatch, resultId, isLoadedResultItem])
+
+  if (!isLoadedResultItem) return (
+    <Loading/>
+  );
 
   return (
     <React.Fragment>
@@ -53,11 +76,11 @@ export default function ResultItemList(props = null) {
         </div>
         {/* フィルタリングを行いながら行いながらリザルトアイテム一覧を展開 */}
         {filterResultItemList(resultItemList, filterObj).map( (resultItem) => (
-          <Link key={resultItem.id} to={`/results/${resultItem.resultId}/item/${resultItem.id}`}>
-            <div className={`${styles.resultItem} ${resultItem.progress}`}>
+          <Link key={resultItem.id} to={`/results/${resultItem.resultItemTieResultId}/item/${resultItem.id}`}>
+            <div className={`${styles.resultItem} ${resultItem.status.type}`}>
               {resultItem.name}
               <div className={styles.createDate}>
-                {resultItem.createDate}
+                {resultItem.createDt}
               </div>
             </div>
           </Link>
@@ -65,50 +88,4 @@ export default function ResultItemList(props = null) {
       </div>
     </React.Fragment>
   );
-
-  function filterResultItemList(resultItemList, filterObj) {
-    return resultItemList.filter((resultItem) => { 
-      console.log(resultItem);
-      return (
-        // プロジェクト名に検索ワードが含まれる要素のみフィルタリング
-        !!resultItem.name.match(filterObj.searchWord) &&
-        (
-          // Itemの進行状況が「正常終了」のフィルタリング
-          (filterObj.isDisplayResultProgressSuccess && resultItem.progress === "SUCCESS") ||
-          // Itemの進行状況が「エラー」のフィルタリング
-          (filterObj.isDisplayResultProgressError && resultItem.progress === "ERROR") ||
-          // Itemの進行状況が「実行待ち」のフィルタリング
-          (filterObj.isDisplayResultProgressWait && resultItem.progress === "WAIT")
-        )
-      );
-    });
-  }
-
-  async function getResultItemList(resultId) {
-    console.log(resultId);
-    // TODO いずれlibにAPIを実装してそちらからデータを取得
-    return [
-      {
-        id: "Item-1",
-        name: "アイテム1",
-        progress: "SUCCESS",
-        resultId: "Result-1",
-        createDate: "2020/07/01 15:30:15"
-      },
-      {
-        id: "Item-2",
-        name: "アイテム2",
-        progress: "ERROR",
-        resultId: "Result-1",
-        createDate: "2020/07/01 15:30:15"
-      },
-      {
-        id: "Item-3",
-        name: "アイテム3",
-        progress: "WAIT",
-        resultId: "Result-1",
-        createDate: "2020/07/01 15:30:15"
-      },
-    ];
-  }
 }
