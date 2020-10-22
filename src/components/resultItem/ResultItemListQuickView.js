@@ -18,7 +18,6 @@ import {
 } from 'lib/util/localStorage'
 
 import styles from 'styles/QuickView.module.scss';
-import myStyles from './ResultItemListQuickView.module.scss';
 
 export default function ResultItemListQuickView(props = null) {
   // props setup
@@ -84,7 +83,7 @@ export default function ResultItemListQuickView(props = null) {
                 }
               >
                 <div className={styles.main}>
-                  <span className={`${myStyles.label} ${resultItem.status.type}`}>
+                  <span className={`${styles.title} ${resultItem.status.type}`}>
                     {resultItem.name}
                   </span>
                 </div>

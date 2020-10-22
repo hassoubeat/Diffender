@@ -27,20 +27,44 @@
     border-bottom: 1px solid $LINE_COLOR; 
     cursor: pointer;
 
+    .main {
+      .title {
+        font-size: 14px;
+        color: $LINK_COLOR;
+
+        &:global.SUCCESS:before {
+          color: $MAIN_COLOR;
+          content: " S ";
+        }
+        &:global.ERROR:before {
+          color: $ERROR_COLOR;
+          content: " E ";
+        }
+        &:global.WAIT:before {
+          color: $LINK_COLOR;
+          content: " W ";
+        }
+      }
+    }
+
     &.selected{
       background-color: $MAIN_COLOR;
+
+      &:hover {
+        color: $WHITE_TEXT_COLOR;
+        background-color: $MAIN_COLOR;
+      }
 
       .main {
         .title {
           font-size: 14px;
           color: $WHITE_TEXT_COLOR;
           font-weight: bold;
-        }
-      }
 
-      &:hover {
-        color: $WHITE_TEXT_COLOR;
-        background-color: $MAIN_COLOR;
+          &:global.SUCCESS:before {
+            color: $WHITE_TEXT_COLOR;
+          }
+        }
       }
     }
 
