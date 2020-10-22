@@ -58,7 +58,8 @@ exports.lambda_handler = async (event, context) => {
       status: {
         type: "SUCCESS",
         message: "Screenshots have been completed.",
-        screenshotKey: `https://${DIFFENDER_S3_BUCKET_NAME}.s3.amazonaws.com/${s3ObjectKey}`
+        screenshotUrl: `https://${DIFFENDER_S3_BUCKET_NAME}.s3.amazonaws.com/${s3ObjectKey}`,
+        screenshotS3Key: s3ObjectKey
       }
     });
     

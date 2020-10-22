@@ -33,7 +33,7 @@ export default function ResultItemInfo(props = null) {
     <React.Fragment>
       <div className={styles.resultItemInfo}>
         <div className="sectionTitle">{resultItem.name}</div>
-        <ScreenshotView screenshotURL={_.get(resultItem, 'status.screenshotKey')} />
+        <ScreenshotView screenshotURL={_.get(resultItem, 'status.screenshotUrl')} />
       </div>
     </React.Fragment>
   );
