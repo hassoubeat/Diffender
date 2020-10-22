@@ -13,6 +13,7 @@ import ResultListQuickView from 'components/result/ResultListQuickView';
 import ResultInfo from 'components/result/ResultInfo';
 import ResultItemList from 'components/resultItem/ResultItemList';
 import ResultItemListQuickView from 'components/resultItem/ResultItemListQuickView';
+import ResultItemInfo from 'components/resultItem/ResultItemInfo';
 import NotFound404 from 'components/common/NotFound';
 import styles from './Main.module.scss';
 
@@ -123,11 +124,31 @@ export default function Main() {
               <div className={styles.quickView}>
                 <ResultItemListQuickView 
                   resultId={match.params.resultId}
-                  selectedResultItemId={match.params.resultItemId} 
                 />
               </div>
               <div className={styles.content}>
                 <ResultItemList resultId={match.params.resultId} />
+              </div>
+            </div>
+          </React.Fragment>
+        )} />
+        <Route exact path="/results/:resultId/result-items/:resultItemId" render={({match}) => (
+          <React.Fragment>
+            <div className={styles.flex}>
+              <div className={styles.quickView}>
+                <ResultListQuickView selectedResultId={match.params.resultId} />
+              </div>
+              <div className={styles.quickView}>
+                <ResultItemListQuickView 
+                  resultId={match.params.resultId}
+                  selectedResultItemId={match.params.resultItemId} 
+                />
+              </div>
+              <div className={styles.content}>
+                <ResultItemInfo 
+                  resultId={match.params.resultId} 
+                  resultItemId={match.params.resultItemId} 
+                />
               </div>
             </div>
           </React.Fragment>

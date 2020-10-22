@@ -1,0 +1,16 @@
+@import 'styles/constant';
+
+.screenshotView {
+  padding: 10px;
+  text-align: center;
+
+  .screenshot {
+    max-width: 90%;
+    max-height: 800px;
+    border: 2px solid $MAIN_COLOR;
+
+    &.zoom {
+      max-height: none;
+    }
+  }
+}

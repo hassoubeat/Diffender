@@ -76,7 +76,7 @@ export default function ResultItemList(props = null) {
         </div>
         {/* フィルタリングを行いながら行いながらリザルトアイテム一覧を展開 */}
         {filterResultItemList(resultItemList, filterObj).map( (resultItem) => (
-          <Link key={resultItem.id} to={`/results/${resultItem.resultItemTieResultId}/item/${resultItem.id}`}>
+          <Link key={resultItem.id} to={`/results/${resultItem.resultItemTieResultId}/result-items/${resultItem.id}`}>
             <div className={`${styles.resultItem} ${resultItem.status.type}`}>
               {resultItem.name}
               <div className={styles.createDate}>
