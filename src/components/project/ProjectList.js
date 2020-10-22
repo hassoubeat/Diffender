@@ -11,7 +11,8 @@ import {
 } from 'app/userSlice';
 
 import { 
-  selectProjects
+  selectProjects,
+  deleteProject
 } from 'app/domainSlice';
 
 import _ from 'lodash';
@@ -20,7 +21,9 @@ import {
   updateProjectListSortMap,
   sortProjectList
 } from 'lib/project/model';
+
 import * as api from 'lib/api/api';
+import * as toast from 'lib/util/toast';
 import * as arrayWrapper from 'lib/util/arrayWrapper';
 import styles from './ProjectList.module.scss';
 
@@ -57,6 +60,27 @@ export default function ProjectList() {
     });
   }
 
+  // 削除ボタン押下時の処理
+  const handleDeleteProject = async (projectId, projectName) => {
+    if (!window.confirm(`プロジェクト「${projectName}」を削除しますか？`)) return;
+    toast.infoToast(
+      { message: `プロジェクト「${projectName}」の削除リクエストを送信しました` }
+    );
+    try {
+      await api.deleteProject({
+        projectId: projectId
+      });
+      toast.successToast(
+        { message: `プロジェクト「${projectName}」の削除が完了しました` }
+      );
+      dispatch(deleteProject(projectId));
+    } catch (error) {
+      toast.errorToast(
+        { message: `プロジェクト「${projectName}」の削除に失敗しました` }
+      );
+    }
+  }
+
   return (
     <React.Fragment>
       <div className={styles.projectList}>
@@ -67,7 +91,8 @@ export default function ProjectList() {
           {
             // プロジェクト一覧をフィルタリングしながら表示
             filterProjectList(projectList, searchWord).map( (project) => (
-              <div key={project.id} id={project.id} className={styles.projectItem} onClick={() => {history.push(`/projects/${project.id}`)}}>
+              <div 
+                key={project.id} id={project.id} className={styles.projectItem} onClick={() => {history.push(`/projects/${project.id}`)}}>
                 <div className={styles.main}>
                   <span className={styles.title}>
                     {project.name}
@@ -77,6 +102,10 @@ export default function ProjectList() {
                   {project.description}
                 </div>
                 <div className={styles.actions}>
+                  <i className={`fa fa-trash-alt ${styles.item} ${styles.delete}`} onClick={(e) => {
+                    e.stopPropagation()
+                    handleDeleteProject(project.id, project.name)
+                  }}/>
                   <i className="fa fa-arrows-alt draggable"></i>
                 </div>
               </div>

@@ -12,7 +12,6 @@ import Loading from 'components/common/Loading';
 
 import { 
   setPage,
-  deletePage,
   selectPage
 } from 'app/domainSlice';
 
@@ -28,7 +27,6 @@ export default function PageForm(props = null) {
   const projectId = props.projectId;
   const pageId = props.pageId;
   const postSuccessCallback = props.postSuccessCallback;
-  const deleteSuccessCallback = props.deleteSuccessCallback;
 
   // hook setup
   const dispatch = useDispatch();
@@ -152,29 +150,6 @@ export default function PageForm(props = null) {
     )
   };
 
-  // 削除ボタン押下時の処理
-  const handleDeleteProject = async () => {
-    if (!window.confirm("ページを削除しますか？")) return;
-    toast.infoToast(
-      { message: "ページの削除リクエストを送信しました" }
-    );
-    try {
-      await api.deletePage({
-        projectId: projectId,
-        pageId: pageId
-      });
-      toast.successToast(
-        { message: "ページの削除が完了しました" }
-      );
-      if (deleteSuccessCallback) deleteSuccessCallback();
-      dispatch(deletePage(pageId));
-    } catch (error) {
-      toast.errorToast(
-        { message: "ページの削除に失敗しました" }
-      );
-    }
-  }
-
   if (isLoading) return (
     <Loading/>
   );
@@ -272,12 +247,6 @@ export default function PageForm(props = null) {
             }>
               {(isUpdate) ? '更新' : '登録'}
             </span>
-            {/* 更新時のみ削除ボタンを表示 */}
-            {(isUpdate) && <span className={styles.deleteButton} onClick={
-              async () => { 
-                await handleDeleteProject();
-              }
-            }>削除</span>}
           </div>
         </div>
       </div>

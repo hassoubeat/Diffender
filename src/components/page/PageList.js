@@ -11,6 +11,7 @@ import {
   setProject,
   setPages, 
   setPage, 
+  deletePage,
   selectInitialLoadState,
   selectPagesByProjectId,
   selectProject
@@ -79,6 +80,28 @@ export default function PageList(props = null) {
     });
   }
 
+  // 削除ボタン押下時の処理
+  const handleDeletePage = async (pageId, pageName) => {
+    if (!window.confirm(`ページ「${pageName}」を削除しますか？`)) return;
+    toast.infoToast(
+      { message: `ページ「${pageName}」の削除リクエストを送信しました` }
+    );
+    try {
+      await api.deletePage({
+        projectId: projectId,
+        pageId: pageId
+      });
+      toast.successToast(
+        { message: `ページ「${pageName}」の削除が完了しました` }
+      );
+      dispatch(deletePage(pageId));
+    } catch (error) {
+      toast.errorToast(
+        { message: `ページ「${pageName}」の削除に失敗しました` }
+      );
+    }
+  }
+
   // ページのコピーイベント
   const handleCopyPage = async (pageId) => {
     const copyPage = await api.getPage({
@@ -137,10 +160,14 @@ export default function PageList(props = null) {
                 {page.description}
               </div>
               <div className={styles.actions}>
-                <i className="far fa-copy" onClick={(e) => {
+                <i className={`far fa-copy ${styles.item}`} onClick={(e) => {
                   e.stopPropagation()
                   handleCopyPage(page.id)
                 }}></i>
+                <i className={`fa fa-trash-alt ${styles.item} ${styles.delete}`} onClick={(e) => {
+                  e.stopPropagation()
+                  handleDeletePage(page.id, page.name)
+                }}/>
                 <i className="fa fa-arrows-alt draggable"></i>
               </div>
             </div>

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import Modal from 'react-modal';
 import DiffRequestForm from './DiffRequestForm';
 
 import { 
-  selectResults
+  selectResults,
+  deleteResult,
 } from 'app/domainSlice';
 
 import _ from 'lodash';
@@ -13,6 +14,10 @@ import {
   sort,
   filterResultList
 } from 'lib/result/model';
+
+import * as api from 'lib/api/api';
+import * as toast from 'lib/util/toast';
+
 import styles from './ResultList.module.scss';
 
 // モーダルの展開先エレメントの指定
@@ -22,6 +27,10 @@ export default function ResultList(props = null) {
   // props setup
   const projectId = props.projectId;
   const isDisplayDiffRequestForm = props.isDisplayDiffRequestForm || false;
+
+  // hook setup
+  const history = useHistory();
+  const dispatch = useDispatch();
 
   // redux-state setup
   const resultList = sort(
@@ -39,6 +48,27 @@ export default function ResultList(props = null) {
     isSearchDiffResultFilter: isSearchDiffResultFilter
   }
 
+  // 削除ボタン押下時の処理
+  const handleDeleteResult = async (resultId, resultName) => {
+    if (!window.confirm(`リザルト「${resultName}」を削除しますか？`)) return;
+    toast.infoToast(
+      { message: `リザルト「${resultName}」の削除リクエストを送信しました` }
+    );
+    try {
+      await api.deleteResult({
+        resultId: resultId
+      });
+      toast.successToast(
+        { message: `リザルト「${resultName}」の削除が完了しました` }
+      );
+      dispatch(deleteResult(resultId));
+    } catch (error) {
+      toast.errorToast(
+        { message: `リザルト「${resultName}」の削除に失敗しました` }
+      );
+    }
+  }
+
   return (
     <React.Fragment>
       <div className={styles.resultList}>
@@ -49,7 +79,7 @@ export default function ResultList(props = null) {
             }>Diffの取得</button>
           }
         </div>
-        <div className={styles.actions}>
+        <div className={styles.filters}>
           <input className={styles.searchBox} type="text" placeholder="search" onChange={(e) => setSearchWord(e.target.value)} />
           <div className={styles.filter}>
             <input className={styles.checkBox} type="checkBox" checked={isSearchScreenshotResultFilter} onChange={
@@ -64,17 +94,27 @@ export default function ResultList(props = null) {
         </div>
         {/* フィルタリングを行いながら行いながらリザルト一覧を展開 */}
         {filterResultList(resultList, filterObj).map( (result) => (
-          <Link key={result.id} to={`/results/${result.id}`}>
-            <div className={`${styles.resultItem} ${result.resultType}`}>
+          <div 
+            key={result.id}
+            className={`${styles.resultItem} ${result.resultType}`}
+            onClick={() => history.push(`/results/${result.id}`) }
+          >
+            <div className={styles.name}>
               {result.name}
-              <div className={styles.description}>
-                {result.description}
-              </div>
-              <div className={styles.createDate}>
-                {result.createDt}
-              </div>
             </div>
-          </Link>
+            <div className={styles.description}>
+              {result.description}
+            </div>
+            <div className={styles.createDate}>
+              {result.createDt}
+            </div>
+            <div className={styles.actions}>
+              <i className={`fa fa-trash-alt ${styles.item} ${styles.delete}`} onClick={(e) => {
+                e.stopPropagation()
+                handleDeleteResult(result.id, result.name)
+              }}/>
+            </div>
+          </div>
         ))}
       </div>
       <Modal 
