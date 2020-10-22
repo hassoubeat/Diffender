@@ -44,7 +44,7 @@ export default function ScreenshotTest(props = null) {
           body: page
         }
       });
-      setScreenshotUrl(result.screenshotKey);
+      setScreenshotUrl(result.screenshotUrl);
 
       setIsAPICalling(false);
 
