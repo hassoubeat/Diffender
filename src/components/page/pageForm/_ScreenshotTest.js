@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useFormContext } from "react-hook-form";
 import Loading from 'components/common/Loading';
-import styles from './_ScreenshotTest.module.scss';
+import ScreenshotView from 'components/util/screenshot/ScreenshotView';
 
 import _ from 'lodash';
 import * as toast from 'lib/util/toast';
 import * as api from 'lib/api/api';
+
+import styles from './_ScreenshotTest.module.scss';
 
 export default function ScreenshotTest(props = null) {
 
@@ -15,7 +17,6 @@ export default function ScreenshotTest(props = null) {
   // State setup
   const [isAPICalling, setIsAPICalling] = useState(false);
   const [screenshotUrl, setScreenshotUrl] = useState(null);
-  const [screenshotZoom, setScreenshotZoom] = useState(false);
 
   // Hook setup
   const { handleSubmit } = useFormContext();
@@ -107,14 +108,7 @@ export default function ScreenshotTest(props = null) {
           <div className={styles.screenshotResult}>
             {isAPICalling ?
               <Loading/> : 
-              <img 
-                className={`${styles.screenshot} ${(screenshotZoom) ? styles.zoom : ""}`}
-                src={screenshotUrl} 
-                alt="screenshot"
-                onClick={() => {
-                  setScreenshotZoom(!screenshotZoom)
-                }}
-              />
+              <ScreenshotView screenshotURL={screenshotUrl} />
             }
           </div>
         }

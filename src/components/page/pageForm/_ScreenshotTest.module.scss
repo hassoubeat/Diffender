@@ -17,15 +17,5 @@
     padding: 8px;
     margin: 10px 0;
     background-color: $LIGHT_GRAY_COLOR;
-
-    .screenshot {
-      max-width: 90%;
-      max-height: 800px;
-      border: 2px solid $MAIN_COLOR;
-
-      &.zoom {
-        max-height: none;
-      }
-    }
   }
 }
