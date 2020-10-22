@@ -7,7 +7,6 @@ import ActionForm from 'components/action/ActionForm';
 
 import {  
   setProject,
-  deleteProject,
   selectProject
 } from 'app/domainSlice';
 
@@ -20,7 +19,6 @@ export default function ProjectForm(props = null) {
   const isUpdate = !!props.projectId;
   const projectId = props.projectId;
   const successPostCallback = props.successPostCallback;
-  const successDeleteCallback = props.successDeleteCallback;
 
   // hook setup
   const dispatch = useDispatch();
@@ -104,28 +102,6 @@ export default function ProjectForm(props = null) {
     )
   }
 
-  // 削除ボタン押下時の処理
-  const handleDeleteProject = async () => {
-    if (!window.confirm("プロジェクトを削除しますか？")) return;
-    toast.infoToast(
-      { message: "プロジェクトの削除リクエストを送信しました" }
-    );
-    try {
-      await api.deleteProject({
-        projectId: projectId
-      });
-      toast.successToast(
-        { message: "プロジェクトの削除が完了しました" }
-      );
-      if (successDeleteCallback) successDeleteCallback();
-      dispatch(deleteProject(projectId));
-    } catch (error) {
-      toast.errorToast(
-        { message: "プロジェクトの削除に失敗しました" }
-      );
-    }
-  }
-
   return (
     <React.Fragment>
       <form>
@@ -183,10 +159,6 @@ export default function ProjectForm(props = null) {
             }>
               {(isUpdate) ? '更新' : '登録'}
             </span>
-            {/* 更新時のみ削除ボタンを表示 */}
-            {(isUpdate) && <span className={styles.deleteButton} onClick={
-              async () => { handleDeleteProject() }
-            }>削除</span>}
           </div>
         </div>
       </div>
