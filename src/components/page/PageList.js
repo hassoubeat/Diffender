@@ -103,27 +103,26 @@ export default function PageList(props = null) {
   }
 
   // ページのコピーイベント
-  const handleCopyPage = async (pageId) => {
-    const copyPage = await api.getPage({
-      projectId: projectId,
-      pageId: pageId
-    });
-    if (!window.confirm(`ページ「${copyPage.name}」をコピーしますか？`)) return;
+  const handleCopyPage = async (page) => {
+    if (!window.confirm(`ページ「${page.name}」をコピーしますか？`)) return;
+    toast.infoToast(
+      { message: `ページ「${page.name}」のコピーを開始しました` }
+    );
     try {
       dispatch(setPage(
         await api.postPage({
           projectId: projectId,
           request: {
-            body: copyPage
+            body: page
           }
         })
       ));
       toast.successToast(
-        { message: "ページのコピーが完了しました" }
+        { message: `ページ「${page.name}」のコピーが完了しました` }
       );
     } catch (error) {
       toast.errorToast(
-        { message: "ページのコピーに失敗しました" }
+        { message: `ページ「${page.name}」のコピーに失敗しました` }
       );
     }
   }
@@ -162,7 +161,7 @@ export default function PageList(props = null) {
               <div className={styles.actions}>
                 <i className={`far fa-copy ${styles.item}`} onClick={(e) => {
                   e.stopPropagation()
-                  handleCopyPage(page.id)
+                  handleCopyPage(page)
                 }}></i>
                 <i className={`fa fa-trash-alt ${styles.item} ${styles.delete}`} onClick={(e) => {
                   e.stopPropagation()
