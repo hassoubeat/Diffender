@@ -13,6 +13,7 @@ Globals:
         DIFFENDER_DYNAMODB_TABLE_NAME: !Ref DiffenderDynamoDB
         DIFFENDER_S3_BUCKET_NAME: !Ref DiffenderS3
         DIFFENDER_SCREENSHOT_PROCESS_SQS: !Ref ScreenshotProcessSQS
+        DIFFENDER_DIFF_SCREENSHOT_PROCESS_SQS: !Ref DiffScreenshotProcessSQS
         TZ: 'Asia/Tokyo'
 
 Parameters:
@@ -289,6 +290,26 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /results/{resultId}
             Method: delete
+  # Results間でのスクリーンショットDiff取得キューリクエスト
+  DiffScreenshotQueingResultFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/results/DiffScreenshotQueingResultFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+        - SQSSendMessagePolicy:
+            QueueName:
+              !GetAtt DiffScreenshotProcessSQS.QueueName
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /results/diff-screenshot
+            Method: post
   # ResultItemの一覧取得
   GetResultItemListFunction:
     Type: AWS::Serverless::Function
@@ -597,6 +618,27 @@ Resources:
         maxReceiveCount: 1
   # スクリーンショット取得処理のデッドレターキュー
   ScreenshotProcessDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      # 可視性タイムアウト
+      VisibilityTimeout: 30
+      # メッセージをキューに貯めておく期間
+      MessageRetentionPeriod: 86400
+      
+  # スクリーンショットの差分取得処理のキュー
+  DiffScreenshotProcessSQS:
+    Type: AWS::SQS::Queue
+    Properties:
+      # 可視性タイムアウト
+      VisibilityTimeout: 30
+      # メッセージをキューに貯めておく期間
+      MessageRetentionPeriod: 86400
+      # DLQの設定
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt DiffScreenshotProcessDLQ.Arn
+        maxReceiveCount: 1
+  # スクリーンショット差分取得処理のデッドレターキュー
+  DiffScreenshotProcessDLQ:
     Type: AWS::SQS::Queue
     Properties:
       # 可視性タイムアウト
