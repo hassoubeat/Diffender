@@ -20,20 +20,19 @@ export default function ResultInfo(props = null) {
   return (
     <React.Fragment>
       <div className={styles.resultInfo}>
-      <div className={styles.sctionTitle}>基本情報</div>
+      <div className="sectionTitle">基本情報</div>
         <ResultForm resultId={resultId}
           successDeleteCallback={
             () => {history.push('/results/')} 
           }
         />
-        <div className={styles.sctionTitle}>関連情報</div>
+        <div className="sectionTitle">関連情報</div>
         <div className={styles.relationInfomation}>
           <Link to={`/projects/${result.resultTieProjectId}`}>
             <i className="fas fa-angle-double-right"/> リザルトを発行したプロジェクト
           </Link>
         </div>
-        <div className={styles.sctionTitle}>レポート</div>
-        {/* 進行状況円チャート */}
+        <div className="sectionTitle">レポート</div>
         <div className={styles.chartArea}>
           <div className={styles.chart}>
             <ResultProgressChart resultId={resultId} />
@@ -41,7 +40,6 @@ export default function ResultInfo(props = null) {
         </div>
         
         {/* TODO 混雑状況棒グラフ */}
-        {/* ResultItemリスト */}
         <ResultItemList resultId={resultId} />
       </div>
     </React.Fragment>
