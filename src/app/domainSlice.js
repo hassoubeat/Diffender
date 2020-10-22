@@ -200,6 +200,13 @@ export const selectResultItemsByResultId = (resultId) => {
   };
 }
 
+// 指定したリザルトアイテムをリザルトアイテム一覧から取得するセレクタ
+export const selectResultItem = (resultItemId) => {
+  return (state) => {
+    return _.get(state.domain.resultItems, resultItemId);
+  };
+}
+
 // リザルトアイテム一覧の取得とStateにセット
 export const fetchResultItemsByResultId = (resultId) => async (dispatch) => {
   dispatch(
