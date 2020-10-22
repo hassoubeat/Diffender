@@ -9,11 +9,11 @@ export default function UserInfo(props = null) {
       <div className={styles.userInfo}>
         <div className={styles.title}>ユーザ情報の編集</div>
         <section id="updateUserAttributes" className={styles.section}>
-          <div className={styles.sectionTitle}>ユーザ属性変更</div>
+          <div className="sectionTitle">ユーザ属性変更</div>
           <UpdateUserAttributes/>
         </section>
         <section id="changePassword" className={styles.section}>
-          <div className={styles.sectionTitle}>パスワード変更</div>
+          <div className="sectionTitle">パスワード変更</div>
           <ChangePassword/>
         </section>
       </div>

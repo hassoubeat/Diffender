@@ -147,3 +147,11 @@ input[type='checkbox'] {
   text-align: center;
   cursor: pointer;
 }
+
+// セクションタイトル
+.sectionTitle {
+  padding: 4px 0px;
+  font-size: 18px;
+  color: $MAIN_COLOR;
+  border-bottom: 1px solid $LINE_COLOR;
+}

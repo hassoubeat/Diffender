@@ -185,7 +185,7 @@ export default function PageForm(props = null) {
       <FormProvider {...reactHookFormMethods} >
       <div className={styles.pageForm}>
         <div className={styles.inputArea}>
-          <div className={styles.sectionTitle}>基本情報</div>
+          <div className="sectionTitle">基本情報</div>
           <hr className={styles.border}/>
           <small className={styles.sectionMessage}>
             ページに関する基本情報を設定します。
@@ -228,7 +228,7 @@ export default function PageForm(props = null) {
           <Accordion text="スクリーンショットオプション" >
             <ScreenshotOptionsForm />
           </Accordion>
-          <div className={styles.sectionTitle}>アクション</div>
+          <div className="sectionTitle">アクション</div>
           <hr className={styles.border}/>
           <small className={styles.sectionMessage}>
             アクションとはスクリーンショットを撮影する前に行う処理です。<br/>
