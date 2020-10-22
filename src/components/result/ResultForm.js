@@ -5,7 +5,6 @@ import UtilInput from 'components/util/input/Input';
 
 import {  
   setResult,
-  deleteResult,
   selectResult
 } from 'app/domainSlice';
 
@@ -19,7 +18,6 @@ export default function ResultForm(props = null) {
   const isUpdate = !!props.resultId;
   const resultId = props.resultId;
   const successPostCallback = props.successPostCallback;
-  const successDeleteCallback = props.successDeleteCallback;
 
   // hook setup
   const dispatch = useDispatch();
@@ -88,28 +86,6 @@ export default function ResultForm(props = null) {
     )
   }
 
-  // 削除ボタン押下時の処理
-  const handleDeleteResult = async () => {
-    if (!window.confirm("リザルトを削除しますか？")) return;
-    toast.infoToast(
-      { message: "リザルトの削除リクエストを送信しました" }
-    );
-    try {
-      await api.deleteResult({
-        resultId: resultId
-      });
-      toast.successToast(
-        { message: "リザルトの削除が完了しました" }
-      );
-      if (successDeleteCallback) successDeleteCallback();
-      dispatch(deleteResult(resultId));
-    } catch (error) {
-      toast.errorToast(
-        { message: "リザルトの削除に失敗しました" }
-      );
-    }
-  }
-
   return (
     <React.Fragment>
       <div className={styles.resultForm}>
@@ -147,14 +123,6 @@ export default function ResultForm(props = null) {
             }>
               {(isUpdate) ? '更新' : '登録'}
             </span>
-            {/* 更新時のみ削除ボタンを表示 */}
-            {(isUpdate) && 
-              <span 
-                className={styles.deleteButton} 
-                onClick={
-                  async () => { handleDeleteResult() }
-                }
-              >削除</span>}
           </div>
         </div>
       </div>
