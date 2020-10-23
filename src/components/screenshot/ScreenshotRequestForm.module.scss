@@ -1,0 +1,33 @@
+@import 'styles/constant';
+
+.screenshotRequestForm {
+  .inputArea {
+    margin: 10px 0;
+
+    .inputItem {
+      margin: 15px 0;
+
+      .inputSelect {
+        font-size: 18px;
+        padding: 5px;
+        width: 100%;
+      }
+
+      .error {
+        font-size: 14px;
+        color: $ERROR_COLOR;
+      }
+
+    }
+
+    .actionArea {
+      text-align: right;
+
+      .postButton {
+        color: $LINK_COLOR;
+        cursor: pointer;
+        margin: 0 10px;
+      }
+    }
+  }
+}
