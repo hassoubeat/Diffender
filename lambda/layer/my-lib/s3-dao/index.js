@@ -11,3 +11,12 @@ module.exports.putObject = async (request) => {
   }
   await S3.putObject(object).promise();
 }
+
+// S3からオブジェクトを取得する
+module.exports.getObject = async (request) => {
+  const object = {
+    ...request,
+    Bucket: request.Bucket || DIFFENDER_S3_BUCKET_NAME
+  }
+  return await S3.getObject(object).promise();
+}
