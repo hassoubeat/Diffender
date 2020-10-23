@@ -420,12 +420,43 @@ Resources:
           Properties:
             Queue: !GetAtt ScreenshotProcessDLQ.Arn
             BatchSize: 1
+  # スクリーンショット差分取得処理
+  DiffScreenshotProcessFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/screenshots/DiffScreenshotProcessFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+        - S3CrudPolicy:
+            BucketName: !Ref DiffenderS3
+      Layers:
+        - !Ref NodeResembleJSLayer
+      Timeout: 30 # SQSの可視性タイムアウトと揃える
+      MemorySize: 1600 # Puppeteerを動かす以上最低必要なメモリ
+      Events:
+        SQSQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt DiffScreenshotProcessSQS.Arn
+            BatchSize: 1
     
   # Puppeteer(chrome-aws-lambda)の関連ライブラリのレイヤー
   PuppeteerLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
       ContentUri: 'lambda/layer/puppeteer'
+      CompatibleRuntimes:
+        - nodejs12.x
+    Metadata:
+      BuildMethod: nodejs12.x
+  # NodeResembleJS(画像比較ライブラリ)のレイヤー
+  NodeResembleJSLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: 'lambda/layer/node-resemble-js'
       CompatibleRuntimes:
         - nodejs12.x
     Metadata:
