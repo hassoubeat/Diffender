@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { setDisplaySidebar, selectWindow, selectIsDisplaySidebar } from 'app/appSlice';
 import { 
   selectCurrentUser,
@@ -45,13 +45,17 @@ export default function Sidebar() {
       <aside className={`${styles.sideBar}`}>
         <section id='sidebar'>
           <ul className={`${styles.sideBarMenu}`}>
-            <li className={`${styles.sideBarItem} ${styles.brand}`}>
-              <Link to="/" onClick={() => {if(isSp) dispatch(setDisplaySidebar(false))}}>
-                {process.env.REACT_APP_PROJECT_NAME}
-              </Link>
+            <li 
+              className={`${styles.brandItem}`}
+              onClick={() => {
+                if(isSp) dispatch(setDisplaySidebar(false))
+                history.push("/");
+              }}
+            >
+              {process.env.REACT_APP_PROJECT_NAME}
             </li>
             <hr/>
-            <li className={`${styles.sideBarItem} ${styles.user}`}>
+            <li className={`${styles.userItem}`}>
               <div><i className="fa fa-user"></i></div>
               <div className={styles.username}>
                 {loginUser.nickname}
@@ -69,15 +73,41 @@ export default function Sidebar() {
               </div>
             </li>
             <hr/>
-            <li className={`${styles.sideBarItem}`}>
-              <Link to="/projects" onClick={() => {if(isSp) dispatch(setDisplaySidebar(false))}}>
+            <li 
+              className={`${styles.linkItem}`} 
+              onClick={() => {
+                if(isSp) dispatch(setDisplaySidebar(false))
+                history.push("/projects");
+              }}
+            >
                 プロジェクト
-              </Link>
             </li>
-            <li className={`${styles.sideBarItem}`} onClick={() => {if(isSp) dispatch(setDisplaySidebar(false))}}>
-              <Link to="/results">
-                リザルト
-              </Link>
+            <li 
+              className={`${styles.linkItem}`} 
+              onClick={() => {
+                if(isSp) dispatch(setDisplaySidebar(false))
+                history.push("/results");
+              }}
+            >
+              リザルト
+            </li>
+            <li 
+              className={`${styles.linkItem}`} 
+              onClick={() => {
+                if(isSp) dispatch(setDisplaySidebar(false))
+                history.push("/screenshot-request");
+              }}
+            >
+              スクリーンショット
+            </li>
+            <li 
+              className={`${styles.linkItem}`} 
+              onClick={() => {
+                if(isSp) dispatch(setDisplaySidebar(false))
+                history.push("/diff-screenshot-request");
+              }}
+            >
+              スクリーンショット差分
             </li>
           </ul>
         </section>
