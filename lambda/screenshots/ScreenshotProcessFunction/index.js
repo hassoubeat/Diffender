@@ -42,13 +42,13 @@ exports.lambda_handler = async (event, context) => {
     // スクリーンショット取得
     const screenshot = await puppeteerWrapper.screenshots(puppeteerPage, page.screenshotOptions);
 
-    const s3ObjectKey = `result/${resultId}/${resultItemId}.jpeg`
+    const s3ObjectKey = `result/${resultId}/${resultItemId}.png`
 
     // S3にスクリーンショット保存
     const s3PutParams = {
       Key: s3ObjectKey,
       Body: screenshot,
-      ContentType: 'image/jpeg'
+      ContentType: 'image/png'
     }
     await s3Dao.putObject(s3PutParams);
 

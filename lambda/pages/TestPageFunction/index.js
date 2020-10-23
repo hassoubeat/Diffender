@@ -60,14 +60,14 @@ exports.lambda_handler = async (event, context) => {
     // スクリーンショット取得
     const screenshot = await puppeteerWrapper.screenshots(puppeteerPage, testPage.screenshotOptions);
     
-    const s3ObjectKey = `test/${user.sub}/${getUnique()}.jpeg`
+    const s3ObjectKey = `test/${user.sub}/${getUnique()}.png`
 
     // S3にスクリーンショット保存
     const s3PutParams = {
       Bucket: DIFFENDER_S3_BUCKET_NAME,
       Key: s3ObjectKey,
       Body: screenshot,
-      ContentType: 'image/jpeg'
+      ContentType: 'image/png'
     }
     await S3.putObject(s3PutParams).promise();
 
