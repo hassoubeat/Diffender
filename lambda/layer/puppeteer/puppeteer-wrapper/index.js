@@ -63,7 +63,7 @@ module.exports.browserAction = browserAction;
 async function screenshots(puppeteerPage, screenshotOptions) {
   return await puppeteerPage.screenshot({
     ...screenshotOptions,
-    type: 'jpeg'
+    type: 'png'
   });
 }
 module.exports.screenshots = screenshots;

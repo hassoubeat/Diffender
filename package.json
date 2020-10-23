@@ -15,6 +15,7 @@
     "izitoast": "^1.4.0",
     "jwt-decode": "^3.0.0",
     "lodash": "^4.17.20",
+    "node-resemble-js": "^0.2.0",
     "node-sass": "^4.14.1",
     "puppeteer": "^5.3.1",
     "puppeteer-core": "^5.3.1",
