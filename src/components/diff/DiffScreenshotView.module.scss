@@ -1,0 +1,40 @@
+@import 'styles/constant';
+
+.diffScreenshotView {
+  padding: 10px;
+  text-align: center;
+
+  .header {
+    display: flex;
+    justify-content: space-around;
+
+    .item {
+      width: 33%;
+      margin: 10px;
+      border: 1px solid $LINE_COLOR;
+      border-radius: 8px;
+      color: $MAIN_COLOR;
+      background-color: $WHITE_COLOR;
+      cursor: pointer;
+
+      &.hidden {
+        background-color: $LIGHT_GRAY_COLOR;
+      }
+
+      &:hover {
+        color: $LINK_COLOR;
+      }
+    }
+  }
+
+  .contents {
+    display: flex;
+    justify-content: space-around;
+
+    .item {
+      &.hidden {
+        display: none;
+      }
+    }
+  }
+}

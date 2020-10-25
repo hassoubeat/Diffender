@@ -50,6 +50,7 @@ exports.lambda_handler = async (event, context) => {
           type: "WAIT",
           message: "Waiting for screenshots."
         },
+        resultItemType: postResult.resultType,
         resultItemTieResultId: postResult.id,
         resultItemTiePageId: page.id,
         resultItemTieUserId: user.sub

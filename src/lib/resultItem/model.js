@@ -26,3 +26,20 @@ export function filterResultItemList(resultItemList, filterObj) {
     );
   });
 }
+
+// Diff%の値に応じて値に応じたカラーセットを返却する
+export function getDiffMisMatchPercentageClass(misMatchPercentage) {
+  if (misMatchPercentage === 0) {
+    return "NO_DIFF";
+  } else if (misMatchPercentage < 20) {
+    return "DIFF_20_LESS";
+  } else if (misMatchPercentage < 40) {
+    return "DIFF_40_LESS";
+  } else if (misMatchPercentage < 60) {
+    return "DIFF_60_LESS";
+  } else if (misMatchPercentage < 80) {
+    return "DIFF_80_LESS";
+  } else {
+    return "DIFF_100_LESS";
+  }
+}

@@ -48,7 +48,7 @@ exports.lambda_handler = async (event, context) => {
         message: "スクリーンショットの差分取得が完了しました",
         screenshotUrl: `https://${DIFFENDER_S3_BUCKET_NAME}.s3.amazonaws.com/${s3ObjectKey}`,
         screenshotS3Key: s3ObjectKey,
-        misMatchPercentage: diffData.misMatchPercentage
+        misMatchPercentage: Number(diffData.misMatchPercentage)
       }
     });
     

@@ -58,6 +58,7 @@ async function postResultItem(postObject) {
         id: postObject.id,
         name: postObject.name,
         status: postObject.status,
+        resultItemType: postObject.resultItemType,
         resultItemTieResultId: postObject.resultItemTieResultId,
         resultItemTieUserId: postObject.resultItemTieUserId,
         resultItemTiePageId: postObject.resultItemTiePageId,
