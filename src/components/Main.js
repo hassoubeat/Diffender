@@ -15,6 +15,7 @@ import ResultItemList from 'components/resultItem/ResultItemList';
 import ResultItemListQuickView from 'components/resultItem/ResultItemListQuickView';
 import ResultItemInfo from 'components/resultItem/ResultItemInfo';
 import ScreenshotInfo from 'components/screenshot/ScreenshotInfo';
+import DiffScreenshotInfo from 'components/diff/DiffScreenshotInfo';
 import NotFound404 from 'components/common/NotFound';
 import styles from './Main.module.scss';
 
@@ -156,6 +157,9 @@ export default function Main() {
         )} />
         <Route exact path="/screenshot-request" render={() => (
           <ScreenshotInfo/ >
+        )} />
+        <Route exact path="/diff-screenshot-request" render={() => (
+          <DiffScreenshotInfo/ >
         )} />
         <Route component={NotFound404} />
       </Switch>
