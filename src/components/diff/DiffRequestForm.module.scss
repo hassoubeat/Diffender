@@ -1,20 +1,21 @@
 @import 'styles/constant';
 
-.screenshotRequestForm {
+.diffRequestForm {
   .inputArea {
     margin: 10px 0;
 
     .inputItem {
       margin: 15px 0;
 
-      .inputLabel {
-        color: $MAIN_COLOR;
-      }
-
-      .inputText {
+      .inputSelect {
         font-size: 18px;
         padding: 5px;
         width: 100%;
+      }
+
+      .error {
+        font-size: 14px;
+        color: $ERROR_COLOR;
       }
 
     }

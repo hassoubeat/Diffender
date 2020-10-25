@@ -126,6 +126,12 @@ export async function deleteResult({resultId, request}) {
   return await API.del(DIFFENDER_API_NAME, `/results/${resultId}`, request)
 }
 
+// Diffの取得リクエスト(リザルト)
+export async function DiffScreenshotQueingProject({request}) {
+  request = await requestSetup(request);
+  return await API.post(DIFFENDER_API_NAME, `/results/diff-screenshot`, request)
+}
+
 // リザルトアイテム一覧の取得
 export async function getResultItemList({resultId, request}) {
   request = await requestSetup(request);

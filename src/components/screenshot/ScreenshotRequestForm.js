@@ -1,30 +1,46 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from "react-hook-form";
 import UtilInput from 'components/util/input/Input';
 import styles from './ScreenshotRequestForm.module.scss';
 
+import { 
+  selectCurrentUserOption
+} from 'app/userSlice';
+
 import {  
-  setResult
+  setResult,
+  selectProjects
 } from 'app/domainSlice';
 
+import { sortProjectList } from 'lib/project/model';
+
+import _ from 'lodash';
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
 
 export default function ScreenshotRequest(props = null) {
   // props setup
-  const projectId = props.projectId;
-  const requestSuccessCallback = props.requestSuccessCallback;
+  const initSelectProjectId = props.initSelectProjectId;
 
   // hook setup
   const dispatch = useDispatch();
+
+  // redux-state setup
+  const userOption = _.cloneDeep(useSelector(selectCurrentUserOption));
+  const projectsSortMap = userOption.projectsSortMap || {};
+  const projectList = sortProjectList(
+    _.cloneDeep(useSelector(selectProjects)),
+    projectsSortMap
+  );
 
   // ReactHookForm setup
   const {register, errors, handleSubmit} = useForm({
     mode: 'onChange',
     defaultValues: {
       name: "",
-      description: ""
+      description: "",
+      projectId: ""
     }
   });
 
@@ -36,7 +52,7 @@ export default function ScreenshotRequest(props = null) {
     try {
       dispatch(setResult(
         await api.ScreenshotQueingProject({
-          projectId: projectId,
+          projectId: data.projectId,
           request: {
             body: data
           }
@@ -45,7 +61,6 @@ export default function ScreenshotRequest(props = null) {
       toast.successToast(
         { message: `スクリーンショット取得リクエストが完了しました` }
       );
-      if (requestSuccessCallback) requestSuccessCallback();
     } catch (error) {
       console.log(error.response);
       toast.errorToast(
@@ -67,6 +82,34 @@ export default function ScreenshotRequest(props = null) {
     <React.Fragment>
       <div className={styles.screenshotRequestForm}>
         <div className={styles.inputArea}>
+          <div className={styles.inputItem}>
+            <label className={styles.inputLabel}>
+              スクリーンショットを取得するプロジェクト
+            </label>
+            <div className={styles.inputSelect} >
+              <select 
+                type="select"
+                name="projectId"
+                defaultValue={initSelectProjectId}
+                ref={ register({
+                  required: "プロジェクトを選択してください",
+                })}
+              >
+                <option value=""> --プロジェクトを選択してください-- </option>
+                { projectList.map( (project) => (
+                  <option 
+                    key={project.id} 
+                    value={project.id}
+                  >{project.name}</option>　  
+                ))}
+              </select>
+              { errors.projectId && 
+                <div className={styles.error}>
+                  {errors.projectId.message}
+                </div>
+              }
+            </div>
+          </div>
           <UtilInput
             label="リザルト名" 
             placeholder="20200701の定期チェック_example.com" 

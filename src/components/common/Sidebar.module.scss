@@ -15,38 +15,48 @@
     padding: 0px;
     margin: 0px;
   }
-  
-  &Item {
+
+  .brandItem {
+    font-family: 'Nunito';
+    font-size: 48px;
+    color:$WHITE_TEXT_COLOR;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .userItem {
+    display: flex;
     color:$WHITE_TEXT_COLOR;
     padding: 8px;
     font-size: 18px;
 
-    a {
-      color: white;
+    .username {
+      margin: 0px 5px;
+      flex: 1 1 0;
+    }
+
+    .icon {
+      margin: 0px 8px;
+      cursor: pointer;
+
+      &:hover {
+        color:$LINK_COLOR;
+      }
+    }
+  }
+  
+  .linkItem {
+    color:$WHITE_TEXT_COLOR;
+    padding: 8px;
+    font-size: 18px;
+    cursor: pointer;
+
+    &:hover {
+      color:$MAIN_COLOR;
+      background-color: $WHITE_COLOR;
+      transition: all 0.3s ease-in-out;
     }
     
-    &.brand {
-      font-family: 'Nunito';
-      font-size: 48px;
-      text-align: center;
-    }
-
-    &.user {
-      display: flex;
-
-      .username {
-        margin: 0px 5px;
-        flex: 1 1 0;
-      }
-
-      .icon {
-        margin: 0px 8px;
-
-        &:hover {
-          color:$DARK_GRAY_COLOR;
-        }
-      }
-    }
   }
 
   &Toggle {
