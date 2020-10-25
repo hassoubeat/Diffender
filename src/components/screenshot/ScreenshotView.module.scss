@@ -8,6 +8,12 @@
     max-width: 90%;
     max-height: 800px;
     border: 2px solid $MAIN_COLOR;
+    cursor: pointer;
+
+    &:hover {
+      border: 2px solid $LINK_COLOR;
+      transition: all 0.3s ease-in-out;
+    }
 
     &.zoom {
       max-height: none;
