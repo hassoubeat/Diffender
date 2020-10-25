@@ -75,10 +75,48 @@
       background-color: #F4F4F4;
     }
 
+    .message {
+      font-size: 13px;
+      color: $PLANE_TEXT_COLOR;
+
+      &:global.WAIT {
+        color: $LINK_COLOR;
+      }
+
+      &:global.ERROR {
+        color: $ERROR_COLOR;
+      }
+    }
+
     .createDate {
       font-size: 12px;
       color: $PLANE_TEXT_COLOR;
+      flex: 1 1 0;
+    }
+
+    .diffPer {
+      &:global.NO_DIFF {
+        color: $MAIN_COLOR;
+      }
+      &:global.DIFF_20_LESS {
+        color: $LINK_COLOR;
+      }
+      &:global.DIFF_40_LESS {
+        color: $SUB_COLOR;
+      }
+      &:global.DIFF_60_LESS {
+        color: $PINK_COLOR;
+      }
+      &:global.DIFF_80_LESS {
+        color: $WARNING_COLOR;
+      }
+      &:global.DIFF_100_LESS {
+        color: $ERROR_COLOR;
+      }
     }
   }
 }
 
+.flex {
+  display: flex;
+}

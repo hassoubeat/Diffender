@@ -11,10 +11,14 @@ import {
 
 import { 
   sort,
-  filterResultItemList
+  filterResultItemList,
+  getDiffMisMatchPercentageClass
 } from 'lib/resultItem/model'
+import _ from 'lodash';
 
 import styles from './ResultItemList.module.scss';
+
+const RESULT_ITEM_STATUS_TYPE_SUCCESS = process.env.REACT_APP_RESULT_ITEM_STATUS_TYPE_SUCCESS;
 
 export default function ResultItemList(props = null) {
   // props setup
@@ -79,8 +83,23 @@ export default function ResultItemList(props = null) {
           <Link key={resultItem.id} to={`/results/${resultItem.resultItemTieResultId}/result-items/${resultItem.id}`}>
             <div className={`${styles.resultItem} ${resultItem.status.type}`}>
               {resultItem.name}
-              <div className={styles.createDate}>
-                {resultItem.createDt}
+              {/* ステータスが完了していなければメッセージを表示する */}
+              { (_.get(resultItem, 'status.type') !== RESULT_ITEM_STATUS_TYPE_SUCCESS ) && 
+                  <div className={`${styles.message} ${_.get(resultItem, 'status.type')}`}>
+                    {_.get(resultItem, 'status.message')}
+                  </div>
+                }
+              <div className={styles.flex}>
+                {/* 登録日付 */}
+                <div className={styles.createDate}>
+                  {resultItem.createDt}
+                </div>
+                {/* Diff%が存在するときのみ表示する */}
+                { (_.get(resultItem, 'status.misMatchPercentage') >= 0) && 
+                  <div className={`${styles.diffPer} ${getDiffMisMatchPercentageClass(_.get(resultItem, 'status.misMatchPercentage'))}`}>
+                    {_.get(resultItem, 'status.misMatchPercentage')}%
+                  </div>
+                }
               </div>
             </div>
           </Link>
