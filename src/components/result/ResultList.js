@@ -65,6 +65,7 @@ export default function ResultList(props = null) {
   return (
     <React.Fragment>
       <div className={styles.resultList}>
+        <div className="sectionTitle">リザルト一覧</div>
         <div className={styles.filters}>
           <input className={styles.searchBox} type="text" placeholder="search" onChange={(e) => setSearchWord(e.target.value)} />
           <div className={styles.filter}>
