@@ -160,11 +160,7 @@ export default function PageForm(props = null) {
       <FormProvider {...reactHookFormMethods} >
       <div className={styles.pageForm}>
         <div className={styles.inputArea}>
-          <div className="sectionTitle">基本情報</div>
-          <hr className={styles.border}/>
-          <small className={styles.sectionMessage}>
-            ページに関する基本情報を設定します。
-          </small>
+          <div className="sectionTitle">ページ</div>
           <UtilInput
             label="ページ名" 
             placeholder="TOPページ" 

@@ -143,6 +143,7 @@ export default function PageList(props = null) {
   return (
     <React.Fragment>
       <div className={styles.pageList}>
+        <div className="sectionTitle">ページ一覧</div>
         <input className={styles.searchBox} type="text" placeholder="search" onChange={(e) => setSearchWord(e.target.value)} />
         <ReactSortable list={pageList} setList={() => {}} handle=".draggable"
           onEnd={ async (event) => {await handleSort(event)} }
