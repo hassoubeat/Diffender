@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { 
   selectResults,
@@ -103,6 +103,12 @@ export default function ResultList(props = null) {
             </div>
           </div>
         ))}
+        { (resultList.length === 0) &&
+          <React.Fragment>
+            リザルトは存在しません。<br/>
+            <Link to={'/screenshot-request'}>スクリーンショット</Link>、<Link to={'/screenshot-request'}>スクリーンショット差分</Link>の実行結果が表示されます。
+          </React.Fragment>
+        }
       </div>
     </React.Fragment>
   );

@@ -104,6 +104,11 @@ export default function ResultItemList(props = null) {
             </div>
           </Link>
         ))}
+        { (resultItemList.length === 0) &&
+          <React.Fragment>
+            リザルトアイテムは存在しません。
+          </React.Fragment>
+        }
       </div>
     </React.Fragment>
   );

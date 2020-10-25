@@ -173,6 +173,12 @@ export default function PageList(props = null) {
             </div>
           ))}
         </ReactSortable>
+        { (pageList.length === 0) &&
+          <React.Fragment>
+            ページは存在しません。<br/>
+            画面下部のボタンから登録を行ってください。
+          </React.Fragment>
+        }
       </div>
       <Modal 
         isOpen={isDisplayPageFormModal}

@@ -113,6 +113,12 @@ export default function ProjectList() {
             ))
           }
         </ReactSortable>
+        { (projectList.length === 0) &&
+          <React.Fragment>
+            プロジェクトは存在しません。<br/>
+            画面下部のボタンから登録を行ってください。
+          </React.Fragment>
+        }
       </div>
       <Modal 
         isOpen={isDisplayProjectFormModal}
