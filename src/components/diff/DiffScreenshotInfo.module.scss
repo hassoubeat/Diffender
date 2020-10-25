@@ -1,0 +1,12 @@
+@import 'styles/constant';
+
+.diffScreenshotInfo {
+  padding: 8px;
+
+  .infoMessage {
+    margin: 10px 0;
+    line-height: 1.4rem;
+    font-size: 14px;
+    color: $PLANE_TEXT_COLOR;
+  }
+}
