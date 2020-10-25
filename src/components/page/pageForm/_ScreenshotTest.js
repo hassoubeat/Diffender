@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useFormContext } from "react-hook-form";
 import Loading from 'components/common/Loading';
-import ScreenshotView from 'components/util/screenshot/ScreenshotView';
+import ScreenshotView from 'components/screenshot/ScreenshotView';
 
 import _ from 'lodash';
 import * as toast from 'lib/util/toast';
