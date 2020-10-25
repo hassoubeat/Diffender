@@ -72,6 +72,14 @@ export default function ResultItemListQuickView(props = null) {
           >
            <i className="fas fa-list"/> リザルトアイテム一覧
           </div>
+          <div 
+            className={styles.reloadListMenuItem}
+            onClick={ () => { 
+              dispatch( fetchResultItemsByResultId(resultId) )
+            }}
+          >
+           <i className="fas fa-sync"></i> リロード
+          </div>
           {resultItemList.map( (resultItem) => (
               <div 
                 key={resultItem.id}

@@ -94,8 +94,8 @@ export const domainSlice = createSlice({
         return returnObject;
       }, {});
       state.resultItems = {
-        ...resultItemListObject,
-        ...state.resultItems
+        ...state.resultItems,
+        ...resultItemListObject
       };
     },
   },
