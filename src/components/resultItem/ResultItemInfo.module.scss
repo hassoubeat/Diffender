@@ -19,27 +19,6 @@
             color: $ERROR_COLOR;
           }
         }
-
-        &.diffPer {
-          &:global.NO_DIFF {
-            color: $MAIN_COLOR;
-          }
-          &:global.DIFF_20_LESS {
-            color: $LINK_COLOR;
-          }
-          &:global.DIFF_40_LESS {
-            color: $SUB_COLOR;
-          }
-          &:global.DIFF_60_LESS {
-            color: $PINK_COLOR;
-          }
-          &:global.DIFF_80_LESS {
-            color: $WARNING_COLOR;
-          }
-          &:global.DIFF_100_LESS {
-            color: $ERROR_COLOR;
-          }
-        }
       }
     }
     
