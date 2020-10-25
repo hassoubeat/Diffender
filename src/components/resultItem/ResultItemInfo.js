@@ -61,7 +61,7 @@ export default function ResultItemInfo(props = null) {
               <span className={styles.content}>{_.get(resultItem, 'status.errorDetailMessage')}</span>
             </div>
           }
-          { (_.get(resultItem, 'status.misMatchPercentage')) && 
+          { (_.get(resultItem, 'status.misMatchPercentage') >= 0) && 
             <div className={styles.item}>
               <span className={styles.label}>Diff％: </span>
               <span className={`${styles.content} ${styles.diffPer} ${getDiffMisMatchPercentageClass(_.get(resultItem, 'status.misMatchPercentage'))}`}>
