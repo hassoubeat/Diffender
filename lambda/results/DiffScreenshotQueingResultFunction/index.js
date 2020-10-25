@@ -92,6 +92,7 @@ exports.lambda_handler = async (event, context) => {
           originResultItemId: originResultItem.id,
           targetResultItemId: targetResultItem.id
         },
+        resultItemType: postResult.resultType,
         resultItemTieResultId: postResult.id,
         resultItemTiePageId: originResultItem.resultItemTiePageId,
         resultItemTieUserId: user.sub
