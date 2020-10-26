@@ -9,13 +9,15 @@ import {
 } from 'app/domainSlice';
 
 import {
-  sort
+  sort,
+  getDiffMisMatchPercentageClass
 } from 'lib/resultItem/model';
 import {
   getLSItem,
   setLSItem,
   toBoolean
 } from 'lib/util/localStorage'
+import _ from 'lodash';
 
 import styles from 'styles/QuickView.module.scss';
 
@@ -70,6 +72,14 @@ export default function ResultItemListQuickView(props = null) {
           >
            <i className="fas fa-list"/> リザルトアイテム一覧
           </div>
+          <div 
+            className={styles.reloadListMenuItem}
+            onClick={ () => { 
+              dispatch( fetchResultItemsByResultId(resultId) )
+            }}
+          >
+           <i className="fas fa-sync"></i> リロード
+          </div>
           {resultItemList.map( (resultItem) => (
               <div 
                 key={resultItem.id}
@@ -86,6 +96,12 @@ export default function ResultItemListQuickView(props = null) {
                   <span className={`${styles.title} ${resultItem.status.type}`}>
                     {resultItem.name}
                   </span>
+                  {/* Diff%が存在するときのみ表示する */}
+                  { (_.get(resultItem, 'status.misMatchPercentage') >= 0) && 
+                    <div className={`${styles.sub} ${getDiffMisMatchPercentageClass(_.get(resultItem, 'status.misMatchPercentage'))}`}>
+                      {_.get(resultItem, 'status.misMatchPercentage')}%
+                    </div>
+                  }
                 </div>
               </div>
             ))

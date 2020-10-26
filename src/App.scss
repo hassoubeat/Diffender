@@ -155,3 +155,23 @@ input[type='checkbox'] {
   color: $MAIN_COLOR;
   border-bottom: 1px solid $LINE_COLOR;
 }
+
+// Diff%ごとの文字色
+.NO_DIFF {
+  color: $MAIN_COLOR;
+}
+.DIFF_20_LESS {
+  color: $LINK_COLOR;
+}
+.DIFF_40_LESS {
+  color: $SUB_COLOR;
+}
+.DIFF_60_LESS {
+  color: $PINK_COLOR;
+}
+.DIFF_80_LESS {
+  color: $WARNING_COLOR;
+}
+.DIFF_100_LESS {
+  color: $ERROR_COLOR;
+}

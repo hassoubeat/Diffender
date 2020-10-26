@@ -16,6 +16,8 @@ import * as toast from 'lib/util/toast';
 
 import styles from './DiffRequestForm.module.scss';
 
+const RESULT_TYPE_SS = process.env.REACT_APP_RESULT_TYPE_SS;
+
 export default function DiffRequestForm(props = null) {
   // props setup
   const selectedOriginId = props.selectedOriginId;
@@ -96,7 +98,7 @@ export default function DiffRequestForm(props = null) {
                 }}
               >
                 <option value=""> --比較元リザルトを選択してください-- </option>
-                { resultList.map( (result) => (
+                { oroginResultFilter(resultList).map( (result) => (
                   <option 
                     key={result.id} 
                     value={result.id}
@@ -181,6 +183,18 @@ export default function DiffRequestForm(props = null) {
   );
 }
 
+// 比較元リザルトのフィルタリング処理
+function oroginResultFilter (resultList) {
+
+  return resultList.filter((originResult) => {
+    // resultTypeがSCREENSHOTの時のみ
+    const isResultTypeSS = (originResult.resultType === RESULT_TYPE_SS);
+
+    // 上記の条件すべてを満たすとき正(フィルターから除外しない)
+    return (isResultTypeSS);
+  });
+}
+
 // 比較先リザルトのフィルタリング処理
 function targetResultFilter (resultList, originResultId) {
   if (!originResultId) return [];
@@ -191,13 +205,15 @@ function targetResultFilter (resultList, originResultId) {
   });
 
   return resultList.filter((targetResult) => {
+    // resultTypeがSCREENSHOTの時のみ
+    const isResultTypeSS = (targetResult.resultType === RESULT_TYPE_SS);
     // 同じプロジェクトから出力されたリザルトのみ
     const isSameProject = (originResult.resultTieProjectId === targetResult.resultTieProjectId);
     // 比較元リザルトではない
     const isNotOriginResultId = (originResult.id !== targetResult.id);
 
     // 上記の条件すべてを満たすとき正(フィルターから除外しない)
-    return (isSameProject && isNotOriginResultId);
+    return (isResultTypeSS && isSameProject && isNotOriginResultId);
   });
 }
 

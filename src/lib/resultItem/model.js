@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 // リザルト一覧をソート
 export function sort(resultList) {
   // 登録日時の昇順でソート
@@ -6,6 +8,12 @@ export function sort(resultList) {
     if( a.createDtUnix > b.createDtUnix ) return 1;
     return 0;
   });
+  // Diff%の降順でソート
+  resultList.sort( (a, b) => {
+    if( _.get(a, 'status.misMatchPercentage') > _.get(b, 'status.misMatchPercentage') ) return -1;
+    if( _.get(a, 'status.misMatchPercentage') < _.get(b, 'status.misMatchPercentage') ) return 1;
+    return 0;
+  })
   return resultList;
 }
 

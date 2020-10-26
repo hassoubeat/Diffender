@@ -6,7 +6,7 @@
   min-height: 100vh;
   overflow: scroll;
 
-  .closeMenuItem , .gotoListMenuItem {
+  .closeMenuItem , .gotoListMenuItem, .reloadListMenuItem {
     position: relative;
     font-size: 14px;
     padding: 8px 20px 8px 8px;
@@ -45,6 +45,11 @@
           content: " W ";
         }
       }
+
+      .sub {
+        font-size: 12px;
+        text-align: right;
+      }
     }
 
     &.selected{
@@ -64,6 +69,12 @@
           &:global.SUCCESS:before {
             color: $WHITE_TEXT_COLOR;
           }
+        }
+      }
+
+      .sub {
+        &:global.NO_DIFF {
+          color: $WHITE_TEXT_COLOR;
         }
       }
     }

@@ -84,6 +84,7 @@ export default function ProjectList() {
   return (
     <React.Fragment>
       <div className={styles.projectList}>
+        <div className="sectionTitle">プロジェクト一覧</div>
         <input className={styles.searchBox} type="text" placeholder="search" onChange={(e) => setSearchWord(e.target.value)} />
         <ReactSortable list={projectList} setList={() => {}} handle=".draggable"
           onEnd={ async (event) => {await handleSort(event)} }
@@ -112,6 +113,12 @@ export default function ProjectList() {
             ))
           }
         </ReactSortable>
+        { (projectList.length === 0) &&
+          <React.Fragment>
+            プロジェクトは存在しません。<br/>
+            画面下部のボタンから登録を行ってください。
+          </React.Fragment>
+        }
       </div>
       <Modal 
         isOpen={isDisplayProjectFormModal}
