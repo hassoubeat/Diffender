@@ -1,11 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { 
-  setInitialLoadState, 
-  setPages, 
-  selectInitialLoadState,
   selectPagesByProjectId,
   selectProject
 } from 'app/domainSlice';
@@ -13,7 +10,6 @@ import {
 import _ from 'lodash';
 import {
   sortPageList,
-  getPageList
 } from 'lib/page/model';
 import {
   getLSItem,
@@ -29,10 +25,8 @@ export default function ProjectListQuickView(props = null) {
 
   // hook setup
   const history = useHistory();
-  const dispatch = useDispatch();
 
-  // redux-state setup
-  const isLoadedPageList = useSelector(selectInitialLoadState(`pageListMap.${projectId}`));  
+  // redux-state setup 
   const project = _.cloneDeep(useSelector( selectProject(projectId) ));
   const pagesSortMap = project.pagesSortMap || {};
   const pageList = sortPageList(
@@ -50,26 +44,6 @@ export default function ProjectListQuickView(props = null) {
     setLSItem('isDisplayPageQuickMenu', !isDisplayMenu);
     setIsDisplayMenu(!isDisplayMenu);
   }
-
-  // ページ一覧の取得
-  const updatePageList = useCallback( async () => {
-  dispatch(setPages(
-    await getPageList(projectId)
-  ));
-  dispatch(setInitialLoadState({
-    key: `pageListMap.${projectId}`,
-    value: true
-  }));
-  }, [projectId, dispatch]);
-
-  useEffect( () => {
-    const asyncUpdatePageList = async () => {
-      // 既にページ一覧が一度読み込まれていれば読み込みしない
-      if (isLoadedPageList) return;
-      await updatePageList();
-    };
-    asyncUpdatePageList();
-  }, [updatePageList, isLoadedPageList]);
 
   return (
     <React.Fragment>

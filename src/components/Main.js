@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
 import Breadcrumbs from 'components/common/Breadcrumbs';
 import UserInfo from 'components/auth/UserInfo';
@@ -19,7 +20,37 @@ import DiffScreenshotInfo from 'components/diff/DiffScreenshotInfo';
 import NotFound404 from 'components/common/NotFound';
 import styles from './Main.module.scss';
 
+import _ from 'lodash';
+
+import { 
+  selectInitialLoadState,
+  fetchPages,
+  fetchResultItemsByResultId
+} from 'app/domainSlice';
+
 export default function Main() {
+
+  // hook setup
+  const dispatch = useDispatch();
+  const isLoadedState = useSelector(selectInitialLoadState());
+
+  // URLに含まれているidによって必要なデータを予め取得する
+  const fetchData = (params) => {
+    const projectId = params.projectId;
+    const resultId = params.resultId;
+    const isLoadedPages = _.get(isLoadedState, `pageListMap.${projectId}`, false);
+    const isLoadedResultItems = _.get(isLoadedState, `resultItemListMap.${resultId}`, false);
+
+    // ProjectIdがパラメータに存在する時、ProjectIdに紐づくPagesを取得する
+    if (projectId) {
+      if (!isLoadedPages) dispatch( fetchPages(projectId) );
+    }
+
+    // ResultIdがパラメータに存在する時、ResultIdに紐づくResultItemsを取得する
+    if (resultId) {
+      if (!isLoadedResultItems) dispatch( fetchResultItemsByResultId(resultId) );
+    }
+  }
 
   return (
     <div className={styles.main}>
@@ -40,6 +71,7 @@ export default function Main() {
         )} />
         <Route exact path="/projects/:projectId" render={({match}) => (
           <React.Fragment>
+            {fetchData(match.params)}
             <div className={styles.flex}>
               <div className={styles.quickView}>
                 <ProjectListQuickView selectedProjectId={match.params.projectId} />
@@ -57,6 +89,7 @@ export default function Main() {
         )} />
         <Route exact path="/projects/:projectId/pages" render={({match}) => (
           <React.Fragment>
+            {fetchData(match.params)}
             <div className={styles.flex}>
               <div className={styles.quickView}>
                 <ProjectListQuickView selectedProjectId={match.params.projectId} />
@@ -74,6 +107,7 @@ export default function Main() {
         )} />
         <Route exact path="/projects/:projectId/pages/:pageId" render={({match}) => (
           <React.Fragment>
+            {fetchData(match.params)}
             <div className={styles.flex}>
               <div className={styles.quickView}>
                 <ProjectListQuickView selectedProjectId={match.params.projectId} />
@@ -104,6 +138,7 @@ export default function Main() {
         )} />
         <Route exact path="/results/:resultId" render={({match}) => (
           <React.Fragment>
+            {fetchData(match.params)}
             <div className={styles.flex}>
               <div className={styles.quickView}>
                 <ResultListQuickView selectedResultId={match.params.resultId} />
@@ -119,6 +154,7 @@ export default function Main() {
         )} />
         <Route exact path="/results/:resultId/result-items" render={({match}) => (
           <React.Fragment>
+            {fetchData(match.params)}
             <div className={styles.flex}>
               <div className={styles.quickView}>
                 <ResultListQuickView selectedResultId={match.params.resultId} />
@@ -136,6 +172,7 @@ export default function Main() {
         )} />
         <Route exact path="/results/:resultId/result-items/:resultItemId" render={({match}) => (
           <React.Fragment>
+            {fetchData(match.params)}
             <div className={styles.flex}>
               <div className={styles.quickView}>
                 <ResultListQuickView selectedResultId={match.params.resultId} />

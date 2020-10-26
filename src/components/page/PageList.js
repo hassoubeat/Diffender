@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { ReactSortable } from "react-sortablejs";
 import { useHistory } from 'react-router-dom';
@@ -6,13 +6,11 @@ import Modal from 'react-modal';
 import PageForm from './pageForm/PageForm';
 import Loading from 'components/common/Loading';
 
-import { 
-  setInitialLoadState, 
+import {  
   setProject,
-  setPages, 
   setPage, 
   deletePage,
-  selectInitialLoadState,
+  selectIsLoadedPagesByProjectId,
   selectPagesByProjectId,
   selectProject
 } from 'app/domainSlice';
@@ -21,8 +19,7 @@ import _ from 'lodash';
 import {
   searchPageList,
   updatePageListSortMap,
-  sortPageList,
-  getPageList
+  sortPageList
 } from 'lib/page/model';
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
@@ -42,7 +39,7 @@ export default function PageList(props = null) {
   const dispatch = useDispatch();
 
   // redux-state setup
-  const isLoadedPageList = useSelector(selectInitialLoadState(`pageListMap.${projectId}`));  
+  const isLoadedPageList = useSelector(selectIsLoadedPagesByProjectId(projectId) );  
   const project = _.cloneDeep(useSelector( selectProject(projectId) ));
   const pagesSortMap = project.pagesSortMap || {};
   const pageList = sortPageList(
@@ -53,17 +50,6 @@ export default function PageList(props = null) {
   // state seteup
   const [searchWord, setSearchWord] = useState("");
   const [isDisplayPageFormModal, setIsDisplayPageFormModal] = useState(false);
-
-  // ページ一覧の取得
-  const updatePageList = useCallback( async () => {
-    dispatch(setPages(
-      await getPageList(projectId)
-    ));
-    dispatch(setInitialLoadState({
-      key: `pageListMap.${projectId}`,
-      value: true
-    }));
-  }, [projectId, dispatch]);
 
   // ページ一覧の順序入れ替えイベント
   const handleSort = async (e) => {
@@ -127,15 +113,6 @@ export default function PageList(props = null) {
     }
   }
 
-  useEffect( () => {
-    const asyncUpdatePageList = async () => {
-      // 既にページ一覧が一度読み込まれていれば読み込みしない
-      if (isLoadedPageList) return;
-      await updatePageList();
-    };
-    asyncUpdatePageList();
-  }, [updatePageList, isLoadedPageList]);
-
   if (!isLoadedPageList) return (
     <Loading/>
   );
@@ -196,11 +173,9 @@ export default function PageList(props = null) {
           projectId={projectId} 
           postSuccessCallback={ () => {
             setIsDisplayPageFormModal(false)
-            updatePageList()
           }}
           deleteSuccessCallback={ () => {
             setIsDisplayPageFormModal(false)
-            updatePageList()
           }}
         />
         <div className="closeModalButton" onClick={() => {setIsDisplayPageFormModal(false)}}>✕</div>

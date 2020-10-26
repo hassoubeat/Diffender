@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Loading from 'components/common/Loading';
 
 import { 
   selectIsLoadedResultItemsByResultId,
   selectResultItemsByResultId,
-  fetchResultItemsByResultId
 } from 'app/domainSlice';
 
 import { 
@@ -23,9 +22,6 @@ const RESULT_ITEM_STATUS_TYPE_SUCCESS = process.env.REACT_APP_RESULT_ITEM_STATUS
 export default function ResultItemList(props = null) {
   // props setup
   const resultId = props.resultId;
-
-  // hook setup
-  const dispatch = useDispatch();
 
   // redux-state setup
   const isLoadedResultItem = useSelector( selectIsLoadedResultItemsByResultId(resultId) );
@@ -45,11 +41,6 @@ export default function ResultItemList(props = null) {
     isDisplayResultProgressError: isDisplayResultProgressError,
     isDisplayResultProgressWait: isDisplayResultProgressWait
   }
-
-  useEffect( () => {
-    // 一度読み込みが完了している場合は再読み込みを実行しない
-    if (!isLoadedResultItem) dispatch( fetchResultItemsByResultId(resultId) );
-  }, [dispatch, resultId, isLoadedResultItem])
 
   if (!isLoadedResultItem) return (
     <Loading/>
