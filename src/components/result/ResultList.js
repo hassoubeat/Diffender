@@ -95,6 +95,11 @@ export default function ResultList(props = null) {
             <div className={styles.createDate}>
               {result.createDt}
             </div>
+            { (result.ttlDt) &&
+              <div className={styles.ttlDate}>
+                {result.ttlDt} <i className={`fa fa-trash-alt`} />
+              </div>
+            }
             <div className={styles.actions}>
               <i className={`fa fa-trash-alt ${styles.item} ${styles.delete}`} onClick={(e) => {
                 e.stopPropagation()
