@@ -5,6 +5,13 @@ module.exports.get = async (dynamoDB, getObj) => {
 
 // データ検索
 module.exports.query = async (dynamoDB, queryObj) => {
+  if (queryObj.FilterExpression) {
+    queryObj.FilterExpression += " AND (attribute_not_exists(ttlDtUnix) OR ttlDtUnix > :nowUnixTime)";
+  } else {
+    queryObj.FilterExpression = "(attribute_not_exists(ttlDtUnix) OR ttlDtUnix > :nowUnixTime)"
+  }
+  queryObj.ExpressionAttributeValues[":nowUnixTime"] = lib.getNowUnixTime();
+
   return await dynamoDB.query(queryObj).promise();
 }
 
@@ -56,9 +63,33 @@ function getNowTime() {
   return date = new Date();
 }
 
+// 現在のTTL時刻を取得する
+function getNowUnixTime () {
+  const date = getNowTime();
+  return Math.floor( date.getTime() / 1000 );
+}
+module.exports.getNowUnixTime = getNowUnixTime;
+
+// TTL時刻セットを取得する
+function getTTLDateSet () {
+  const date = getNowTime();
+  // 5日後をTTLに設定する
+  date.setDate(date.getDate() + 5);
+  
+  return {
+    // Unix時刻をデフォルトのミリ秒から秒に変換する
+    // ※ DynamoDBのTTLのUnix時刻は秒しか扱えないため
+    ttlDtUnix: Math.floor( date.getTime() / 1000 ),
+    ttlDt: date.toLocaleString({timeZone: 'Asia/Tokyo'})
+  }
+}
+module.exports.getTTLDateSet = getTTLDateSet;
+
 // ユニットテストでモックする必要のあるモジュール内関数をラッピングしている
 // 詳細はこちら https://medium.com/@qjli/how-to-mock-specific-module-function-in-jest-715e39a391f4
 const lib = {
-  getNowTime
+  getNowTime,
+  getNowUnixTime,
+  getTTLDateSet
 };
 module.exports.lib = lib;
