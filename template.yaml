@@ -512,10 +512,16 @@ Resources:
       AccessControl: PublicRead
       LifecycleConfiguration: 
         Rules:
+          # testフォルダ配下のオブジェクトは1日後に消滅
         - Id: TestDirRotateRule
           Prefix: test/
           Status: Enabled
           ExpirationInDays: 1
+          # resultフォルダ配下のオブジェクトは5日後に消滅
+        - Id: ResultDirRotateRule
+          Prefix: result/
+          Status: Enabled
+          ExpirationInDays: 5
   DiffenderS3Policy:
     Type: "AWS::S3::BucketPolicy"
     Properties:
@@ -539,6 +545,8 @@ Resources:
           AttributeType: S
         - AttributeName: createDtUnix
           AttributeType: N
+        - AttributeName: ttlDtUnix
+          AttributeType: N
         - AttributeName: projectTieUserId
           AttributeType: S
         - AttributeName: resultTieUserId
@@ -549,6 +557,10 @@ Resources:
           AttributeType: S
         - AttributeName: resultTieProjectId
           AttributeType: S
+      # TTL(自動削除)の設定
+      TimeToLiveSpecification:
+        AttributeName: ttlDtUnix
+        Enabled: true
       # プライマリキープライマリキー、レンジキーの指定
       KeySchema:
         - AttributeName: id

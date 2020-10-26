@@ -70,6 +70,10 @@ module.exports.getResult = getResult;
 
 // リザルトの登録
 async function postResult(postObject) {
+
+  // TTL時刻を取得する
+  const {ttlDtUnix, ttlDt} = dynamoDBDao.getTTLDateSet();
+
   return await dynamoDBDao.put(
     dynamoDBClient,
     {
@@ -81,6 +85,8 @@ async function postResult(postObject) {
         resultType: postObject.resultType,
         resultTieProjectId: postObject.resultTieProjectId,
         resultTieUserId: postObject.resultTieUserId,
+        ttlDtUnix: ttlDtUnix,
+        ttlDt: ttlDt,
       }
     }
   )
