@@ -15,8 +15,6 @@ exports.lambda_handler = async (event, context) => {
     project = queueData.project;
     page = queueData.page;
     resultItem = queueData.resultItem;
-    const resultId = resultItem.resultItemTieResultId;
-    const resultItemId = resultItem.id;
 
     const puppeteerPage = await puppeteerWrapper.initPuppeteer(page);
 
@@ -42,7 +40,12 @@ exports.lambda_handler = async (event, context) => {
     // スクリーンショット取得
     const screenshot = await puppeteerWrapper.screenshots(puppeteerPage, page.screenshotOptions);
 
-    const s3ObjectKey = `result/${resultId}/${resultItemId}.png`
+
+    // S3オブジェクトのKey生成
+    const userId = resultItem.resultItemTieUserId;
+    const resultId = resultItem.resultItemTieResultId;
+    const resultItemId = resultItem.id;
+    const s3ObjectKey = `result/${userId}/${resultId}/${resultItemId}.png`
 
     // S3にスクリーンショット保存
     const s3PutParams = {
@@ -57,7 +60,7 @@ exports.lambda_handler = async (event, context) => {
       ...resultItem,
       status: {
         type: "SUCCESS",
-        message: "Screenshots have been completed.",
+        message: "スクリーンショットの取得が完了しました",
         screenshotUrl: `https://${DIFFENDER_S3_BUCKET_NAME}.s3.amazonaws.com/${s3ObjectKey}`,
         screenshotS3Key: s3ObjectKey
       }
@@ -71,7 +74,7 @@ exports.lambda_handler = async (event, context) => {
       ...resultItem,
       status: {
         type: "ERROR",
-        message: "Screenshots shooting failed.",
+        message: "スクリーンショットの取得に失敗しました",
         errorDetailMessage: error.message
       }
     });
