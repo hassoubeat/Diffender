@@ -9,7 +9,7 @@ exports.lambda_handler = async (event, context) => {
     ...resultItem,
     status: {
       type: "ERROR",
-      message: "Screenshots shooting failed.",
+      message: "スクリーンショットの取得に失敗しました",
       errorDetailMessage: "Lambda run time exceeded."
     }
   });
