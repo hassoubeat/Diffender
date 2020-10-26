@@ -30,8 +30,13 @@ exports.lambda_handler = async (event, context) => {
     const diffData = await compareTo(originImage, targetImage);
     const diffScreenshot = await syncStream(diffData);
 
+    // S3オブジェクトのKey生成
+    const userId = resultItem.resultItemTieUserId;
+    const resultId = resultItem.resultItemTieResultId;
+    const resultItemId = resultItem.id;
+    const s3ObjectKey = `result/${userId}/${resultId}/${resultItemId}.png`
+
     // S3にスクリーンショット保存
-    const s3ObjectKey = `result/${resultItem.resultItemTieResultId}/${resultItem.id}.png`
     const s3PutParams = {
       Key: s3ObjectKey,
       Body: diffScreenshot,
