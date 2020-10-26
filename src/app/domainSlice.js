@@ -153,6 +153,26 @@ export const selectPage = (pageId) => {
   };
 }
 
+// 指定したプロジェクトに紐づくリザルト一覧のロード状況取得するセレクタ
+export const selectIsLoadedPagesByProjectId = (projectId) => {
+  return (state) => {
+    return _.get(state.domain.initialLoadState, `pageListMap.${projectId}`, false);
+  };
+}
+
+// ページ一覧の取得とStateにセット
+export const fetchPages = (projectId) => async (dispatch) => {
+  dispatch(setPages(
+    await api.getPageList({
+      projectId : projectId
+    })
+  ));
+  dispatch(setInitialLoadState({
+    key: `pageListMap.${projectId}`,
+    value: true
+  }));
+}
+
 // リザルト一覧のState取得セレクタ
 export const selectResults = ({projectId}) => {
   if (projectId) {

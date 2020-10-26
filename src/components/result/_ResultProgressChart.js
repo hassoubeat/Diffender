@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import RoundChart from 'components/util/chart/RoundChart';
 import Loading from 'components/common/Loading';
 
 import { 
   selectIsLoadedResultItemsByResultId,
-  selectResultItemsByResultId,
-  fetchResultItemsByResultId
+  selectResultItemsByResultId
 } from 'app/domainSlice';
 
 
@@ -21,20 +20,12 @@ export default function ReusltList(props = null) {
   // props setup
   const resultId = props.resultId;
 
-  // hook setup
-  const dispatch = useDispatch();
-
   // redux-state setup
   const isLoadedResultItem = useSelector( selectIsLoadedResultItemsByResultId(resultId) );
   const resultItemList = useSelector( selectResultItemsByResultId(resultId));
   
   // state setup
   const progressState = generateProgressState(resultItemList)
-
-  useEffect( () => {
-    // 一度読み込みが完了している場合は再読み込みを実行しない
-    if (!isLoadedResultItem) dispatch( fetchResultItemsByResultId(resultId) );
-  }, [dispatch, resultId, isLoadedResultItem])
 
   if (!isLoadedResultItem) return (
     <Loading/>

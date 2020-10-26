@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { 
-  selectIsLoadedResultItemsByResultId,
   selectResultItemsByResultId,
   fetchResultItemsByResultId
 } from 'app/domainSlice';
@@ -31,7 +30,6 @@ export default function ResultItemListQuickView(props = null) {
   const dispatch = useDispatch();
 
   // redux-state setup
-  const isLoadedResultItem = useSelector( selectIsLoadedResultItemsByResultId(resultId) );
   const resultItemList = sort(
     useSelector( selectResultItemsByResultId(resultId) )
   );
@@ -46,11 +44,6 @@ export default function ResultItemListQuickView(props = null) {
     setLSItem('isDisplayResultItemQuickMenu', !isDisplayMenu);
     setIsDisplayMenu(!isDisplayMenu);
   }
-
-  useEffect( () => {
-    // 一度読み込みが完了している場合は再読み込みを実行しない
-    if (!isLoadedResultItem) dispatch( fetchResultItemsByResultId(resultId) );
-  }, [dispatch, resultId, isLoadedResultItem])
 
   return (
     <React.Fragment>

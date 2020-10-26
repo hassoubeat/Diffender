@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 
 import { 
   selectIsLoadedResultItemsByResultId,
   selectResultItem,
-  fetchResultItemsByResultId
 } from 'app/domainSlice';
 
 import ScreenshotView from 'components/screenshot/ScreenshotView';
 import DiffScreenshotView from 'components/diff/DiffScreenshotView';
+import Loading from 'components/common/Loading';
 
 import { 
   getDiffMisMatchPercentageClass
@@ -26,17 +26,13 @@ export default function ResultItemInfo(props = null) {
   const resultId = props.resultId;
   const resultItemId = props.resultItemId;
 
-  // hook setup
-  const dispatch = useDispatch();
-
   // redux-state setup
   const isLoadedResultItem = useSelector( selectIsLoadedResultItemsByResultId(resultId) );
   const resultItem = useSelector( selectResultItem(resultItemId) ) || {};
 
-  useEffect( () => {
-    // 一度読み込みが完了している場合は再読み込みを実行しない
-    if (!isLoadedResultItem) dispatch( fetchResultItemsByResultId(resultId) );
-  }, [dispatch, resultId, isLoadedResultItem])
+  if (!isLoadedResultItem) return (
+    <Loading/>
+  );
 
   return (
     <React.Fragment>
