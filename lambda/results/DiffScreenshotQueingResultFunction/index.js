@@ -84,7 +84,7 @@ exports.lambda_handler = async (event, context) => {
         name: originResultItem.name,
         status: {
           type: "WAIT",
-          message: "DIffの取得処理を待機中...",
+          message: "DIffの取得処理 待機中...",
           originScreenshotUrl: _.get(originResultItem, 'status.screenshotUrl', ""),
           originScreenshotS3Key: _.get(originResultItem, 'status.screenshotS3Key', ""),
           targetScreenshotUrl: _.get(targetResultItem, 'status.screenshotUrl', ""),
