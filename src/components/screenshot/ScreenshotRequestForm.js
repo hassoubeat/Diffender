@@ -14,9 +14,9 @@ import {
 } from 'app/domainSlice';
 
 import { sortProjectList } from 'lib/project/model';
+import { requestScreenshot } from 'lib/screenshot/model';
 
 import _ from 'lodash';
-import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
 
 export default function ScreenshotRequest(props = null) {
@@ -46,27 +46,8 @@ export default function ScreenshotRequest(props = null) {
 
   // submit hander
   const onSubmit = async (data) => {
-    toast.infoToast(
-      { message: `スクリーンショット取得リクエストを送信しました` }
-    );
-    try {
-      dispatch(setResult(
-        await api.ScreenshotQueingProject({
-          projectId: data.projectId,
-          request: {
-            body: data
-          }
-        })
-      ));
-      toast.successToast(
-        { message: `スクリーンショット取得リクエストが完了しました` }
-      );
-    } catch (error) {
-      console.log(error.response);
-      toast.errorToast(
-        { message: `スクリーンショット取得リクエストに失敗しました` }
-      );
-    }
+    const result = await requestScreenshot(data.projectId, data);
+    if (result) dispatch( setResult(result) );
   }
 
   // submit error hander

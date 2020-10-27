@@ -8,7 +8,9 @@ import {
   selectResult
 } from 'app/domainSlice';
 
-import * as api from 'lib/api/api';
+import {
+  putResult,
+} from 'lib/result/model';
 import * as toast from 'lib/util/toast';
 
 import styles from './ResultForm.module.scss';
@@ -40,42 +42,18 @@ export default function ResultForm(props = null) {
   }, [isUpdate, result, reset]);
 
   const onSubmit = async (inputResult) => {
-    const eventName = (isUpdate) ? "更新" : "登録";
-    toast.infoToast(
-      { message: `リザルトの${eventName}リクエストを送信しました` }
-    );
-    try {
-      if (isUpdate) {
-        dispatch(setResult(
-          await api.putResult({
-            resultId: resultId, 
-            request : {
-              body: {
-                ...result,
-                ...inputResult
-              }
-            }
-          })
-        ));
-      } else {
-        dispatch(setResult(
-          await api.postResult({
-            request: {
-              body: result
-            }
-          })
-        ));
-      }
-      toast.successToast(
-        { message: `リザルトの${eventName}が完了しました` }
-      );
-      if (successPostCallback) successPostCallback();
-    } catch (error) {
-      console.log(error.response);
-      toast.errorToast(
-        { message: `リザルトの${eventName}に失敗しました` }
-      );
+    let resResult = null;
+    if (isUpdate){
+      resResult = await putResult({
+        ...result,
+        ...inputResult
+      })
+    } else {
+      // TODO
+      throw new Error("リザルト登録処理は未実装です");
     }
+    if (resResult) dispatch( setResult(resResult) );
+    if (resResult && successPostCallback) successPostCallback();
   }
 
   const onSubmitError = (error) => {

@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import * as bucketSort from 'lib/util/bucketSort';
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
@@ -48,18 +47,7 @@ export async function postProject(project) {
 
     return result;
   } catch (error) {
-    console.log(error.response);
-
-    let errorMessage = `プロジェクトの登録に失敗しました`;
-
-    const responseMesssage = _.get(error, 'response.data.message');
-    if (responseMesssage) {
-      errorMessage += `<br/>${responseMesssage}`
-    }
-
-    toast.errorToast(
-      { message: errorMessage }
-    );
+    api.utilErrorProcess(error, "プロジェクトの登録に失敗しました");
   }
 }
 
@@ -84,11 +72,7 @@ export async function putProject(project) {
     return result;
 
   } catch (error) {
-    console.log(error.response);
-
-    toast.errorToast(
-      { message: `プロジェクトの変更に失敗しました` }
-    );
+    api.utilErrorProcess(error, "プロジェクトの変更に失敗しました");
   }
 }
 
@@ -108,10 +92,8 @@ export async function deleteProject(projectId) {
     );
 
     return result;
+    
   } catch (error) {
-    toast.errorToast(
-      { message: `プロジェクトの削除に失敗しました` }
-    );
+    api.utilErrorProcess(error, "プロジェクトの削除に失敗しました");
   }
 }
-

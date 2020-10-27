@@ -1,5 +1,8 @@
 import Amplify, { API } from 'aws-amplify';
 import { getCurrentUser } from 'lib/auth/cognitoAuth';
+import _ from 'lodash';
+import * as toast from 'lib/util/toast';
+
 const querystring = require('querystring');
 
 const DIFFENDER_API_NAME = process.env.REACT_APP_AWS_APP_API_NAME;
@@ -169,4 +172,20 @@ async function requestSetup(request) {
   }
   // 元々のリクエスト情報と結合
   return Object.assign(shareRequest, request); 
+}
+
+// APIエラー時の汎用処理
+export function utilErrorProcess(error, errorMessage) {
+  console.log(error.response);
+
+  let message = errorMessage || "リクエストに失敗しました";
+
+  const responseMesssage = _.get(error, 'response.data.message');
+  if (responseMesssage) {
+    message += `<br/>${responseMesssage}`
+  }
+
+  toast.errorToast(
+    { message: message }
+  );
 }
