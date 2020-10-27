@@ -114,42 +114,6 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /projects/{projectId}
             Method: delete
-  # Projectのスクリーンショット取得キューリクエスト
-  ScreenshotQueingProjectFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: lambda/projects/ScreenshotQueingProjectFunction/
-      Handler: index.lambda_handler
-      Runtime: nodejs12.x
-      Environment:
-        Variables:
-          ASYNC_QUEING_LAMBDA_NAME: !Ref AsyncScreenshotQueingProjectFunction
-      Policies:
-        - LambdaInvokePolicy:
-            FunctionName: !Ref AsyncScreenshotQueingProjectFunction
-        - DynamoDBCrudPolicy:
-            TableName: !Ref DiffenderDynamoDB
-      Events:
-        RestPost:
-          Type: Api
-          Properties:
-            RestApiId: !Ref DiffenderApi
-            Path: /projects/{projectId}/screenshot
-            Method: post
-  # ScreenshotQueingProjectFunctionの重い処理を非同期で処理するLambda
-  AsyncScreenshotQueingProjectFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Timeout: 60
-      CodeUri: lambda/projects/ScreenshotQueingProjectFunction/
-      Handler: index.async_queing_handler
-      Runtime: nodejs12.x
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref DiffenderDynamoDB
-        - SQSSendMessagePolicy:
-            QueueName:
-              !GetAtt ScreenshotProcessSQS.QueueName
   # Page一覧の取得
   GetPageListFunction:
     Type: AWS::Serverless::Function
@@ -309,42 +273,6 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /results/{resultId}
             Method: delete
-  # Results間でのスクリーンショットDiff取得キューリクエスト
-  DiffScreenshotQueingResultFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: lambda/results/DiffScreenshotQueingResultFunction/
-      Handler: index.lambda_handler
-      Runtime: nodejs12.x
-      Environment:
-        Variables:
-          ASYNC_QUEING_LAMBDA_NAME: !Ref AsyncDiffScreenshotQueingResultFunction
-      Policies:
-        - LambdaInvokePolicy:
-            FunctionName: !Ref AsyncDiffScreenshotQueingResultFunction
-        - DynamoDBCrudPolicy:
-            TableName: !Ref DiffenderDynamoDB
-      Events:
-        RestPost:
-          Type: Api
-          Properties:
-            RestApiId: !Ref DiffenderApi
-            Path: /results/diff-screenshot
-            Method: post
-  # DiffScreenshotQueingResultFunctionの重い処理を非同期で処理するLambda
-  AsyncDiffScreenshotQueingResultFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Timeout: 60
-      CodeUri: lambda/results/DiffScreenshotQueingResultFunction/
-      Handler: index.async_queing_handler
-      Runtime: nodejs12.x
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref DiffenderDynamoDB
-        - SQSSendMessagePolicy:
-            QueueName:
-              !GetAtt DiffScreenshotProcessSQS.QueueName
   # ResultItemの一覧取得
   GetResultItemListFunction:
     Type: AWS::Serverless::Function
@@ -413,6 +341,42 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /userOption
             Method: put
+  # Projectのスクリーンショット取得キューリクエスト
+  ScreenshotQueingProjectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/screenshots/ScreenshotQueingProjectFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ASYNC_QUEING_LAMBDA_NAME: !Ref AsyncScreenshotQueingProjectFunction
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref AsyncScreenshotQueingProjectFunction
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /projects/{projectId}/screenshot
+            Method: post
+  # ScreenshotQueingProjectFunctionの重い処理を非同期で処理するLambda
+  AsyncScreenshotQueingProjectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Timeout: 60
+      CodeUri: lambda/screenshots/ScreenshotQueingProjectFunction/
+      Handler: index.async_queing_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+        - SQSSendMessagePolicy:
+            QueueName:
+              !GetAtt ScreenshotProcessSQS.QueueName
   # スクリーンショット取得処理
   ScreenshotProcessFunction:
     Type: AWS::Serverless::Function
@@ -455,6 +419,42 @@ Resources:
           Properties:
             Queue: !GetAtt ScreenshotProcessDLQ.Arn
             BatchSize: 1
+  # Results間でのスクリーンショットDiff取得キューリクエスト
+  DiffScreenshotQueingResultFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/screenshots/DiffScreenshotQueingResultFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ASYNC_QUEING_LAMBDA_NAME: !Ref AsyncDiffScreenshotQueingResultFunction
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref AsyncDiffScreenshotQueingResultFunction
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+      Events:
+        RestPost:
+          Type: Api
+          Properties:
+            RestApiId: !Ref DiffenderApi
+            Path: /results/diff-screenshot
+            Method: post
+  # DiffScreenshotQueingResultFunctionの重い処理を非同期で処理するLambda
+  AsyncDiffScreenshotQueingResultFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Timeout: 60
+      CodeUri: lambda/screenshots/DiffScreenshotQueingResultFunction/
+      Handler: index.async_queing_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+        - SQSSendMessagePolicy:
+            QueueName:
+              !GetAtt DiffScreenshotProcessSQS.QueueName
   # スクリーンショット差分取得処理
   DiffScreenshotProcessFunction:
     Type: AWS::Serverless::Function
