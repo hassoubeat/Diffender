@@ -103,10 +103,10 @@ exports.async_queing_handler= async (event, context) => {
       }
 
       // ResultItemの登録
-      resultItemDao.postResultItem(resultItem);
+      await resultItemDao.postResultItem(resultItem);
 
       // SQSにスクリーンショット取得処理をキューイング
-      sqsDao.sendScreenshotProcessSQS({
+      await sqsDao.sendScreenshotProcessSQS({
         project: project,
         page: page,
         resultItem: resultItem
