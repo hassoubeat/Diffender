@@ -56,6 +56,16 @@ const projectTieUserIdValid = (projectTieUserId, validErrorMessage) => {
 }
 module.exports.projectTieUserIdValid = projectTieUserIdValid;
 
+// プロジェクトの登録上限のバリデーション
+const projectRegisterLimitValid = (registedNum, limitsNum, validErrorMessage) => {
+  if (registedNum >= limitsNum) {
+    const error = new Error(validErrorMessage || `The maximum number of registrations is ${limitsNum}.`);
+    error.statusCode = 403;
+    throw error;
+  }
+}
+module.exports.projectRegisterLimitValid = projectRegisterLimitValid;
+
 // Projectオブジェクト全てをバリデーション
  const projectValid = (project) => {
   projectNameValid(project.name);

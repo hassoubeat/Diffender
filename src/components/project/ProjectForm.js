@@ -10,7 +10,11 @@ import {
   selectProject
 } from 'app/domainSlice';
 
-import * as api from 'lib/api/api';
+import {
+  postProject,
+  putProject
+} from 'lib/project/model'
+
 import * as toast from 'lib/util/toast';
 import styles from './ProjectForm.module.scss';
 
@@ -43,8 +47,6 @@ export default function ProjectForm(props = null) {
   }, [isUpdate, project, reset]);
 
   const onSubmit = async (inputProject) => {
-    const eventName = (isUpdate) ? "更新" : "登録";
-
     // TODO 数値型のキャスト変換
     // ReactHookFormで数値の自動キャストに対応していないため、手動キャスト
     // 自動キャストを追加するかの議論は https://github.com/react-hook-form/react-hook-form/issues/615
@@ -57,43 +59,20 @@ export default function ProjectForm(props = null) {
     inputProject.afterCommonActions.forEach((action) => {
       if (action.millisecond) action.millisecond = Number(action.millisecond);
     });
-
-    toast.infoToast(
-      { message: `プロジェクトの${eventName}リクエストを送信しました` }
-    );
-    try {
-      if (isUpdate) {
-        dispatch(setProject(
-          await api.putProject({
-            projectId: projectId, 
-            request : {
-              body: {
-                ...project,
-                ...inputProject
-              }
-            }
-          })
-        ));
-      } else {
-        dispatch(setProject(
-          await api.postProject({
-            request: {
-              body: inputProject
-            }
-          })
-        ));
-      }
-      toast.successToast(
-        { message: `プロジェクトの${eventName}が完了しました` }
-      );
-      if (successPostCallback) successPostCallback();
-    } catch (error) {
-      console.log(error.response);
-      toast.errorToast(
-        { message: `プロジェクトの${eventName}に失敗しました` }
-      );
+    
+    let result = null;
+    if (isUpdate) {
+      result = await putProject({
+        ...project,
+        ...inputProject
+      })
+    } else {
+      result = await postProject(inputProject)
     }
+    if (result) dispatch(setProject(result));
+    if (result && successPostCallback) successPostCallback();
   }
+
   const onSubmitError = (error) => {
     console.table(error);
     console.log(error)

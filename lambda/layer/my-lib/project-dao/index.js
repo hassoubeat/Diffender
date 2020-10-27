@@ -7,20 +7,29 @@ const TABLE_NAME = process.env.DIFFENDER_DYNAMODB_TABLE_NAME;
 const PROJECT_COUNTER_ID = 'ProjectIdCounter';
 
 // プロジェクト一覧の取得
-async function getProjectList(userId, isSortASC = true) {
+async function getProjectList(userId, isSortASC = true, isCount = false) {
+
+  const params = {
+    TableName: TABLE_NAME,
+    IndexName: "ProjectsByUserIdSearchIndex",
+    KeyConditionExpression: "projectTieUserId=:projectTieUserId",
+    ExpressionAttributeValues: {
+      ":projectTieUserId": userId
+    },
+    ScanIndexForward: isSortASC
+  }
+  if (isCount) params.Select = 'COUNT';
+
   const result =  await dynamoDBDao.query(
     dynamoDBClient,
-    {
-      TableName: TABLE_NAME,
-      IndexName: "ProjectsByUserIdSearchIndex",
-      KeyConditionExpression: "projectTieUserId=:projectTieUserId",
-      ExpressionAttributeValues: {
-        ":projectTieUserId": userId
-      },
-      ScanIndexForward: isSortASC
-    }
+    params
   );
-  return result.Items;
+
+  if (isCount) {
+    return result.Count; 
+  } else {
+    return result.Items;
+  }
 }
 module.exports.getProjectList = getProjectList;
 

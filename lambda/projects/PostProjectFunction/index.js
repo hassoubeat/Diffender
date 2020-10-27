@@ -3,6 +3,8 @@ const projectDao = require('project-dao');
 const projectValidator = require('project-validator');
 const lambdaCommon = require('lambda-common');
 
+const PROJECT_REGISTER_LIMITS = process.env.DIFFENDER_PROJECT_REGISTER_LIMITS;
+
 exports.lambda_handler = async (event, context) => {
   // レスポンス変数の定義
   let response = {
@@ -25,6 +27,10 @@ exports.lambda_handler = async (event, context) => {
     postProject.pagesSortMap = {};
     
     projectValidator.projectValid(postProject);
+    projectValidator.projectRegisterLimitValid(
+      await projectDao.getProjectList(user.sub, false, true), 
+      PROJECT_REGISTER_LIMITS
+    );
 
     await projectDao.postProject(postProject);
 
