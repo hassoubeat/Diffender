@@ -24,12 +24,8 @@ async function getProjectList(userId, isSortASC = true, isCount = false) {
     dynamoDBClient,
     params
   );
-
-  if (isCount) {
-    return result.Count; 
-  } else {
-    return result.Items;
-  }
+  
+  return (isCount) ? result.Count : result.Items;
 }
 module.exports.getProjectList = getProjectList;
 

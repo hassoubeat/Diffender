@@ -7,6 +7,8 @@ const sqsDao = require('sqs-dao');
 const resultValidator = require('result-validator');
 const lambdaCommon = require('lambda-common');
 
+const RESULT_REGISTER_LIMITS = process.env.DIFFENDER_RESULT_REGISTER_LIMITS;
+
 exports.lambda_handler = async (event, context) => {
   // レスポンス変数の定義
   let response = {
@@ -29,6 +31,12 @@ exports.lambda_handler = async (event, context) => {
       loginUserId: user.sub, 
       resouceUserId: project.projectTieUserId
     });
+
+    // 登録上限チェック
+    lambdaCommon.checkRegisterLimit(
+      await resultDao.getResultListByUserId(user.sub, false, true), 
+      RESULT_REGISTER_LIMITS
+    );
 
     // Resultのバリデーション
     resultValidator.resultValid(postResult);

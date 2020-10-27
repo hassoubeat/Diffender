@@ -25,7 +25,7 @@ async function getPageList(projectId, isSortASC = true, isCount = false) {
     params
   );
 
-  return (isCount) ? result.Count : result.Items
+  return (isCount) ? result.Count : result.Items;
 }
 module.exports.getPageList = getPageList;
 
