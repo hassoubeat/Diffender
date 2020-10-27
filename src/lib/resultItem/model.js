@@ -1,6 +1,8 @@
 import _ from 'lodash';
 
-// リザルト一覧をソート
+const RESULT_ITEM_STATUS_TYPE_ERROR = process.env.REACT_APP_RESULT_ITEM_STATUS_TYPE_ERROR;
+
+// リザルトアイテム一覧をソート
 export function sort(resultList) {
   // 登録日時の昇順でソート
   resultList.sort( (a, b) =>  {
@@ -10,9 +12,17 @@ export function sort(resultList) {
   });
   // Diff%の降順でソート
   resultList.sort( (a, b) => {
-    if( _.get(a, 'status.misMatchPercentage') > _.get(b, 'status.misMatchPercentage') ) return -1;
-    if( _.get(a, 'status.misMatchPercentage') < _.get(b, 'status.misMatchPercentage') ) return 1;
+    const aMisMatchPercentage = _.get(a, 'status.misMatchPercentage');
+    const bMisMatchPercentage = _.get(b, 'status.misMatchPercentage');
+    if( aMisMatchPercentage > bMisMatchPercentage ) return -1;
+    if( aMisMatchPercentage < bMisMatchPercentage ) return 1;
     return 0;
+  })
+  // ERRORを優先的に上に来るようにソート
+  resultList.sort( (a) => {
+    const statusType = _.get(a, 'status.type');
+    if(statusType >  RESULT_ITEM_STATUS_TYPE_ERROR) return 1;
+    return -1;
   })
   return resultList;
 }
