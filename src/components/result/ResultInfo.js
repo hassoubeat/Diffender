@@ -19,7 +19,7 @@ export default function ResultInfo(props = null) {
 
   return (
     <React.Fragment>
-      <div className={styles.resultInfo}>
+      <div className={`${styles.resultInfo} scroll`}>
       <div className="sectionTitle">基本情報</div>
         <ResultForm resultId={resultId}
           successDeleteCallback={

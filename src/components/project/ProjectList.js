@@ -69,7 +69,7 @@ export default function ProjectList() {
 
   return (
     <React.Fragment>
-      <div className={styles.projectList}>
+      <div className={`${styles.projectList} scroll`}>
         <div className="sectionTitle">プロジェクト一覧</div>
         <input className={styles.searchBox} type="text" placeholder="search" onChange={(e) => setSearchWord(e.target.value)} />
         <ReactSortable list={projectList} setList={() => {}} handle=".draggable"

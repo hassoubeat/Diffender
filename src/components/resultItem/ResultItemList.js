@@ -48,7 +48,7 @@ export default function ResultItemList(props = null) {
 
   return (
     <React.Fragment>
-      <div className={styles.resultItemList}>
+      <div className={`${styles.resultItemList} scroll`}>
         <input className={styles.searchBox} type="text" placeholder="search" onChange={
           (e) => setSearchWord(e.target.value)}
         />

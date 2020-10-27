@@ -175,3 +175,9 @@ input[type='checkbox'] {
 .DIFF_100_LESS {
   color: $ERROR_COLOR;
 }
+
+// スクロール
+.scroll {
+  height: 100%;
+  overflow: scroll;
+}

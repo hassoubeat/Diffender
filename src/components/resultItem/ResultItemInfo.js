@@ -36,7 +36,7 @@ export default function ResultItemInfo(props = null) {
 
   return (
     <React.Fragment>
-      <div className={styles.resultItemInfo}>
+      <div className={`${styles.resultItemInfo} scroll`}>
         <div className="sectionTitle">{resultItem.name}</div>
         <div className={styles.infomation}>
           <div className={styles.item}>

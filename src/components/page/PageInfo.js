@@ -13,7 +13,7 @@ export default function PageInfo(props = null) {
 
   return (
     <React.Fragment>
-      <div className={styles.pageInfo}>
+      <div className={`${styles.pageInfo} scroll`}>
         <PageForm 
           projectId={projectId} 
           pageId={pageId} 
