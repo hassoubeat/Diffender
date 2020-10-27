@@ -40,3 +40,50 @@ export async function getResultList({queryStringsObject}) {
     );
   }
 }
+
+// リザルトの更新
+export async function putResult(result) {
+  toast.infoToast(
+    { message: `リザルトの更新リクエストを送信しました` }
+  );
+
+  try {
+    const resResult = await api.putResult({
+      resultId: result.id,
+      request: {
+        body: result
+      }
+    });
+
+    toast.successToast(
+      { message: `リザルトの更新が完了しました` }
+    );
+
+    return resResult;
+
+  } catch (error) {
+    api.utilErrorProcess(error, "リザルトの更新に失敗しました");
+  }
+}
+
+// リザルトの削除
+export async function deleteResult(resultId) {
+  toast.infoToast(
+    { message: `リザルトの削除リクエストを送信しました` }
+  );
+
+  try {
+    const result = await api.deleteResult({
+      resultId: resultId
+    });
+
+    toast.successToast(
+      { message: `リザルトの削除が完了しました` }
+    );
+
+    return result;
+
+  } catch (error) {
+    api.utilErrorProcess(error, "リザルトの削除が失敗しました");
+  }
+}

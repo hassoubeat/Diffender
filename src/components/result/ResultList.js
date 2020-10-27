@@ -10,11 +10,9 @@ import {
 import _ from 'lodash';
 import {
   sort,
-  filterResultList
+  filterResultList,
+  deleteResult as DeleteResult
 } from 'lib/result/model';
-
-import * as api from 'lib/api/api';
-import * as toast from 'lib/util/toast';
 
 import styles from './ResultList.module.scss';
 
@@ -44,22 +42,8 @@ export default function ResultList(props = null) {
   // 削除ボタン押下時の処理
   const handleDeleteResult = async (resultId, resultName) => {
     if (!window.confirm(`リザルト「${resultName}」を削除しますか？`)) return;
-    toast.infoToast(
-      { message: `リザルト「${resultName}」の削除リクエストを送信しました` }
-    );
-    try {
-      await api.deleteResult({
-        resultId: resultId
-      });
-      toast.successToast(
-        { message: `リザルト「${resultName}」の削除が完了しました` }
-      );
-      dispatch(deleteResult(resultId));
-    } catch (error) {
-      toast.errorToast(
-        { message: `リザルト「${resultName}」の削除に失敗しました` }
-      );
-    }
+    const result = await DeleteResult(resultId);
+    if (result) dispatch( deleteResult(result.id) );
   }
 
   return (

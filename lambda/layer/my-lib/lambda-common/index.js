@@ -59,3 +59,11 @@ module.exports.checkResouceOwner = ({loginUserId, resouceUserId}) => {
   }
 }
 
+// 登録上限のチェック
+module.exports.checkRegisterLimit = (registedNum, limitsNum, validErrorMessage) => {
+  if (registedNum >= limitsNum) {
+    const error = new Error(validErrorMessage || `The maximum number of registrations is ${limitsNum}.`);
+    error.statusCode = 403;
+    throw error;
+  }
+}

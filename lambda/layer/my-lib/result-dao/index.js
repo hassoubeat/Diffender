@@ -7,20 +7,25 @@ const TABLE_NAME = process.env.DIFFENDER_DYNAMODB_TABLE_NAME;
 const RESULT_COUNTER_ID = 'ResultIdCounter';
 
 // ユーザIDに紐づくリザルト一覧の取得
-async function getResultListByUserId(userId, isSortASC = true) {
+async function getResultListByUserId(userId, isSortASC = true, isCount = false) {
+
+  const params = {
+    TableName: TABLE_NAME,
+    IndexName: "ResultsByUserIdSearchIndex",
+    KeyConditionExpression: "resultTieUserId=:resultTieUserId",
+    ExpressionAttributeValues: {
+      ":resultTieUserId": userId
+    },
+    ScanIndexForward: isSortASC
+  }
+  if (isCount) params.Select = 'COUNT';
+
   const result =  await dynamoDBDao.query(
     dynamoDBClient,
-    {
-      TableName: TABLE_NAME,
-      IndexName: "ResultsByUserIdSearchIndex",
-      KeyConditionExpression: "resultTieUserId=:resultTieUserId",
-      ExpressionAttributeValues: {
-        ":resultTieUserId": userId
-      },
-      ScanIndexForward: isSortASC
-    }
+    params
   );
-  return result.Items;
+  
+  return (isCount) ? result.Count : result.Items;
 }
 module.exports.getResultListByUserId = getResultListByUserId;
 

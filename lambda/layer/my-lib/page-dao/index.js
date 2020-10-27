@@ -7,20 +7,25 @@ const TABLE_NAME = process.env.DIFFENDER_DYNAMODB_TABLE_NAME;
 const PAGE_COUNTER_ID = 'PageIdCounter';
 
 // ページ一覧の取得
-async function getPageList(projectId, isSortASC = true) {
+async function getPageList(projectId, isSortASC = true, isCount = false) {
+
+  const params = {
+    TableName: TABLE_NAME,
+    IndexName: "PagesByProjectIdSearchIndex",
+    KeyConditionExpression: "pageTieProjectId=:pageTieProjectId",
+    ExpressionAttributeValues: {
+      ":pageTieProjectId": projectId
+    },
+    ScanIndexForward: isSortASC
+  }
+  if (isCount) params.Select = 'COUNT';
+
   const result =  await dynamoDBDao.query(
     dynamoDBClient,
-    {
-      TableName: TABLE_NAME,
-      IndexName: "PagesByProjectIdSearchIndex",
-      KeyConditionExpression: "pageTieProjectId=:pageTieProjectId",
-      ExpressionAttributeValues: {
-        ":pageTieProjectId": projectId
-      },
-      ScanIndexForward: isSortASC
-    }
+    params
   );
-  return result.Items;
+
+  return (isCount) ? result.Count : result.Items;
 }
 module.exports.getPageList = getPageList;
 
