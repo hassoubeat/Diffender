@@ -1,3 +1,6 @@
+const AWS = require('aws-sdk');
+const lambda = new AWS.Lambda();
+
 const jwt_decode = require('jwt-decode');
 const projectDao = require('project-dao');
 const pageDao = require('page-dao');
@@ -8,6 +11,7 @@ const resultValidator = require('result-validator');
 const lambdaCommon = require('lambda-common');
 
 const RESULT_REGISTER_LIMITS = process.env.DIFFENDER_RESULT_REGISTER_LIMITS;
+const ASYNC_QUEING_LAMBDA_NAME = process.env.ASYNC_QUEING_LAMBDA_NAME;
 
 exports.lambda_handler = async (event, context) => {
   // レスポンス変数の定義
@@ -47,37 +51,22 @@ exports.lambda_handler = async (event, context) => {
     postResult.resultTieUserId = user.sub;
     postResult.resultTieProjectId = projectId;
     await resultDao.postResult(postResult);
-    
-    // リザルトアイテムの登録
-    const pageList = await pageDao.getPageList(projectId);
-    for(const page of pageList) {
-      const resultItem = {
-        id: await resultItemDao.generateResultItemId(),
-        name: page.name,
-        status: {
-          type: "WAIT",
-          message: "スクリーンショット取得処理 待機中..."
-        },
-        resultItemType: postResult.resultType,
-        resultItemTieResultId: postResult.id,
-        resultItemTiePageId: page.id,
-        resultItemTieUserId: user.sub
-      }
 
-      // ResultItemの登録
-      await resultItemDao.postResultItem(resultItem);
+    const result = await resultDao.getResult(postResult.id);
 
-      // SQSにスクリーンショット取得処理をキューイング
-      await sqsDao.sendScreenshotProcessSQS({
+    // 処理に時間がかかる大量のリザルトアイテムの登録とキューイングは別の非同期Lambdaで処理を行う
+    const params = {
+      FunctionName: ASYNC_QUEING_LAMBDA_NAME,
+      InvocationType:"Event",
+      Payload: JSON.stringify({
+        result: result,
         project: project,
-        page: page,
-        resultItem: resultItem
-      });
+        user: user
+      })
     }
+    await lambda.invoke(params).promise();
 
-    response.body = JSON.stringify(
-      await resultDao.getResult(postResult.id)
-    );
+    response.body = JSON.stringify(result);
   } catch (error) {
     console.error(error);
 
@@ -87,4 +76,44 @@ exports.lambda_handler = async (event, context) => {
     });
   }
   return response;
+}
+
+// 実行に時間がかかるResultItemの登録処理
+// 別のLambdaとして登録して非同期でメイン処理からコールする
+exports.async_queing_handler= async (event, context) => {
+  const user = event.user;
+  const project = event.project;
+  const result = event.result;
+
+  try {
+    const pageList = await pageDao.getPageList(project.id);
+
+    for(const page of pageList) {
+      const resultItem = {
+        id: await resultItemDao.generateResultItemId(),
+        name: page.name,
+        status: {
+          type: "WAIT",
+          message: "スクリーンショット取得処理 待機中..."
+        },
+        resultItemType: result.resultType,
+        resultItemTieResultId: result.id,
+        resultItemTiePageId: page.id,
+        resultItemTieUserId: user.sub
+      }
+
+      // ResultItemの登録
+      resultItemDao.postResultItem(resultItem);
+
+      // SQSにスクリーンショット取得処理をキューイング
+      sqsDao.sendScreenshotProcessSQS({
+        project: project,
+        page: page,
+        resultItem: resultItem
+      });
+    }
+
+  } catch (error) {
+    console.error(error);
+  }
 }
