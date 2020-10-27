@@ -1,3 +1,6 @@
+const AWS = require('aws-sdk');
+const lambda = new AWS.Lambda();
+
 const jwt_decode = require('jwt-decode');
 const resultDao = require('result-dao');
 const resultItemDao = require('result-item-dao');
@@ -7,6 +10,7 @@ const lambdaCommon = require('lambda-common');
 const _ = require('lodash');
 
 const RESULT_REGISTER_LIMITS = process.env.DIFFENDER_RESULT_REGISTER_LIMITS;
+const ASYNC_QUEING_LAMBDA_NAME = process.env.ASYNC_QUEING_LAMBDA_NAME;
 
 exports.lambda_handler = async (event, context) => {
   // レスポンス変数の定義
@@ -58,10 +62,48 @@ exports.lambda_handler = async (event, context) => {
     postResult.resultTieUserId = user.sub;
     postResult.resultTieProjectId = originResult.resultTieProjectId;
     await resultDao.postResult(postResult);
+
+    const result = await resultDao.getResult(postResult.id);
     
+    // 処理に時間がかかる大量のリザルトアイテムの登録とキューイングは別の非同期Lambdaで処理を行う
+    const params = {
+      FunctionName: ASYNC_QUEING_LAMBDA_NAME,
+      InvocationType:"Event",
+      Payload: JSON.stringify({
+        user: user,
+        result: result,
+        originResultId: originResult.id,
+        targetResultId: targetResult.id
+      })
+    }
+    await lambda.invoke(params).promise();
+
+    response.body = JSON.stringify(result);
+  } catch (error) {
+    console.error(error);
+
+    response.statusCode = error.statusCode || 500;
+    response.body = JSON.stringify({
+      message: error.message
+    });
+  }
+  return response;
+}
+
+// 実行に時間がかかるResultItemの登録処理
+// 別のLambdaとして登録して非同期でメイン処理からコールする
+exports.async_queing_handler= async (event, context) => {
+
+  const user = event.user;
+  const result = event.result;
+  const originResultId = event.originResultId;
+  const targetResultId = event.targetResultId;
+
+  try {
     // リザルトアイテムの登録
-    const originResultItemList = await resultItemDao.getResultItemListByResultId(originResult.id);
-    const targetResultItemList = await resultItemDao.getResultItemListByResultId(targetResult.id);
+    const originResultItemList = await resultItemDao.getResultItemListByResultId(originResultId);
+    const targetResultItemList = await resultItemDao.getResultItemListByResultId(targetResultId);
+
     for(const originResultItem of originResultItemList) {
       // 比較対象配列の中に同じPageIdを持つデータ(比較対象)が存在するかをチェック
       const targetResultItem = targetResultItemList.find(
@@ -80,7 +122,7 @@ exports.lambda_handler = async (event, context) => {
             message: "比較対象のリザルトアイテムが存在しませんでした",
             errorDetailMessage: "There is no comparison target to take the difference."
           },
-          resultItemTieResultId: postResult.id,
+          resultItemTieResultId: result.id,
           resultItemTiePageId: originResultItem.resultItemTiePageId,
           resultItemTieUserId: user.sub
         });
@@ -100,8 +142,8 @@ exports.lambda_handler = async (event, context) => {
           originResultItemId: originResultItem.id,
           targetResultItemId: targetResultItem.id
         },
-        resultItemType: postResult.resultType,
-        resultItemTieResultId: postResult.id,
+        resultItemType: result.resultType,
+        resultItemTieResultId: result.id,
         resultItemTiePageId: originResultItem.resultItemTiePageId,
         resultItemTieUserId: user.sub
       }
@@ -112,17 +154,7 @@ exports.lambda_handler = async (event, context) => {
       // SQSにスクリーンショット取得処理をキューイング
       await sqsDao.sendDiffScreenshotProcessSQS(resultItem);
     }
-
-    response.body = JSON.stringify(
-      await resultDao.getResult(postResult.id)
-    );
-  } catch (error) {
+  } catch(error) {
     console.error(error);
-
-    response.statusCode = error.statusCode || 500;
-    response.body = JSON.stringify({
-      message: error.message
-    });
   }
-  return response;
 }
