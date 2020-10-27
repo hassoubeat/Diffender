@@ -8,15 +8,17 @@ import {
   selectResults
 } from 'app/domainSlice';
 
-import { sort } from 'lib/result/model';
+import { 
+  originResultFilter,
+  targetResultFilter,
+  requestDiffScreenshot,
+ } from 'lib/diff/model';
+ import { sort } from 'lib/result/model';
 
 import _ from 'lodash';
-import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
 
 import styles from './DiffRequestForm.module.scss';
-
-const RESULT_TYPE_SS = process.env.REACT_APP_RESULT_TYPE_SS;
 
 export default function DiffRequestForm(props = null) {
   // props setup
@@ -44,26 +46,8 @@ export default function DiffRequestForm(props = null) {
 
   // submit hander
   const onSubmit = async (data) => {
-    toast.infoToast(
-      { message: `差分取得リクエストを送信しました` }
-    );
-    try {
-      dispatch(setResult(
-        await api.DiffScreenshotQueingProject({
-          request: {
-            body: data
-          }
-        })
-      ));
-      toast.successToast(
-        { message: `差分取得リクエストが完了しました` }
-      );
-    } catch (error) {
-      console.log(error.response);
-      toast.errorToast(
-        { message: `差分取得リクエストに失敗しました` }
-      );
-    }
+    const result = await requestDiffScreenshot(data);
+    if (result) dispatch( setResult(result) );
   }
 
   // submit error hander
@@ -98,7 +82,7 @@ export default function DiffRequestForm(props = null) {
                 }}
               >
                 <option value=""> --比較元リザルトを選択してください-- </option>
-                { oroginResultFilter(resultList).map( (result) => (
+                { originResultFilter(resultList).map( (result) => (
                   <option 
                     key={result.id} 
                     value={result.id}
@@ -181,47 +165,4 @@ export default function DiffRequestForm(props = null) {
       </div>
     </React.Fragment>
   );
-}
-
-// 比較元リザルトのフィルタリング処理
-function oroginResultFilter (resultList) {
-
-  return resultList.filter((originResult) => {
-    // resultTypeがSCREENSHOTの時のみ
-    const isResultTypeSS = (originResult.resultType === RESULT_TYPE_SS);
-
-    // 上記の条件すべてを満たすとき正(フィルターから除外しない)
-    return (isResultTypeSS);
-  });
-}
-
-// 比較先リザルトのフィルタリング処理
-function targetResultFilter (resultList, originResultId) {
-  if (!originResultId) return [];
-
-  // 比較元リザルトの取得
-  const originResult = resultList.find( (result) => {
-    return (result.id === originResultId);
-  });
-
-  return resultList.filter((targetResult) => {
-    // resultTypeがSCREENSHOTの時のみ
-    const isResultTypeSS = (targetResult.resultType === RESULT_TYPE_SS);
-    // 同じプロジェクトから出力されたリザルトのみ
-    const isSameProject = (originResult.resultTieProjectId === targetResult.resultTieProjectId);
-    // 比較元リザルトではない
-    const isNotOriginResultId = (originResult.id !== targetResult.id);
-
-    // 上記の条件すべてを満たすとき正(フィルターから除外しない)
-    return (isResultTypeSS && isSameProject && isNotOriginResultId);
-  });
-}
-
-
-// プロジェクト一覧のフィルタリング処理
-export function filterProjectList(projectList, searchWord) {
-  return projectList.filter((project) => {
-    // プロジェクト名に検索ワードが含まれる要素のみフィルタリング
-    return project.name.match(searchWord);
-  });
 }
