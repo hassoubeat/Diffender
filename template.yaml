@@ -15,6 +15,7 @@ Globals:
         DIFFENDER_SCREENSHOT_PROCESS_SQS: !Ref ScreenshotProcessSQS
         DIFFENDER_DIFF_SCREENSHOT_PROCESS_SQS: !Ref DiffScreenshotProcessSQS
         DIFFENDER_PROJECT_REGISTER_LIMITS: 30
+        DIFFENDER_PAGE_REGISTER_LIMITS: 100
         TZ: 'Asia/Tokyo'
 
 Parameters:

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext } from 'react';
+import React, { useEffect, createContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FormProvider, useForm } from "react-hook-form";
@@ -8,15 +8,18 @@ import ScreenshotTest from './_ScreenshotTest';
 import ActionForm from 'components/action/ActionForm';
 import Accordion from 'components/util/accordion/Accordion';
 import UtilInput from 'components/util/input/Input';
-import Loading from 'components/common/Loading';
 
 import { 
   setPage,
   selectPage
 } from 'app/domainSlice';
 
+import {
+  postPage,
+  putPage
+} from 'lib/page/model'
+
 import * as toast from 'lib/util/toast';
-import * as api from 'lib/api/api';
 import styles from './PageForm.module.scss';
 
 export const PageContext = createContext();
@@ -32,10 +35,7 @@ export default function PageForm(props = null) {
   const dispatch = useDispatch();
 
   // redux-state setup
-  const reduxStatePage = useSelector(selectPage(pageId));
-
-  // state setup
-  const [isLoading, setIsLoading] = useState(isUpdate);
+  const page = useSelector(selectPage(pageId));
 
   // ReactHookForm setup
   const reactHookFormMethods = useForm({
@@ -61,84 +61,31 @@ export default function PageForm(props = null) {
   const isEnableAfterCommonAction = watch("isEnableAfterCommonAction");
 
   useEffect( () => {
-    // 更新でない場合は終了
-    if (!isUpdate) return;
-
-    // ページ情報の取得
-    const asyncSetPage = async () => {
-      // ReduxStateを優先、なかったらAPIで取得
-      if (reduxStatePage) {
-        reset(reduxStatePage);
-      } else {
-        const page = await api.getPage({
-          projectId: projectId,
-          pageId: pageId
-        });
-        dispatch(setPage(page))
-        reset(page);
-      }
-      setIsLoading(false);
-    }
-    asyncSetPage();
-  }, [isUpdate, pageId, projectId, dispatch, reset, reduxStatePage]);
+    if (isUpdate) reset(page);
+  }, [isUpdate, reset, page]);
 
   // submit成功時の処理
-  const onSubmit = async (page) => { 
-    const eventName = (isUpdate) ? "更新" : "登録";
+  const onSubmit = async (inputPage) => { 
+    inputPage.actions = inputPage.actions || [];
+    inputPage.actions.forEach((action) => {
+      // TODO 数値型のキャスト変換
+      // ReactHookFormで数値の自動キャストに対応していないため、手動キャスト
+      // 自動キャストを追加するかの議論は https://github.com/react-hook-form/react-hook-form/issues/615
+      // 自動キャストが実装された場合は対応して本処理を除外
+      if (action.millisecond) action.millisecond = Number(action.millisecond);
+    });
 
-    toast.infoToast(
-      { message: `ページの${eventName}リクエストを送信しました` }
-    );
-
-    try {    
-      page.actions = page.actions || [];
-      page.actions.forEach((action) => {
-        // TODO 数値型のキャスト変換
-        // ReactHookFormで数値の自動キャストに対応していないため、手動キャスト
-        // 自動キャストを追加するかの議論は https://github.com/react-hook-form/react-hook-form/issues/615
-        // 自動キャストが実装された場合は対応して本処理を除外
-        if (action.millisecond) action.millisecond = Number(action.millisecond);
+    let result = null;
+    if (isUpdate) {
+      result = await putPage(projectId, {
+        ...page,
+        ...inputPage
       });
-
-      if (isUpdate) {
-        // ページの更新
-        const updatePage = await api.getPage({
-          projectId: projectId,
-          pageId: pageId
-        })
-        dispatch(setPage(
-          await api.putPage({
-            projectId: projectId, 
-            pageId: pageId, 
-            request : {
-              body: {
-                ...updatePage,
-                ...page
-              }
-            }
-          })
-        ))
-      } else {
-        // ページの登録
-        dispatch(setPage(
-          await api.postPage({
-            projectId: projectId,
-            request: {
-              body: page
-            }
-          })
-        ))
-      }
-      toast.successToast(
-        { message: `ページの${eventName}が完了しました` }
-      );
-      if(postSuccessCallback) postSuccessCallback();
-    } catch (error) {
-      console.log(error.response);
-      toast.errorToast(
-        { message: `ページの${eventName}に失敗しました` }
-      );
+    } else {
+      result = await postPage(projectId, inputPage);
     }
+    if (result) dispatch( setPage(result) ); 
+    if (result && postSuccessCallback) postSuccessCallback();
   };
 
   // submit失敗時(バリデーションエラー)が発生した時のイベント処理
@@ -149,10 +96,6 @@ export default function PageForm(props = null) {
       { message: "入力エラーが存在します" }
     )
   };
-
-  if (isLoading) return (
-    <Loading/>
-  );
 
   return (
     <React.Fragment>

@@ -20,6 +20,11 @@ exports.lambda_handler = async (event, context) => {
     const user = jwt_decode(event.headers.Authorization);
     const postProject = lambdaCommon.getRequetBody(event);
 
+    lambdaCommon.checkRegisterLimit(
+      await projectDao.getProjectList(user.sub, false, true), 
+      PROJECT_REGISTER_LIMITS
+    );
+
     postProject.projectTieUserId = user.sub;
     postProject.id = await projectDao.generateProjectId();
     postProject.beforeCommonActions = postProject.beforeCommonActions || [];
@@ -27,10 +32,6 @@ exports.lambda_handler = async (event, context) => {
     postProject.pagesSortMap = {};
     
     projectValidator.projectValid(postProject);
-    projectValidator.projectRegisterLimitValid(
-      await projectDao.getProjectList(user.sub, false, true), 
-      PROJECT_REGISTER_LIMITS
-    );
 
     await projectDao.postProject(postProject);
 

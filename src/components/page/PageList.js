@@ -19,10 +19,11 @@ import _ from 'lodash';
 import {
   searchPageList,
   updatePageListSortMap,
-  sortPageList
+  sortPageList,
+  copyPage,
+  deletePage as DeletePage
 } from 'lib/page/model';
 import * as api from 'lib/api/api';
-import * as toast from 'lib/util/toast';
 import * as arrayWrapper from 'lib/util/arrayWrapper';
 
 import styles from './PageList.module.scss';
@@ -69,48 +70,15 @@ export default function PageList(props = null) {
   // 削除ボタン押下時の処理
   const handleDeletePage = async (pageId, pageName) => {
     if (!window.confirm(`ページ「${pageName}」を削除しますか？`)) return;
-    toast.infoToast(
-      { message: `ページ「${pageName}」の削除リクエストを送信しました` }
-    );
-    try {
-      await api.deletePage({
-        projectId: projectId,
-        pageId: pageId
-      });
-      toast.successToast(
-        { message: `ページ「${pageName}」の削除が完了しました` }
-      );
-      dispatch(deletePage(pageId));
-    } catch (error) {
-      toast.errorToast(
-        { message: `ページ「${pageName}」の削除に失敗しました` }
-      );
-    }
+    const result = await DeletePage(projectId, pageId);
+    if (result) dispatch( deletePage(result.id) );
   }
 
   // ページのコピーイベント
   const handleCopyPage = async (page) => {
     if (!window.confirm(`ページ「${page.name}」をコピーしますか？`)) return;
-    toast.infoToast(
-      { message: `ページ「${page.name}」のコピーを開始しました` }
-    );
-    try {
-      dispatch(setPage(
-        await api.postPage({
-          projectId: projectId,
-          request: {
-            body: page
-          }
-        })
-      ));
-      toast.successToast(
-        { message: `ページ「${page.name}」のコピーが完了しました` }
-      );
-    } catch (error) {
-      toast.errorToast(
-        { message: `ページ「${page.name}」のコピーに失敗しました` }
-      );
-    }
+    const result = await copyPage(projectId, page);
+    if (result) dispatch( setPage(result) );
   }
 
   if (!isLoadedPageList) return (
