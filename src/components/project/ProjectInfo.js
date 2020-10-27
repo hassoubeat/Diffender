@@ -13,7 +13,7 @@ export default function ProjectInfo(props = null) {
 
   return (
     <React.Fragment>
-      <div className={styles.projectInfo}>
+      <div className={`${styles.projectInfo} scroll`}>
         <div className="sectionTitle">プロジェクト</div>
         <div className={styles.actionArea}>
           <button className={`button ${styles.addPageButton}`} onClick={() => {history.push(`/projects/${projectId}/pages`)} }>
