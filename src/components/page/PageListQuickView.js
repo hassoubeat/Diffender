@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PageListCount from './PageListCount';
+import Loading from 'components/common/Loading';
 
 import { 
+  selectIsLoadedPagesByProjectId,
   selectPagesByProjectId,
   selectProject
 } from 'app/domainSlice';
 
-import _ from 'lodash';
 import {
   sortPageList,
 } from 'lib/page/model';
@@ -28,11 +29,11 @@ export default function ProjectListQuickView(props = null) {
   const history = useHistory();
 
   // redux-state setup 
-  const project = _.cloneDeep(useSelector( selectProject(projectId) ));
-  const pagesSortMap = project.pagesSortMap || {};
+  const isLoadedPageList = useSelector( selectIsLoadedPagesByProjectId(projectId) );  
+  const project = useSelector( selectProject(projectId) );
   const pageList = sortPageList(
-    _.cloneDeep(useSelector(selectPagesByProjectId(projectId))),
-    pagesSortMap
+    useSelector(selectPagesByProjectId(projectId)),
+    project.pagesSortMap || {}
   );
 
   // state setup
@@ -44,6 +45,29 @@ export default function ProjectListQuickView(props = null) {
   const handleDisplayMenuToggle = () => {
     setLSItem('isDisplayPageQuickMenu', !isDisplayMenu);
     setIsDisplayMenu(!isDisplayMenu);
+  }
+
+  // 一覧の表示コンポーネント
+  const PageList = () => {
+    return pageList.map( (page) => (
+      <div 
+        key={page.id}
+        id={page.id} 
+        className={`
+          ${styles.menuItem} 
+          ${(page.id === selectedPageId) && styles.selected}
+        `}
+        onClick={() => { 
+          history.push(`/projects/${projectId}/pages/${page.id}`)}
+        }
+      >
+        <div className={styles.main}>
+          <span className={styles.title}>
+            {page.name}
+          </span>
+        </div>
+      </div>
+    ))
   }
 
   return (
@@ -71,25 +95,8 @@ export default function ProjectListQuickView(props = null) {
             </div>
             <PageListCount projectId={projectId} />
           </div>
-          {pageList.map( (page) => (
-              <div 
-                key={page.id}
-                id={page.id} 
-                className={`
-                  ${styles.menuItem} 
-                  ${(page.id === selectedPageId) && styles.selected}
-                `}
-                onClick={() => { 
-                  history.push(`/projects/${projectId}/pages/${page.id}`)}
-                }
-              >
-                <div className={styles.main}>
-                  <span className={styles.title}>
-                    {page.name}
-                  </span>
-                </div>
-              </div>
-            ))
+          { (isLoadedPageList) ?
+            <PageList/> : <Loading/>
           }
         </div>
       }
