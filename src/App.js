@@ -71,7 +71,7 @@ function App() {
       }
       if (currentUser) {
         // ログイン時は初期表示に必要なデータをReduxにセット
-        dispatch(setCurrentUser({...currentUser.getSignInUserSession().getIdToken().payload}));
+        dispatch(setCurrentUser(currentUser.getSignInUserSession().getIdToken().payload));
         dispatch(setCurrentUserOption( await api.getUserOption() ));
         dispatch(setProjects( await api.getProjectList({}) ));
         dispatch(setResults( await api.getResultList({}) ));

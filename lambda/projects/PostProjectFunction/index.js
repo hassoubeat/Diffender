@@ -1,9 +1,10 @@
 const jwt_decode = require('jwt-decode');
+const userOptionDao = require('user-option-dao');
 const projectDao = require('project-dao');
 const projectValidator = require('project-validator');
 const lambdaCommon = require('lambda-common');
 
-const PROJECT_REGISTER_LIMITS = process.env.DIFFENDER_PROJECT_REGISTER_LIMITS;
+const DEFAULT_PROJECT_REGISTER_LIMIT = process.env.DIFFENDER_DEFAULT_PROJECT_REGISTER_LIMIT;
 
 exports.lambda_handler = async (event, context) => {
   // レスポンス変数の定義
@@ -19,10 +20,13 @@ exports.lambda_handler = async (event, context) => {
   try {
     const user = jwt_decode(event.headers.Authorization);
     const postProject = lambdaCommon.getRequetBody(event);
+    
 
+    // 登録上限チェック
+    const userOption = await userOptionDao.getUserOption(user.sub);
     lambdaCommon.checkRegisterLimit(
       await projectDao.getProjectList(user.sub, false, true), 
-      PROJECT_REGISTER_LIMITS
+      userOption.projectRegisterLimit || DEFAULT_PROJECT_REGISTER_LIMIT
     );
 
     postProject.projectTieUserId = user.sub;
