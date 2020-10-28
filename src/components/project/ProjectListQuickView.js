@@ -48,6 +48,35 @@ export default function ProjectListQuickView(props = null) {
     setIsDisplayMenu(!isDisplayMenu);
   }
 
+  // 一覧の表示コンポーネント
+  const ProjectList = () => {
+    // 一件もデータが存在しない時
+    if (projectList.length === 0 ) {
+      return (
+        <div className={styles.noData}> No Data </div>
+      )
+    }
+    return projectList.map( (project) => (
+      <div 
+        key={project.id}
+        id={project.id} 
+        className={`
+          ${styles.menuItem} 
+          ${(project.id === selectedProjectId) && styles.selected}
+        `}
+        onClick={() => { 
+          history.push(`/projects/${project.id}`)}
+        }
+      >
+        <div className={styles.main}>
+          <span className={styles.title}>
+            {project.name}
+          </span>
+        </div>
+      </div>
+    ))
+  }
+
   return (
     <React.Fragment>
       {isDisplayMenu && 
@@ -73,26 +102,7 @@ export default function ProjectListQuickView(props = null) {
             </div>
             <ProjectListCount/>
           </div>
-          {projectList.map( (project) => (
-              <div 
-                key={project.id}
-                id={project.id} 
-                className={`
-                  ${styles.menuItem} 
-                  ${(project.id === selectedProjectId) && styles.selected}
-                `}
-                onClick={() => { 
-                  history.push(`/projects/${project.id}`)}
-                }
-              >
-                <div className={styles.main}>
-                  <span className={styles.title}>
-                    {project.name}
-                  </span>
-                </div>
-              </div>
-            ))
-          }
+          <ProjectList/>
         </div>
       }
       {!isDisplayMenu && 

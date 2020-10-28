@@ -49,6 +49,12 @@ export default function ProjectListQuickView(props = null) {
 
   // 一覧の表示コンポーネント
   const PageList = () => {
+    // 一件もデータが存在しない時
+    if (pageList.length === 0 ) {
+      return (
+        <div className={styles.noData}> No Data </div>
+      )
+    }
     return pageList.map( (page) => (
       <div 
         key={page.id}

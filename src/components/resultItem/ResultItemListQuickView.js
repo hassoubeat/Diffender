@@ -53,6 +53,12 @@ export default function ResultItemListQuickView(props = null) {
 
   // 一覧の表示コンポーネント
   const ResultItemList = () => {
+    // 一件もデータが存在しない時
+    if (resultItemList.length === 0 ) {
+      return (
+        <div className={styles.noData}> No Data </div>
+      )
+    };
     return resultItemList.map( (resultItem) => (
       <div 
         key={resultItem.id}
