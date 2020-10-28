@@ -49,6 +49,14 @@ export default function ResultItemList(props = null) {
 
   // 一覧の表示コンポーネント
   const ResultItemList = () => {
+    // 一件もデータが存在しない場合
+    if (resultItemList.length === 0) {
+      return (
+        <React.Fragment>
+          リザルトアイテムは存在しません。
+        </React.Fragment>
+      )
+    }
     // フィルタリングを行いながら行いながらリザルトアイテム一覧を展開
     return filterResultItemList(resultItemList, filterObj).map( (resultItem) => (
       <Link key={resultItem.id} to={`/results/${resultItem.resultItemTieResultId}/result-items/${resultItem.id}`}>
@@ -117,11 +125,6 @@ export default function ResultItemList(props = null) {
         </div>
         { (isLoadedResultItem) ?
           <ResultItemList/> : <Loading/>
-        }
-        { (resultItemList.length === 0) &&
-          <React.Fragment>
-            リザルトアイテムは存在しません。
-          </React.Fragment>
         }
       </div>
     </React.Fragment>
