@@ -4,6 +4,7 @@ import { ReactSortable } from "react-sortablejs";
 import { useHistory } from 'react-router-dom';
 import Modal from 'react-modal';
 import PageForm from './pageForm/PageForm';
+import PageListCount from './PageListCount';
 import Loading from 'components/common/Loading';
 
 import {  
@@ -88,7 +89,10 @@ export default function PageList(props = null) {
   return (
     <React.Fragment>
       <div className={`${styles.pageList} scroll`}>
-        <div className="sectionTitle">ページ一覧</div>
+        <div className="sectionTitle">
+          <div className="main">ページ一覧</div>
+          <PageListCount projectId={projectId} />
+        </div>
         <input className={styles.searchBox} type="text" placeholder="search" onChange={(e) => setSearchWord(e.target.value)} />
         <ReactSortable list={pageList} setList={() => {}} handle=".draggable"
           onEnd={ async (event) => {await handleSort(event)} }

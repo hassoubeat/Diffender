@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import ProjectListCount from './ProjectListCount';
 
 import { 
   selectCurrentUserOption
@@ -57,7 +58,9 @@ export default function ProjectListQuickView(props = null) {
               handleDisplayMenuToggle()
             }}
           >
-           <i className="fas fa-angle-double-left" /> close
+            <div>
+              <i className="fas fa-angle-double-left" /> close
+            </div>
           </div>
           <div 
             className={styles.gotoListMenuItem}
@@ -65,7 +68,10 @@ export default function ProjectListQuickView(props = null) {
               history.push(`/projects`)}
             }
           >
-           <i className="fas fa-list"/> プロジェクト一覧
+            <div className={styles.main} >
+              <i className="fas fa-list"/> プロジェクト一覧
+            </div>
+            <ProjectListCount/>
           </div>
           {projectList.map( (project) => (
               <div 

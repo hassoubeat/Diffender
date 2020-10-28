@@ -150,10 +150,15 @@ input[type='checkbox'] {
 
 // セクションタイトル
 .sectionTitle {
+  display: flex;
   padding: 4px 0px;
   font-size: 18px;
   color: $MAIN_COLOR;
   border-bottom: 1px solid $LINE_COLOR;
+  
+  .main {
+    flex: 1 1 0;
+  }
 }
 
 // Diff%ごとの文字色
