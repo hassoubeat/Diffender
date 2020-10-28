@@ -20,7 +20,7 @@ import styles from './ResultList.module.scss';
 export default function ResultList(props = null) {
   // props setup
   const projectId = props.projectId;
-  const isDisplayListCount = props.isDisplayListCount;
+  const isDisplayListCount = props.isDisplayListCount === undefined ? true : props.isDisplayListCount;
 
   // hook setup
   const history = useHistory();
