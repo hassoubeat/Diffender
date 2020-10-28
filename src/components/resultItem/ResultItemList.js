@@ -49,7 +49,7 @@ export default function ResultItemList(props = null) {
 
   // 一覧の表示コンポーネント
   const ResultItemList = () => {
-    {/* フィルタリングを行いながら行いながらリザルトアイテム一覧を展開 */}
+    // フィルタリングを行いながら行いながらリザルトアイテム一覧を展開
     return filterResultItemList(resultItemList, filterObj).map( (resultItem) => (
       <Link key={resultItem.id} to={`/results/${resultItem.resultItemTieResultId}/result-items/${resultItem.id}`}>
         <div className={`${styles.resultItem} ${resultItem.status.type}`}>
