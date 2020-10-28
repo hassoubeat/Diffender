@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import ResultItemListCount from './ResultItemListCount';
 import Loading from 'components/common/Loading';
@@ -7,6 +7,7 @@ import Loading from 'components/common/Loading';
 import { 
   selectIsLoadedResultItemsByResultId,
   selectResultItemsByResultId,
+  setLoadStateResultItemList
 } from 'app/domainSlice';
 
 import { 
@@ -23,6 +24,9 @@ const RESULT_ITEM_STATUS_TYPE_SUCCESS = process.env.REACT_APP_RESULT_ITEM_STATUS
 export default function ResultItemList(props = null) {
   // props setup
   const resultId = props.resultId;
+
+  // hook setup
+  const dispatch = useDispatch();
 
   // redux-state setup
   const isLoadedResultItem = useSelector( selectIsLoadedResultItemsByResultId(resultId) );
@@ -43,15 +47,60 @@ export default function ResultItemList(props = null) {
     isDisplayResultProgressWait: isDisplayResultProgressWait
   }
 
-  if (!isLoadedResultItem) return (
-    <Loading/>
-  );
+  // 一覧の表示コンポーネント
+  const ResultItemList = () => {
+    // 一件もデータが存在しない場合
+    if (resultItemList.length === 0) {
+      return (
+        <React.Fragment>
+          リザルトアイテムは存在しません。
+        </React.Fragment>
+      )
+    }
+    // フィルタリングを行いながら行いながらリザルトアイテム一覧を展開
+    return filterResultItemList(resultItemList, filterObj).map( (resultItem) => (
+      <Link key={resultItem.id} to={`/results/${resultItem.resultItemTieResultId}/result-items/${resultItem.id}`}>
+        <div className={`${styles.resultItem} ${resultItem.status.type}`}>
+          {resultItem.name}
+          {/* ステータスが完了していなければメッセージを表示する */}
+          { (_.get(resultItem, 'status.type') !== RESULT_ITEM_STATUS_TYPE_SUCCESS ) && 
+              <div className={`${styles.message} ${_.get(resultItem, 'status.type')}`}>
+                {_.get(resultItem, 'status.message')}
+              </div>
+            }
+          <div className={styles.flex}>
+            {/* 登録日付 */}
+            <div className={styles.createDate}>
+              {resultItem.createDt}
+            </div>
+            {/* Diff%が存在するときのみ表示する */}
+            { (_.get(resultItem, 'status.misMatchPercentage') >= 0) && 
+              <div className={`${styles.diffPer} ${getDiffMisMatchPercentageClass(_.get(resultItem, 'status.misMatchPercentage'))}`}>
+                {_.get(resultItem, 'status.misMatchPercentage')}%
+              </div>
+            }
+          </div>
+        </div>
+      </Link>
+    ))
+  }
+
+  // リザルトアイテム一覧の再読み込み
+  const reload = () => {
+    dispatch( setLoadStateResultItemList({
+      resultId: resultId,
+      isLoaded: false
+    }));
+  };
 
   return (
     <React.Fragment>
       <div className={`${styles.resultItemList} scroll`}>
         <div className="sectionTitle">
           <div className="main">アイテム一覧</div>
+          <div className="action" onClick={ () => {reload()}}>
+            <i className="fas fa-sync"/>
+          </div>
           <ResultItemListCount resultId={resultId} />
         </div>
         <input className={styles.searchBox} type="text" placeholder="search" onChange={
@@ -74,36 +123,8 @@ export default function ResultItemList(props = null) {
             } />実行待ち
           </div>
         </div>
-        {/* フィルタリングを行いながら行いながらリザルトアイテム一覧を展開 */}
-        {filterResultItemList(resultItemList, filterObj).map( (resultItem) => (
-          <Link key={resultItem.id} to={`/results/${resultItem.resultItemTieResultId}/result-items/${resultItem.id}`}>
-            <div className={`${styles.resultItem} ${resultItem.status.type}`}>
-              {resultItem.name}
-              {/* ステータスが完了していなければメッセージを表示する */}
-              { (_.get(resultItem, 'status.type') !== RESULT_ITEM_STATUS_TYPE_SUCCESS ) && 
-                  <div className={`${styles.message} ${_.get(resultItem, 'status.type')}`}>
-                    {_.get(resultItem, 'status.message')}
-                  </div>
-                }
-              <div className={styles.flex}>
-                {/* 登録日付 */}
-                <div className={styles.createDate}>
-                  {resultItem.createDt}
-                </div>
-                {/* Diff%が存在するときのみ表示する */}
-                { (_.get(resultItem, 'status.misMatchPercentage') >= 0) && 
-                  <div className={`${styles.diffPer} ${getDiffMisMatchPercentageClass(_.get(resultItem, 'status.misMatchPercentage'))}`}>
-                    {_.get(resultItem, 'status.misMatchPercentage')}%
-                  </div>
-                }
-              </div>
-            </div>
-          </Link>
-        ))}
-        { (resultItemList.length === 0) &&
-          <React.Fragment>
-            リザルトアイテムは存在しません。
-          </React.Fragment>
+        { (isLoadedResultItem) ?
+          <ResultItemList/> : <Loading/>
         }
       </div>
     </React.Fragment>

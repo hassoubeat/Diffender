@@ -41,6 +41,35 @@ export default function ResultListQuickView(props = null) {
     setIsDisplayMenu(!isDisplayMenu);
   }
 
+  // 一覧の表示コンポーネント
+  const ResultList = () => {
+    // 一件もデータが存在しない時
+    if (resultList.length === 0 ) {
+      return (
+        <div className={styles.noData}> No Data </div>
+      )
+    }
+    return resultList.map( (result) => (
+      <div 
+        key={result.id}
+        id={result.id} 
+        className={`
+          ${styles.menuItem} 
+          ${(result.id === selectedResultId) && styles.selected}
+        `}
+        onClick={() => { 
+          history.push(`/results/${result.id}`)}
+        }
+      >
+        <div className={styles.main}>
+          <span className={styles.title}>
+            {result.name}
+          </span>
+        </div>
+      </div>
+    ))
+  }
+
   return (
     <React.Fragment>
       {isDisplayMenu && 
@@ -66,26 +95,7 @@ export default function ResultListQuickView(props = null) {
             </div>
             <ResultListCount />
           </div>
-          {resultList.map( (result) => (
-              <div 
-                key={result.id}
-                id={result.id} 
-                className={`
-                  ${styles.menuItem} 
-                  ${(result.id === selectedResultId) && styles.selected}
-                `}
-                onClick={() => { 
-                  history.push(`/results/${result.id}`)}
-                }
-              >
-                <div className={styles.main}>
-                  <span className={styles.title}>
-                    {result.name}
-                  </span>
-                </div>
-              </div>
-            ))
-          }
+          <ResultList />
         </div>
       }
       {!isDisplayMenu && 
