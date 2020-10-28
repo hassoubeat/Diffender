@@ -3,7 +3,7 @@ const projectDao = require('project-dao');
 const projectValidator = require('project-validator');
 const lambdaCommon = require('lambda-common');
 
-const PROJECT_REGISTER_LIMITS = process.env.DIFFENDER_PROJECT_REGISTER_LIMITS;
+const DEFAULT_PROJECT_REGISTER_LIMIT = process.env.DIFFENDER_DEFAULT_PROJECT_REGISTER_LIMIT;
 
 exports.lambda_handler = async (event, context) => {
   // レスポンス変数の定義
@@ -22,7 +22,7 @@ exports.lambda_handler = async (event, context) => {
 
     lambdaCommon.checkRegisterLimit(
       await projectDao.getProjectList(user.sub, false, true), 
-      PROJECT_REGISTER_LIMITS
+      DEFAULT_PROJECT_REGISTER_LIMIT
     );
 
     postProject.projectTieUserId = user.sub;

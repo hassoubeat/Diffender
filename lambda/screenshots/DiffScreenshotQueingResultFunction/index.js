@@ -9,7 +9,7 @@ const resultValidator = require('result-validator');
 const lambdaCommon = require('lambda-common');
 const _ = require('lodash');
 
-const RESULT_REGISTER_LIMITS = process.env.DIFFENDER_RESULT_REGISTER_LIMITS;
+const DEFAULT_RESULT_REGISTER_LIMITS = process.env.DIFFENDER_DEFAULT_RESULT_REGISTER_LIMITS;
 const ASYNC_QUEING_LAMBDA_NAME = process.env.ASYNC_QUEING_LAMBDA_NAME;
 
 exports.lambda_handler = async (event, context) => {
@@ -53,7 +53,7 @@ exports.lambda_handler = async (event, context) => {
     // 登録上限チェック
     lambdaCommon.checkRegisterLimit(
       await resultDao.getResultListByUserId(user.sub, false, true), 
-      RESULT_REGISTER_LIMITS
+      DEFAULT_RESULT_REGISTER_LIMITS
     );
 
     // リザルトの登録

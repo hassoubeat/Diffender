@@ -4,7 +4,7 @@ const pageDao = require('page-dao');
 const pageValidator = require('page-validator');
 const lambdaCommon = require('lambda-common');
 
-const PAGE_REGISTER_LIMITS = process.env.DIFFENDER_PAGE_REGISTER_LIMITS;
+const DEFAULT_PAGE_REGISTER_LIMITS = process.env.DIFFENDER_DEFAULT_PAGE_REGISTER_LIMITS;
 
 exports.lambda_handler = async (event, context) => {
   // レスポンス変数の定義
@@ -32,7 +32,7 @@ exports.lambda_handler = async (event, context) => {
     // 登録上限のチェック
     lambdaCommon.checkRegisterLimit(
       await pageDao.getPageList(user.sub, false, true), 
-      PAGE_REGISTER_LIMITS
+      DEFAULT_PAGE_REGISTER_LIMITS
     );
 
     postPage.id = await pageDao.generatePageId();
