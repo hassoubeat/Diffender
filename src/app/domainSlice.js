@@ -18,10 +18,15 @@ export const domainSlice = createSlice({
     resultItems: {}
   },
   reducers: {
-    // 状態：初回ロード状態の更新
-    setInitialLoadState: (state, action) => {
-      const {key, value} = action.payload;
-      _.set(state.initialLoadState, key, value);
+    // ページの読み込み状況を変更
+    setLoadStatePageList: (state, action) => {
+      const {projectId, isLoaded} = action.payload;
+      _.set(state.initialLoadState, `pageListMap.${projectId}`, isLoaded);
+    },
+    // リザルトアイテムの読み込み状況を変更
+    setLoadStateResultItemList: (state, action) => {
+      const {resultId, isLoaded} = action.payload;
+      _.set(state.initialLoadState, `resultItemListMap.${resultId}`, isLoaded);
     },
     // 状態：プロジェクト一覧 セット
     setProjects: (state, action) => {
@@ -97,13 +102,14 @@ export const domainSlice = createSlice({
         ...state.resultItems,
         ...resultItemListObject
       };
-    },
+    }
   },
 });
 
 // ActionCreaterのエクスポート
 export const { 
-  setInitialLoadState,
+  setLoadStatePageList,
+  setLoadStateResultItemList,
   setProjects,
   setProject,
   deleteProject,
@@ -167,9 +173,9 @@ export const fetchPages = (projectId) => async (dispatch) => {
       projectId : projectId
     })
   ));
-  dispatch(setInitialLoadState({
-    key: `pageListMap.${projectId}`,
-    value: true
+  dispatch(setLoadStatePageList({
+    projectId: projectId,
+    isLoaded: true
   }));
 }
 
@@ -235,9 +241,9 @@ export const fetchResultItemsByResultId = (resultId) => async (dispatch) => {
     }))
   );
   dispatch(
-    setInitialLoadState({
-      key: `resultItemListMap.${resultId}`,
-      value: true
+    setLoadStateResultItemList({
+      resultId: resultId,
+      isLoaded: true
     })
   );
 }

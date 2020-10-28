@@ -5,9 +5,9 @@ import ResultItemListCount from './ResultItemListCount';
 import Loading from 'components/common/Loading';
 
 import { 
+  setLoadStateResultItemList,
   selectIsLoadedResultItemsByResultId,
-  selectResultItemsByResultId,
-  fetchResultItemsByResultId
+  selectResultItemsByResultId
 } from 'app/domainSlice';
 
 import {
@@ -86,6 +86,14 @@ export default function ResultItemListQuickView(props = null) {
     ))
   }
 
+  // リザルトアイテム一覧の再読み込み
+  const reload = () => {
+    dispatch( setLoadStateResultItemList({
+      resultId: resultId,
+      isLoaded: false
+    }));
+  };
+
   return (
     <React.Fragment>
       {isDisplayMenu && 
@@ -113,9 +121,7 @@ export default function ResultItemListQuickView(props = null) {
           </div>
           <div 
             className={styles.reloadListMenuItem}
-            onClick={ () => { 
-              dispatch( fetchResultItemsByResultId(resultId) )
-            }}
+            onClick={ () => { reload() }}
           >
             <div>
               <i className="fas fa-sync"></i> リロード

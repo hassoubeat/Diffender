@@ -21,6 +21,11 @@
     .main {
       flex: 1 1 0;
     }
+
+    .action {
+      cursor: pointer;
+      margin: 0 10px;
+    }
   }
 
   .noData {
