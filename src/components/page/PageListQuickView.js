@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import PageListCount from './PageListCount';
 
 import { 
   selectPagesByProjectId,
@@ -55,7 +56,9 @@ export default function ProjectListQuickView(props = null) {
               handleDisplayMenuToggle()
             }}
           >
-           <i className="fas fa-angle-double-left" /> close
+            <div>
+              <i className="fas fa-angle-double-left" /> close
+            </div>
           </div>
           <div 
             className={styles.gotoListMenuItem}
@@ -63,7 +66,10 @@ export default function ProjectListQuickView(props = null) {
               history.push(`/projects/${projectId}/pages`)
             }}
           >
-           <i className="fas fa-list"/> ページ一覧
+            <div className={styles.main}>
+              <i className="fas fa-list"/> ページ一覧
+            </div>
+            <PageListCount projectId={projectId} />
           </div>
           {pageList.map( (page) => (
               <div 

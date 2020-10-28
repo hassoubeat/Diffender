@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
+import ResultListCount from './ResultListCount';
 
 import { 
   selectResults,
@@ -19,6 +20,7 @@ import styles from './ResultList.module.scss';
 export default function ResultList(props = null) {
   // props setup
   const projectId = props.projectId;
+  const isDisplayListCount = props.isDisplayListCount;
 
   // hook setup
   const history = useHistory();
@@ -49,7 +51,12 @@ export default function ResultList(props = null) {
   return (
     <React.Fragment>
       <div className={`${styles.resultList} scroll`}>
-        <div className="sectionTitle">リザルト一覧</div>
+        <div className="sectionTitle">
+          <div className="main">リザルト一覧</div>
+          { (isDisplayListCount) && 
+            <ResultListCount projectId={projectId} />
+          }
+        </div>
         <div className={styles.filters}>
           <input className={styles.searchBox} type="text" placeholder="search" onChange={(e) => setSearchWord(e.target.value)} />
           <div className={styles.filter}>

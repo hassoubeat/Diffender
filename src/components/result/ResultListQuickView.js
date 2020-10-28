@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import ResultListCount from './ResultListCount';
 
 import { 
   selectResults
@@ -50,7 +51,9 @@ export default function ResultListQuickView(props = null) {
               handleDisplayMenuToggle()
             }}
           >
-           <i className="fas fa-angle-double-left" /> close
+            <div>
+              <i className="fas fa-angle-double-left" /> close
+            </div>
           </div>
           <div 
             className={styles.gotoListMenuItem}
@@ -58,7 +61,10 @@ export default function ResultListQuickView(props = null) {
               history.push(`/results`)}
             }
           >
-           <i className="fas fa-list"/> リザルト一覧
+            <div className={styles.main}>
+              <i className="fas fa-list"/> リザルト一覧
+            </div>
+            <ResultListCount />
           </div>
           {resultList.map( (result) => (
               <div 

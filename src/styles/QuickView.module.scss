@@ -6,15 +6,20 @@
   overflow: scroll;
 
   .closeMenuItem , .gotoListMenuItem, .reloadListMenuItem {
+    display: flex;
     position: relative;
     font-size: 14px;
-    padding: 8px 20px 8px 8px;
+    padding: 8px;
     border-bottom: 1px solid $LINE_COLOR; 
     cursor: pointer;
     &:hover {
       color: $WHITE_TEXT_COLOR;
       background-color: $LINK_COLOR;
       transition: all 0.3s ease-in-out;
+    }
+
+    .main {
+      flex: 1 1 0;
     }
   }
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import ResultItemListCount from './ResultItemListCount';
 import Loading from 'components/common/Loading';
 
 import { 
@@ -49,6 +50,10 @@ export default function ResultItemList(props = null) {
   return (
     <React.Fragment>
       <div className={`${styles.resultItemList} scroll`}>
+        <div className="sectionTitle">
+          <div className="main">アイテム一覧</div>
+          <ResultItemListCount resultId={resultId} />
+        </div>
         <input className={styles.searchBox} type="text" placeholder="search" onChange={
           (e) => setSearchWord(e.target.value)}
         />

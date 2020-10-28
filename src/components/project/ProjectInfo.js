@@ -28,7 +28,10 @@ export default function ProjectInfo(props = null) {
         />
         <div className={styles.relateResultArea}>
           <div className={styles.title}>関連するリザルト</div>
-          <ResultList projectId={projectId} />
+          <ResultList 
+            projectId={projectId} 
+            isDisplayListCount={false}
+          />
         </div>
       </div>
     </React.Fragment>
