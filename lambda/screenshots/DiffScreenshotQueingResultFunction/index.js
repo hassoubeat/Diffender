@@ -2,6 +2,7 @@ const AWS = require('aws-sdk');
 const lambda = new AWS.Lambda();
 
 const jwt_decode = require('jwt-decode');
+const userOptionDao = require('user-option-dao');
 const resultDao = require('result-dao');
 const resultItemDao = require('result-item-dao');
 const sqsDao = require('sqs-dao');
@@ -9,7 +10,7 @@ const resultValidator = require('result-validator');
 const lambdaCommon = require('lambda-common');
 const _ = require('lodash');
 
-const DEFAULT_RESULT_REGISTER_LIMITS = process.env.DIFFENDER_DEFAULT_RESULT_REGISTER_LIMITS;
+const DEFAULT_RESULT_REGISTER_LIMIT = process.env.DIFFENDER_DEFAULT_RESULT_REGISTER_LIMIT;
 const ASYNC_QUEING_LAMBDA_NAME = process.env.ASYNC_QUEING_LAMBDA_NAME;
 
 exports.lambda_handler = async (event, context) => {
@@ -51,9 +52,10 @@ exports.lambda_handler = async (event, context) => {
     });
 
     // 登録上限チェック
+    const userOption = await userOptionDao.getUserOption(user.sub);
     lambdaCommon.checkRegisterLimit(
       await resultDao.getResultListByUserId(user.sub, false, true), 
-      DEFAULT_RESULT_REGISTER_LIMITS
+      userOption.resultRegisterLimit || DEFAULT_RESULT_REGISTER_LIMIT
     );
 
     // リザルトの登録

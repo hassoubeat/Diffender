@@ -1,4 +1,5 @@
 const jwt_decode = require('jwt-decode');
+const userOptionDao = require('user-option-dao');
 const projectDao = require('project-dao');
 const projectValidator = require('project-validator');
 const lambdaCommon = require('lambda-common');
@@ -19,10 +20,13 @@ exports.lambda_handler = async (event, context) => {
   try {
     const user = jwt_decode(event.headers.Authorization);
     const postProject = lambdaCommon.getRequetBody(event);
+    
 
+    // 登録上限チェック
+    const userOption = await userOptionDao.getUserOption(user.sub);
     lambdaCommon.checkRegisterLimit(
       await projectDao.getProjectList(user.sub, false, true), 
-      DEFAULT_PROJECT_REGISTER_LIMIT
+      userOption.projectRegisterLimit || DEFAULT_PROJECT_REGISTER_LIMIT
     );
 
     postProject.projectTieUserId = user.sub;

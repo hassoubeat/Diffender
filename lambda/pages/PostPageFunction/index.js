@@ -1,10 +1,11 @@
 const jwt_decode = require('jwt-decode');
+const userOptionDao = require('user-option-dao');
 const projectDao = require('project-dao');
 const pageDao = require('page-dao');
 const pageValidator = require('page-validator');
 const lambdaCommon = require('lambda-common');
 
-const DEFAULT_PAGE_REGISTER_LIMITS = process.env.DIFFENDER_DEFAULT_PAGE_REGISTER_LIMITS;
+const DEFAULT_PAGE_REGISTER_LIMIT = process.env.DIFFENDER_DEFAULT_PAGE_REGISTER_LIMIT;
 
 exports.lambda_handler = async (event, context) => {
   // レスポンス変数の定義
@@ -30,9 +31,10 @@ exports.lambda_handler = async (event, context) => {
     })
 
     // 登録上限のチェック
+    const userOption = await userOptionDao.getUserOption(user.sub)
     lambdaCommon.checkRegisterLimit(
-      await pageDao.getPageList(user.sub, false, true), 
-      DEFAULT_PAGE_REGISTER_LIMITS
+      await pageDao.getPageList(projectId, false, true), 
+      userOption.pageRegisterLimit || DEFAULT_PAGE_REGISTER_LIMIT
     );
 
     postPage.id = await pageDao.generatePageId();
