@@ -35,7 +35,7 @@ export default function PageForm(props = null) {
   const dispatch = useDispatch();
 
   // redux-state setup
-  const page = useSelector(selectPage(pageId));
+  const page = useSelector(selectPage(projectId, pageId));
 
   // ReactHookForm setup
   const reactHookFormMethods = useForm({

@@ -139,7 +139,14 @@ export const selectPages = (state) => state.domain.pages;
 // 指定したプロジェクトをプロジェクト一覧から取得するセレクタ
 export const selectProject = (projectId) => {
   return (state) => {
-    return _.get(state.domain.projects, projectId);
+    const project = _.get(state.domain.projects, projectId);
+    if (project) {
+      return project;
+    } else {
+      const error = new Error(`プロジェクト：${projectId}が取得できません`);
+      error.statusCode = 404;
+      throw error;
+    }
   };
 }
 
@@ -153,9 +160,20 @@ export const selectPagesByProjectId = (projectId) => {
 }
 
 // 指定したページをページ一覧を取得するセレクタ
-export const selectPage = (pageId) => {
+export const selectPage = (projectId, pageId) => {
   return (state) => {
-    return _.get(state.domain.pages, pageId);
+    // ロードが終わっていない場合はundefinedを返却
+    const isLoadedPage =selectIsLoadedPagesByProjectId(projectId);
+    if (!isLoadedPage) return undefined;
+
+    const page = _.get(state.domain.pages, pageId);
+    if (page) {
+      return page;
+    } else {
+      const error = new Error(`ページ：${pageId}が取得できません`);
+      error.statusCode = 404;
+      throw error;
+    }
   };
 }
 
@@ -197,7 +215,14 @@ export const selectResults = ({projectId}) => {
 // 指定したリザルトをプロジェクト一覧から取得するセレクタ
 export const selectResult = (resultId) => {
   return (state) => {
-    return _.get(state.domain.results, resultId);
+    const result = _.get(state.domain.results, resultId);
+    if (result) {
+      return result;
+    } else {
+      const error = new Error(`リザルト：${resultId}が取得できません`);
+      error.statusCode = 404;
+      throw error;
+    }
   };
 }
 
@@ -227,9 +252,20 @@ export const selectResultItemsByResultId = (resultId) => {
 }
 
 // 指定したリザルトアイテムをリザルトアイテム一覧から取得するセレクタ
-export const selectResultItem = (resultItemId) => {
+export const selectResultItem = (resultId, resultItemId) => {
   return (state) => {
-    return _.get(state.domain.resultItems, resultItemId);
+    // ロードが終わっていない場合はundefinedを返却
+    const isLoadedResult = selectIsLoadedResultItemsByResultId(resultId);
+    if (!isLoadedResult) return undefined;
+
+    const resultItem = _.get(state.domain.resultItems, resultItemId);
+    if (resultItem) {
+      return resultItem;
+    } else {
+      const error = new Error(`リザルトアイテム：${resultItemId}が取得できません`);
+      error.statusCode = 404;
+      throw error;
+    }
   };
 }
 

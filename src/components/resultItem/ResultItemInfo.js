@@ -28,7 +28,7 @@ export default function ResultItemInfo(props = null) {
 
   // redux-state setup
   const isLoadedResultItem = useSelector( selectIsLoadedResultItemsByResultId(resultId) );
-  const resultItem = useSelector( selectResultItem(resultItemId) ) || {};
+  const resultItem = useSelector( selectResultItem(resultId, resultItemId) ) || {};
 
   if (!isLoadedResultItem) return (
     <Loading/>
