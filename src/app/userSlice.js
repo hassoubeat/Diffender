@@ -46,12 +46,5 @@ export const selectProjectSortMap = (state) => {
   return _.get(state.user.currentUserOption, "projectsSortMap", {});
 }
 
-// 指定したリザルトをプロジェクト一覧から取得するセレクタ
-export const selectResult = (resultId) => {
-  return (state) => {
-    return _.get(state.domain.results, resultId);
-  };
-}
-
 // Reducerのエクスポート
 export default userSlice.reducer;

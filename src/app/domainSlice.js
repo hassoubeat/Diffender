@@ -137,16 +137,16 @@ export const selectProjects = (state) => {
 export const selectPages = (state) => state.domain.pages;
 
 // 指定したプロジェクトをプロジェクト一覧から取得するセレクタ
-export const selectProject = (projectId) => {
+export const selectProject = (projectId, isThrowError = true) => {
   return (state) => {
     const project = _.get(state.domain.projects, projectId);
-    if (project) {
-      return project;
-    } else {
+    if (project) return project;
+    if (isThrowError) {
       const error = new Error(`プロジェクト：${projectId}が取得できません`);
       error.statusCode = 404;
       throw error;
     }
+    return project;
   };
 }
 
@@ -160,20 +160,20 @@ export const selectPagesByProjectId = (projectId) => {
 }
 
 // 指定したページをページ一覧を取得するセレクタ
-export const selectPage = (projectId, pageId) => {
+export const selectPage = (projectId, pageId, isThrowError = true) => {
   return (state) => {
     // ロードが終わっていない場合はundefinedを返却
-    const isLoadedPage =selectIsLoadedPagesByProjectId(projectId);
+    const isLoadedPage = _.get(state.domain.initialLoadState, `pageListMap.${projectId}`, false);
     if (!isLoadedPage) return undefined;
 
     const page = _.get(state.domain.pages, pageId);
-    if (page) {
-      return page;
-    } else {
+    if (page) return page;
+    if (isThrowError) {
       const error = new Error(`ページ：${pageId}が取得できません`);
       error.statusCode = 404;
       throw error;
     }
+    return page;
   };
 }
 
@@ -213,16 +213,16 @@ export const selectResults = ({projectId}) => {
 };
 
 // 指定したリザルトをプロジェクト一覧から取得するセレクタ
-export const selectResult = (resultId) => {
+export const selectResult = (resultId, isThrowError = true) => {
   return (state) => {
     const result = _.get(state.domain.results, resultId);
-    if (result) {
-      return result;
-    } else {
+    if (result) return result;
+    if (isThrowError) {
       const error = new Error(`リザルト：${resultId}が取得できません`);
       error.statusCode = 404;
       throw error;
     }
+    return result;
   };
 }
 
@@ -252,20 +252,20 @@ export const selectResultItemsByResultId = (resultId) => {
 }
 
 // 指定したリザルトアイテムをリザルトアイテム一覧から取得するセレクタ
-export const selectResultItem = (resultId, resultItemId) => {
+export const selectResultItem = (resultId, resultItemId, isThrowError = true) => {
   return (state) => {
     // ロードが終わっていない場合はundefinedを返却
-    const isLoadedResult = selectIsLoadedResultItemsByResultId(resultId);
+    const isLoadedResult = _.get(state.domain.initialLoadState, `resultItemListMap.${resultId}`, false);;
     if (!isLoadedResult) return undefined;
 
     const resultItem = _.get(state.domain.resultItems, resultItemId);
-    if (resultItem) {
-      return resultItem;
-    } else {
+    if (resultItem) return resultItem;
+    if (isThrowError) {
       const error = new Error(`リザルトアイテム：${resultItemId}が取得できません`);
       error.statusCode = 404;
       throw error;
     }
+    return resultItem;
   };
 }
 
