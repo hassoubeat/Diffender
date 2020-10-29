@@ -7,15 +7,10 @@ export default function UserInfo(props = null) {
   return (
     <React.Fragment>
       <div className={styles.userInfo}>
-        <div className={styles.title}>ユーザ情報の編集</div>
-        <section id="updateUserAttributes" className={styles.section}>
-          <div className="sectionTitle">ユーザ属性変更</div>
-          <UpdateUserAttributes/>
-        </section>
-        <section id="changePassword" className={styles.section}>
-          <div className="sectionTitle">パスワード変更</div>
-          <ChangePassword/>
-        </section>
+        <div className="sectionTitle">ユーザ情報変更</div>
+        <UpdateUserAttributes/>
+        <div className="sectionTitle">パスワード変更</div>
+        <ChangePassword/>
       </div>
     </React.Fragment>
   );

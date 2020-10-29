@@ -1,51 +1,34 @@
-import React, { useState } from 'react';
-import {
-  handleChangeUserParams,
-  isErrorsCheck
-} from './AuthEvent';
-import { 
-  getCurrentUser, 
-  changePassword 
-} from 'lib/auth/cognitoAuth';
+import React from 'react';
+import { useForm } from "react-hook-form";
+
+import { changePassword } from 'lib/auth/model';
 import UtilInput from 'components/util/input/Input';
 import * as toast from 'lib/util/toast';
 import styles from './ChangePassword.module.scss';
 
 export default function ChangePassword(props = null) {
-  // Stateの定義
-  const [user, setUser] = useState({
-    oldPassword: "",
-    newPassword: "",
-  });
-  const [errors, setErrors] = useState({
-    oldPassword: [],
-    newPassword: []
+  // ReactHookForm setup
+  const {register, errors, reset, handleSubmit} = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      oldPassword: "",
+      newPassword: ""
+    }
   });
 
   // パスワード変更ボタン押下時のイベント
-  const handleChangePassword = async () => {
-    try {
-      const currentUser = await getCurrentUser();
-      await changePassword(
-        currentUser,
-        user.oldPassword,
-        user.newPassword
-      );
-      toast.successToast({
-        message: 'パスワードの変更が完了しました',
-      });
-      // 入力値のクリア
-      user.oldPassword = "";
-      user.newPassword = "";
-      setUser(Object.assign({}, user));
-    } catch(error) {
-      let message = "パスワードの変更に失敗しました"
-      if(error.code === "NotAuthorizedException") message = "現在のパスワードが誤っています";
-      
-      toast.errorToast({
-        message: message
-      });
-    }
+  const onSubmit = async (inputPassword) => {
+    await changePassword(inputPassword);
+    reset();
+  }
+
+  // 入力エラー時
+  const onSubmitError = (error) => {
+    console.table(error);
+    console.log(error)
+    toast.errorToast(
+      { message: "入力エラーが存在します" }
+    )
   }
 
   return (
@@ -56,25 +39,32 @@ export default function ChangePassword(props = null) {
             label="現在のパスワード" 
             type="password" 
             name="oldPassword" 
-            value={ user.oldPassword } 
-            onChangeFunc={(e) => { 
-              handleChangeUserParams(e, user, setUser, errors, setErrors) 
-            } } 
-            errorMessages={ errors.oldPassword }
+            errorMessages={ (errors.oldPassword) && [errors.oldPassword.message] } 
+            inputRef={ register({
+              required: "必須です",
+              pattern: {
+                value: new RegExp("^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\\d)[a-zA-Z\\d]{8,100}$"),
+                message: '大文字、小文字、数字を含んだ8文字以上のパスワードを設定してください'
+              }
+            })}
           />
           <UtilInput 
             label="新しいパスワード" 
             type="password" 
             name="newPassword" 
-            value={ user.newPassword } 
-            onChangeFunc={(e) => { 
-              handleChangeUserParams(e, user, setUser, errors, setErrors) 
-            } } 
-            errorMessages={ errors.newPassword }
+            errorMessages={ (errors.newPassword) && [errors.newPassword.message] } 
+            inputRef={ register({
+              required: "必須です",
+              pattern: {
+                value: new RegExp("^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\\d)[a-zA-Z\\d]{8,100}$"),
+                message: '大文字、小文字、数字を含んだ8文字以上のパスワードを設定してください'
+              }
+            })}
           />
-          <div className={styles.actions}>
-            <button className={styles.inputButton} disabled={!isErrorsCheck(errors)} onClick={ async() => { handleChangePassword() }
-            }>パスワードの変更</button>
+          <div className={styles.actionArea}>
+            <span className={styles.submit} onClick={ handleSubmit(onSubmit, onSubmitError) }>
+              変更
+            </span>
           </div>
         </div>
       </div>
