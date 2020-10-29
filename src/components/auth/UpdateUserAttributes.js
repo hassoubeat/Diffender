@@ -1,19 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useForm } from "react-hook-form";
+
 import { 
   selectCurrentUser, 
   setCurrentUser
 } from 'app/userSlice';
-import {
-  handleChangeUserParams,
-  isErrorsCheck
-} from './AuthEvent';
-import { 
-  getCurrentUser, 
-  updateUserAttributes 
-} from 'lib/auth/cognitoAuth';
-import UtilInput from 'components/util/input/Input';
+
+import { updateUserAttributes } from 'lib/auth/model';
 import * as toast from 'lib/util/toast';
+import UtilInput from 'components/util/input/Input';
 import styles from './UpdateUserAttributes.module.scss';
 
 export default function UpdateUserAttributes(props = null) {
@@ -22,55 +18,54 @@ export default function UpdateUserAttributes(props = null) {
   // Redux-Stateの取得
   const loginUser = useSelector(selectCurrentUser);
 
-  // Stateの定義
-  const [user, setUser] = useState({
-    nickname: loginUser.nickname || ""
+  // ReactHookForm setup
+  const {register, errors, reset, handleSubmit} = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      nickname: ""
+    }
   });
-  const [errors, setErrors] = useState({
-    nickname: []
-  });
+
+  useEffect( () => {
+    reset(loginUser);
+  }, [reset, loginUser]);
 
   // パスワード変更ボタン押下時のイベント
-  const handleUpdateUserAttributes = async () => {
-    try {
-      let currentUser = await getCurrentUser();
-      await updateUserAttributes(
-        currentUser,
-        user
-      );
-      toast.successToast({
-        message: 'ユーザ属性の変更が完了しました',
-      });
+  const onSubmit = async (inputUserAttributes) => {
+    const updateUser = await updateUserAttributes(inputUserAttributes);
+    dispatch(setCurrentUser(updateUser.getSignInUserSession().getIdToken().payload));
+  }
 
-      // 現在のユーザ(Redux-State)の更新
-      currentUser = await getCurrentUser();
-      dispatch(setCurrentUser({...currentUser.getSignInUserSession().getIdToken().payload}));
-    } catch(error) {
-      let message = "ユーザ属性の変更に失敗しました"
-      
-      toast.errorToast({
-        message: message
-      });
-    }
+  // 入力エラー時
+  const onSubmitError = (error) => {
+    console.table(error);
+    console.log(error)
+    toast.errorToast(
+      { message: "入力エラーが存在します" }
+    )
   }
 
   return (
     <React.Fragment>
-      <div className={styles.resetPassword}>
+      <div className={styles.updateUserAttributes}>
         <div className={styles.formArea}>
           <UtilInput 
             label="ユーザ名" 
             type="text" 
             name="nickname" 
-            value={ user.nickname } 
-            onChangeFunc={(e) => { 
-              handleChangeUserParams(e, user, setUser, errors, setErrors) 
-            } } 
-            errorMessages={ errors.nickname }
+            errorMessages={ (errors.nickname) && [errors.nickname.message] } 
+            inputRef={ register({
+              required: "ユーザ名は必須です",
+              maxLength : {
+                value: 10,
+                message: '最大10文字で入力してください'
+              }
+            })}
           />
-          <div className={styles.actions}>
-            <button className={styles.inputButton} disabled={!isErrorsCheck(errors)} onClick={ async() => { handleUpdateUserAttributes() }
-            }>ユーザ属性の変更</button>
+          <div className={styles.actionArea}>
+            <span className={styles.submit} onClick={ handleSubmit(onSubmit, onSubmitError) }>
+              変更
+            </span>
           </div>
         </div>
       </div>
