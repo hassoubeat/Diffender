@@ -1,7 +1,11 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { selectIsDisplaySidebar, setWindow } from 'app/appSlice';
+
+import { 
+  selectIsDisplaySidebar, 
+  setWindow 
+} from 'app/appSlice';
 
 import { 
   selectIsUserInitializeComplete, 
@@ -20,6 +24,7 @@ import { getCurrentUser } from 'lib/auth/cognitoAuth'
 import queryString from 'query-string';
 
 import './App.scss';
+import ErrorHandler from './ErrorHandler';
 import AuthCheck from 'components/auth/AuthCheck';
 import UnAuthCheck from 'components/auth/UnAuthCheck';
 import DivideForm from 'components/auth/DivideForm';
@@ -91,52 +96,54 @@ function App() {
   return (
     <div className={`App ${(isDisplaySidebar ? '' : 'AppSidebarHidden')}`}>
       <BrowserRouter>
-        <Switch>  
-          <Route exact path="/404" component={NotFound404} />
-          <Route exact path="/signUp" render={ () => (
-            <UnAuthCheck>
-              <DivideForm>
-                <SignUp/>
-              </DivideForm>
-            </UnAuthCheck>
-          )} />
-          <Route exact path="/code" render={ ({location}) => (
-            <UnAuthCheck>
-              <DivideForm>
-                <ConfirmCode
-                  queryString={queryString.parse(location.search)}
-                />
-              </DivideForm>
-            </UnAuthCheck>
-          )} />
-          <Route exact path="/forgotPassword" render={ () => (
-            <UnAuthCheck>
-              <DivideForm position="left" >
-                <ForgotPassword/>
-              </DivideForm>
-            </UnAuthCheck>
-          )} />
-          <Route exact path="/resetPassword" render={ ({location}) => (
-            <UnAuthCheck>
-              <DivideForm position="left" >
-                <ResetPassword
-                  queryString={queryString.parse(location.search)}
-                />
-              </DivideForm>
-            </UnAuthCheck>
-          )} />
-          <Route exact path="/signIn" render={ () => (
-            <UnAuthCheck>
-              <SignIn/>
-            </UnAuthCheck>
-          )} />
-          <Route>
-            <AuthCheck>
-              <Sidebar />
-              <Main />
-            </AuthCheck>
-          </Route>
-        </Switch>
+        <ErrorHandler>
+          <Switch>  
+            <Route exact path="/404" component={NotFound404} />
+            <Route exact path="/signUp" render={ () => (
+              <UnAuthCheck>
+                <DivideForm>
+                  <SignUp/>
+                </DivideForm>
+              </UnAuthCheck>
+            )} />
+            <Route exact path="/code" render={ ({location}) => (
+              <UnAuthCheck>
+                <DivideForm>
+                  <ConfirmCode
+                    queryString={queryString.parse(location.search)}
+                  />
+                </DivideForm>
+              </UnAuthCheck>
+            )} />
+            <Route exact path="/forgotPassword" render={ () => (
+              <UnAuthCheck>
+                <DivideForm position="left" >
+                  <ForgotPassword/>
+                </DivideForm>
+              </UnAuthCheck>
+            )} />
+            <Route exact path="/resetPassword" render={ ({location}) => (
+              <UnAuthCheck>
+                <DivideForm position="left" >
+                  <ResetPassword
+                    queryString={queryString.parse(location.search)}
+                  />
+                </DivideForm>
+              </UnAuthCheck>
+            )} />
+            <Route exact path="/signIn" render={ () => (
+              <UnAuthCheck>
+                <SignIn/>
+              </UnAuthCheck>
+            )} />
+            <Route>
+              <AuthCheck>
+                <Sidebar />
+                <Main />
+              </AuthCheck>
+            </Route>
+          </Switch>
+        </ErrorHandler>
       </BrowserRouter>
     </div>
   );
