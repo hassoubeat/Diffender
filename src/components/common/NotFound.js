@@ -1,20 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import styles from './NotFound.module.scss';
+import UtilError from 'components/common/UtilError';
 
-export default function NotFound() {
+export default function NotFound(props = null) {
+  // props setup
+  const errorMessage = props.errorMessage || "URLに対応するページは存在しません。";
 
   return (
-    <div className={styles.notFound}>
-      <div className={styles.title}>NotFound(404)</div>
-      <div className={styles.description}>
-        URLに対応するページは存在しません。
-      </div>
-      <div className={styles.actions}>
-        <Link to="/">
-          TOPに戻る
-        </Link>
-      </div>
-    </div>
+    <UtilError 
+      errorTitle="NotFound(404)"
+      errorMessage={errorMessage}
+    />
   );
 }
