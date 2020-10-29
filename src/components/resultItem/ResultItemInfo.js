@@ -23,12 +23,13 @@ const RESULT_ITEM_STATUS_TYPE_SUCCESS = process.env.REACT_APP_RESULT_ITEM_STATUS
 
 export default function ResultItemInfo(props = null) {
   // props setup
+  const isUpdate = !!props.resultId;
   const resultId = props.resultId;
   const resultItemId = props.resultItemId;
 
   // redux-state setup
   const isLoadedResultItem = useSelector( selectIsLoadedResultItemsByResultId(resultId) );
-  const resultItem = useSelector( selectResultItem(resultItemId) ) || {};
+  const resultItem = useSelector( selectResultItem(resultId, resultItemId, isUpdate) ) || {};
 
   if (!isLoadedResultItem) return (
     <Loading/>

@@ -43,10 +43,9 @@ export default function PageList(props = null) {
   // redux-state setup
   const isLoadedPageList = useSelector(selectIsLoadedPagesByProjectId(projectId) );  
   const project = _.cloneDeep(useSelector( selectProject(projectId) ));
-  const pagesSortMap = project.pagesSortMap || {};
   const pageList = sortPageList(
-    _.cloneDeep(useSelector(selectPagesByProjectId(projectId))),
-    pagesSortMap
+    useSelector(selectPagesByProjectId(projectId)),
+    project.pagesSortMap || {}
   );
 
   // state seteup

@@ -28,7 +28,7 @@ export default function ProjectForm(props = null) {
   const dispatch = useDispatch();
 
   // redux-state setup
-  const project = useSelector(selectProject(projectId));
+  const project = useSelector(selectProject(projectId, isUpdate));
 
   // ReactHookForm setup
   const reactHookFormMethods = useForm({

@@ -25,7 +25,7 @@ export default function ResultForm(props = null) {
   const dispatch = useDispatch();
 
   // redux-state setup
-  const result = useSelector(selectResult(resultId));
+  const result = useSelector(selectResult(resultId, isUpdate));
 
   // ReactHookForm setup
   const reactHookFormMethods = useForm({
