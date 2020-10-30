@@ -8,6 +8,7 @@ import {
 import { isSpWindowSize } from 'lib/util/window';
 import { signOut } from 'lib/auth/cognitoAuth'
 import * as toast from 'lib/util/toast';
+import { PROJECT_NAME } from 'lib/util/const'
 import styles from './Sidebar.module.scss';
 
 export default function Sidebar() {
@@ -52,7 +53,7 @@ export default function Sidebar() {
                 history.push("/");
               }}
             >
-              {process.env.REACT_APP_PROJECT_NAME}
+              {PROJECT_NAME}
             </li>
             <hr/>
             <li className={`${styles.userItem}`}>

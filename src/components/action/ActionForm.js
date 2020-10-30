@@ -4,8 +4,16 @@ import { ReactSortable } from "react-sortablejs";
 import ActionItem from './ActionItem';
 import styles from './ActionForm.module.scss';
 
-const ACTION_TYPE_GOTO = process.env.REACT_APP_ACTION_TYPE_GOTO;
-const ACTION_TYPE_WAIT = process.env.REACT_APP_ACTION_TYPE_WAIT;
+import {
+  ACTION_TYPE_GOTO,
+  ACTION_TYPE_WAIT,
+  ACTION_TYPE_CLICK,
+  ACTION_TYPE_FOCUS,
+  ACTION_TYPE_INPUT,
+  ACTION_TYPE_SCROLL
+} from 'lib/util/const'
+
+
 const ACTION_TYPE_LIST = [
   {
     type: ACTION_TYPE_GOTO,
@@ -14,7 +22,23 @@ const ACTION_TYPE_LIST = [
   {
     type: ACTION_TYPE_WAIT,
     typeName: "待機"
-  }
+  },
+  {
+    type: ACTION_TYPE_CLICK,
+    typeName: "クリック"
+  },
+  {
+    type: ACTION_TYPE_FOCUS,
+    typeName: "フォーカス"
+  },
+  {
+    type: ACTION_TYPE_INPUT,
+    typeName: "入力"
+  },
+  {
+    type: ACTION_TYPE_SCROLL,
+    typeName: "スクロール"
+  },
 ];
 
 export default function ActionForm(props = null) {
@@ -40,7 +64,13 @@ export default function ActionForm(props = null) {
       basicAuth: {
         user: "",
         password: ""
-      }
+      },
+      distance: {
+        xPixel: 0,
+        yPixel: 0
+      },
+      selector: "",
+      value: ""
     });
   }
 
@@ -82,9 +112,9 @@ export default function ActionForm(props = null) {
         <div className={styles.actionCreater} >
           {/* アクションの追加ボタンを生成 */}
           {
-            ACTION_TYPE_LIST.map( (actionType) => (
+            ACTION_TYPE_LIST.map( (actionType, index) => (
               <span 
-                key={actionType.type} 
+                key={index} 
                 className={styles.button} 
                 onClick={() => {
                   addAction(actionType)

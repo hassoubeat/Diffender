@@ -19,6 +19,7 @@ import {
   putPage
 } from 'lib/page/model'
 
+import _ from 'lodash';
 import * as toast from 'lib/util/toast';
 import styles from './PageForm.module.scss';
 
@@ -73,6 +74,8 @@ export default function PageForm(props = null) {
       // 自動キャストを追加するかの議論は https://github.com/react-hook-form/react-hook-form/issues/615
       // 自動キャストが実装された場合は対応して本処理を除外
       if (action.millisecond) action.millisecond = Number(action.millisecond);
+      if (_.get(action, "distance.xPixel")) _.set(action, "distance.xPixel", Number(_.get(action, "distance.xPixel")));
+      if (_.get(action, "distance.yPixel")) _.set(action, "distance.yPixel", Number(_.get(action, "distance.yPixel")));
     });
 
     let result = null;

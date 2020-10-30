@@ -83,6 +83,70 @@ describe('Pageのバリデーション処理 正常系のテスト群', () => {
     }).not.toThrow();
   });
 
+  test('アクション全体のバリデーションテスト CLICK', async () => {
+    expect(() => {
+      const action = {
+        type: "CLICK",
+        typeName: "クリック",
+        name: "ログイン",
+        selector: "input[type='submit']"
+      }
+      actionValidator.actionValid({
+        action: action,
+        appendKey: "actions[1]"
+      });
+    }).not.toThrow();
+  });
+
+  test('アクション全体のバリデーションテスト FUCUS', async () => {
+    expect(() => {
+      const action = {
+        type: "FOCUS",
+        typeName: "フォーカス",
+        name: "フォーカス",
+        selector: "input[type='submit']"
+      }
+      actionValidator.actionValid({
+        action: action,
+        appendKey: "actions[1]"
+      });
+    }).not.toThrow();
+  });
+
+  test('アクション全体のバリデーションテスト INPUT', async () => {
+    expect(() => {
+      const action = {
+        type: "INPUT",
+        typeName: "入力",
+        name: "ユーザ情報入力",
+        selector: "#userId",
+        value: "user"
+      }
+      actionValidator.actionValid({
+        action: action,
+        appendKey: "actions[1]"
+      });
+    }).not.toThrow();
+  });
+
+  test('アクション全体のバリデーションテスト SCROLL', async () => {
+    expect(() => {
+      const action = {
+        type: "SCROLL",
+        typeName: "スクロール",
+        name: "画面下にスクロール",
+        distance: {
+          xPixel: 0,
+          yPixel: 300
+        }
+      }
+      actionValidator.actionValid({
+        action: action,
+        appendKey: "actions[1]"
+      });
+    }).not.toThrow();
+  });
+
 });
 
 describe('Pageのバリデーション処理 異常系のテスト群', () => {

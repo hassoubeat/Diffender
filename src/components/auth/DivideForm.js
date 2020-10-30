@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './DivideForm.module.scss';
+import { PROJECT_NAME } from 'lib/util/const'
 
 export default function DivideForm(props = null) {
   // propsの展開
@@ -11,14 +12,14 @@ export default function DivideForm(props = null) {
         { (chidrenPosition === "left") && 
           <div className={styles.block}>
             <div className={styles.spTitle}>
-              {process.env.REACT_APP_PROJECT_NAME}
+              {PROJECT_NAME}
             </div>
             {props.children}
           </div>
         }
         <div className={`${styles.block} ${styles.appInfo}`}>
           <div className={styles.title}>
-            {process.env.REACT_APP_PROJECT_NAME}
+            {PROJECT_NAME}
           </div>
           <div className={styles.description}>
             DiffenderはWebサイトのスクリーンショットを撮影し、
@@ -31,7 +32,7 @@ export default function DivideForm(props = null) {
         { (chidrenPosition === "right") && 
           <div className={styles.block}>
             <div className={styles.spTitle}>
-              {process.env.REACT_APP_PROJECT_NAME}
+              {PROJECT_NAME}
             </div>
             {props.children}
           </div>
