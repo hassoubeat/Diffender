@@ -52,6 +52,7 @@ const deviceTypeOptionValid = ({value, prependKey="", errorMessage}) => {
       v8n()
         .not.null()
         .not.empty()
+        .not.undefined()
         .string()
         .check(value)
     },
@@ -60,6 +61,46 @@ const deviceTypeOptionValid = ({value, prependKey="", errorMessage}) => {
 };
 module.exports.deviceTypeOptionValid = deviceTypeOptionValid;
 
+// ブラウザオプション(UserAgent)のバリデーション
+const userAgentOptionValid = ({value, prependKey="", errorMessage}) => {
+  // TODO 現在バリデーション内容なし  
+};
+module.exports.userAgentOptionValid = userAgentOptionValid;
+
+// ブラウザオプション(画面横幅)のバリデーション
+const viewPortWidthValid = ({value, prependKey="", errorMessage}) => {
+  runValid(
+    () => { 
+      v8n()
+        .not.null()
+        .not.empty()
+        .not.undefined()
+        .integer()
+        .between(1, 2000)
+        .check(value)
+    },
+    errorMessage || `[${prependKey}width] 0 ~ 2000 integer and required.`
+  );
+};
+module.exports.viewPortWidthValid = viewPortWidthValid;
+
+// ブラウザオプション(画面縦幅)のバリデーション
+const viewPortHeightValid = ({value, prependKey="", errorMessage}) => {
+  runValid(
+    () => { 
+      v8n()
+        .not.null()
+        .not.empty()
+        .not.undefined()
+        .integer()
+        .between(1, 2000)
+        .check(value)
+    },
+    errorMessage || `[${prependKey}height] 0 ~ 2000 integer and required.`
+  );
+};
+module.exports.viewPortHeightValid = viewPortHeightValid;
+
 // フルページオプション設定のバリデーション
 const fullPageOptionValid = ({value, prependKey="", errorMessage}) => {
   runValid(
@@ -67,6 +108,7 @@ const fullPageOptionValid = ({value, prependKey="", errorMessage}) => {
       v8n()
         .not.null()
         .not.empty()
+        .not.undefined()
         .boolean()
         .check(value)
     },
@@ -82,6 +124,7 @@ const isEnableBeforeCommonActionValid = ({value, prependKey="", errorMessage}) =
       v8n()
         .not.null()
         .not.empty()
+        .not.undefined()
         .boolean()
         .check(value)
     },
@@ -97,6 +140,7 @@ const isEnableAfterCommonActionValid = ({value, prependKey="", errorMessage}) =>
       v8n()
         .not.null()
         .not.empty()
+        .not.undefined()
         .boolean()
         .check(value)
     },
@@ -117,6 +161,21 @@ module.exports.isEnableAfterCommonActionValid = isEnableAfterCommonActionValid;
     value: _.get(page, "browserSettings.deviceType"),
     prependKey: "browserSettings."
   });
+  // デバイスタイプがカスタムの時のみ拡張内容のバリデーションを実施する
+  if (_.get(page, "browserSettings.deviceType") === "custom") {
+    userAgentOptionValid({
+      value: _.get(page, "browserSettings.userAgent"),
+      prependKey: "browserSettings."
+    });
+    viewPortWidthValid({
+      value: _.get(page, "browserSettings.viewport.width"),
+      prependKey: "browserSettings.viewport."
+    });
+    viewPortHeightValid({
+      value: _.get(page, "browserSettings.viewport.height"),
+      prependKey: "browserSettings.viewport."
+    });
+  }
   fullPageOptionValid({
     value: _.get(page, "screenshotOptions.fullPage"),
     prependKey: "screenshotOptions."

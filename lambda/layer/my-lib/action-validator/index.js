@@ -162,7 +162,7 @@ const scrollXPixelValid = ({value, prependKey="", errorMessage}) => {
         .integer()
         .check(value)
     },
-    errorMessage || `[${prependKey}xpixel] is integer and required.`
+    errorMessage || `[${prependKey}xPixel] is integer and required.`
   );
 }
 module.exports.scrollXPixelValid = scrollXPixelValid;
@@ -177,7 +177,7 @@ const scrollYPixelValid = ({value, prependKey="", errorMessage}) => {
         .integer()
         .check(value)
     },
-    errorMessage || `[${prependKey}xpixel] is integer and required.`
+    errorMessage || `[${prependKey}xPixel] is integer and required.`
   );
 }
 module.exports.scrollYPixelValid = scrollYPixelValid;
@@ -235,11 +235,11 @@ module.exports.scrollYPixelValid = scrollYPixelValid;
     case "SCROLL":
       scrollXPixelValid({
         value: _.get(action, "distance.xPixel"),
-        prependKey: prependKey
+        prependKey: `${prependKey}distance.`
       });
       scrollYPixelValid({
         value: _.get(action, "distance.yPixel"),
-        prependKey: prependKey
+        prependKey: `${prependKey}distance.`
       });
       break;
     default: 

@@ -1,4 +1,5 @@
 import * as bucketSort from 'lib/util/bucketSort';
+import _ from 'lodash';
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
 
@@ -136,4 +137,22 @@ export async function copyPage (projectId, page) {
   } catch (error) {
     api.utilErrorProcess(error, `ページ「${page.name}」のコピーに失敗しました`);
   }
+}
+
+// 入力ページの手動キャスト
+export function inputPageManualCast (inputPage) {
+  if (_.get(inputPage, "browserSettings.viewport.width")) _.set(inputPage, "browserSettings.viewport.width", Number(_.get(inputPage, "browserSettings.viewport.width")));
+  if (_.get(inputPage, "browserSettings.viewport.height")) _.set(inputPage, "browserSettings.viewport.height", Number(_.get(inputPage, "browserSettings.viewport.height")));
+
+  inputPage.actions.forEach((action) => {
+    // TODO 数値型のキャスト変換
+    // ReactHookFormで数値の自動キャストに対応していないため、手動キャスト
+    // 自動キャストを追加するかの議論は https://github.com/react-hook-form/react-hook-form/issues/615
+    // 自動キャストが実装された場合は対応して本処理を除外
+    if (action.millisecond) action.millisecond = Number(action.millisecond);
+    if (_.get(action, "distance.xPixel")) _.set(action, "distance.xPixel", Number(_.get(action, "distance.xPixel")));
+    if (_.get(action, "distance.yPixel")) _.set(action, "distance.yPixel", Number(_.get(action, "distance.yPixel")));
+  });
+
+  return inputPage;
 }
