@@ -36,6 +36,9 @@ export default function ActionItem(props = null) {
   actionDom[ACTION_TYPE_GOTO] = createGotoDom(actionDomParams)
   actionDom[ACTION_TYPE_WAIT] = createWaitDom(actionDomParams);
   actionDom[ACTION_TYPE_CLICK] = createClickDom(actionDomParams);
+  actionDom[ACTION_TYPE_FOCUS] = createFucusDom(actionDomParams);
+  actionDom[ACTION_TYPE_INPUT] = createInputDom(actionDomParams);
+  actionDom[ACTION_TYPE_SCROLL] = createScrollDom(actionDomParams);
 
   return (
     <div className={styles.actionItem} data-index={index} >
@@ -150,6 +153,83 @@ function createClickDom({action, actionsName, index, errors, register}) {
         name={`${actionsName}[${index}].selector`}
         defaultValue={_.get(action, "selector", "")}
         errorMessages={ _.get(errors, `${actionsName}[${index}].selector.message`) && [ _.get(errors, `${actionsName}[${index}].selector.message`) ] } 
+        inputRef={ register({
+          required: '要素の指定は必須です'
+        }) }
+      />
+    </React.Fragment>
+  );
+}
+
+// フォーカス
+function createFucusDom({action, actionsName, index, errors, register}) {
+  return (
+    <React.Fragment>
+      <UtilInput
+        label="フォーカスする要素" 
+        placeholder="#search" 
+        type="text" 
+        name={`${actionsName}[${index}].selector`}
+        defaultValue={_.get(action, "selector", "")}
+        errorMessages={ _.get(errors, `${actionsName}[${index}].selector.message`) && [ _.get(errors, `${actionsName}[${index}].selector.message`) ] } 
+        inputRef={ register({
+          required: '要素の指定は必須です'
+        }) }
+      />
+    </React.Fragment>
+  );
+}
+
+// 入力
+function createInputDom({action, actionsName, index, errors, register}) {
+  return (
+    <React.Fragment>
+      <UtilInput
+        label="入力する要素" 
+        placeholder="#userId" 
+        type="text" 
+        name={`${actionsName}[${index}].selector`}
+        defaultValue={_.get(action, "selector", "")}
+        errorMessages={ _.get(errors, `${actionsName}[${index}].selector.message`) && [ _.get(errors, `${actionsName}[${index}].selector.message`) ] } 
+        inputRef={ register({
+          required: '要素の指定は必須です'
+        }) }
+      />
+      <UtilInput
+        label="入力する値" 
+        placeholder="example@example.com" 
+        type="text" 
+        name={`${actionsName}[${index}].value`}
+        defaultValue={_.get(action, "value", "")}
+        errorMessages={ _.get(errors, `${actionsName}[${index}].value.message`) && [ _.get(errors, `${actionsName}[${index}].value.message`) ] } 
+        inputRef={ register() }
+      />
+    </React.Fragment>
+  );
+}
+
+// スクロール
+function createScrollDom({action, actionsName, index, errors, register}) {
+  return (
+    <React.Fragment>
+      <UtilInput
+        label="横方向のスクロール(ピクセル)" 
+        placeholder="1000" 
+        type="number" 
+        name={`${actionsName}[${index}].distance.xPixel`}
+        defaultValue={_.get(action, "distance.xPixel", "")}
+        errorMessages={ _.get(errors, `${actionsName}[${index}].distance.xPixel.message`) && [ _.get(errors, `${actionsName}[${index}].distance.xPixel.message`) ] } 
+        inputRef={ register({
+          required: '要素の指定は必須です'
+        }) }
+      />
+      <UtilInput
+        label="縦方向のスクロール(ピクセル)" 
+        placeholder="1000" 
+        type="number" 
+        name={`${actionsName}[${index}].distance.yPixel`}
+        defaultValue={_.get(action, "distance.yPixel", "")}
+        errorMessages={ _.get(errors, `${actionsName}[${index}].distance.yPixel.message`) && [ _.get(errors, `${actionsName}[${index}].distance.yPixel.message`) ] } 
         inputRef={ register({
           required: '要素の指定は必須です'
         }) }

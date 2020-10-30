@@ -22,6 +22,7 @@ const actionTypeValid = ({value, prependKey="", errorMessage}) => {
       v8n()
         .not.null()
         .not.empty()
+        .not.undefined()
         .string()
         .check(value)
     },
@@ -37,6 +38,7 @@ const actionTypeNameValid = ({value, prependKey="", errorMessage}) => {
       v8n()
         .not.null()
         .not.empty()
+        .not.undefined()
         .string()
         .check(value)
     },
@@ -66,6 +68,7 @@ const gotoUrlValid = ({value, prependKey="", errorMessage}) => {
       v8n()
         .not.null()
         .not.empty()
+        .not.undefined()
         .pattern(new RegExp("https?://[\\w/:%#$&?()~.=+-]+"))
         .check(value)
     },
@@ -81,6 +84,7 @@ const waitMillisecondValid = ({value, prependKey="", errorMessage}) => {
       v8n()
         .not.null()
         .not.empty()
+        .not.undefined()
         .integer()
         .check(value)
     },
@@ -91,17 +95,92 @@ module.exports.waitMillisecondValid = waitMillisecondValid;
 
 // CLICK:セレクターのバリデーション
 const clickSelectorValid = ({value, prependKey="", errorMessage}) => {
+  console.log(value);
   runValid(
     () => { 
       v8n()
         .not.null()
         .not.empty()
+        .not.undefined()
         .check(value)
     },
     errorMessage || `[${prependKey}selector] is required.`
   );
 }
 module.exports.clickSelectorValid = clickSelectorValid;
+
+// FUCUS:セレクターのバリデーション
+const focusSelectorValid = ({value, prependKey="", errorMessage}) => {
+  runValid(
+    () => { 
+      v8n()
+        .not.null()
+        .not.empty()
+        .not.undefined()
+        .check(value)
+    },
+    errorMessage || `[${prependKey}focus] is required.`
+  );
+}
+module.exports.focusSelectorValid = focusSelectorValid;
+
+// INPUT:入力のselectorバリデーション
+const inputSelectorValid = ({value, prependKey="", errorMessage}) => {
+  runValid(
+    () => { 
+      v8n()
+        .not.null()
+        .not.empty()
+        .not.undefined()
+        .check(value)
+    },
+    errorMessage || `[${prependKey}selector] is required.`
+  );
+}
+module.exports.inputSelectorValid = inputSelectorValid;
+
+// INPUT:入力のバリデーション
+const inputValueValid = ({value, prependKey="", errorMessage}) => {
+  runValid(
+    () => { 
+      v8n()
+        .length(0, 1000)
+        .check(value)
+    },
+    errorMessage || `[${prependKey}value] is max 1000 characters.`
+  );
+}
+module.exports.inputValueValid = inputValueValid;
+
+// SCROLL: xPixelのバリデーション
+const scrollXPixelValid = ({value, prependKey="", errorMessage}) => {
+  runValid(
+    () => { 
+      v8n()
+        .not.null()
+        .not.empty()
+        .integer()
+        .check(value)
+    },
+    errorMessage || `[${prependKey}xpixel] is integer and required.`
+  );
+}
+module.exports.scrollXPixelValid = scrollXPixelValid;
+
+// SCROLL: yPixelのバリデーション
+const scrollYPixelValid = ({value, prependKey="", errorMessage}) => {
+  runValid(
+    () => { 
+      v8n()
+        .not.null()
+        .not.empty()
+        .integer()
+        .check(value)
+    },
+    errorMessage || `[${prependKey}xpixel] is integer and required.`
+  );
+}
+module.exports.scrollYPixelValid = scrollYPixelValid;
 
 // Actionオブジェクト全てをバリデーション
  const actionValid = ({action, prependKey=""}) => {
@@ -133,7 +212,33 @@ module.exports.clickSelectorValid = clickSelectorValid;
       break;
     case "CLICK":
       clickSelectorValid({
-        value: action.millisecond,
+        value: action.selector,
+        prependKey: prependKey
+      });
+      break;
+    case "FOCUS":
+      focusSelectorValid({
+        value: action.selector,
+        prependKey: prependKey
+      });
+      break;
+    case "INPUT":
+      inputSelectorValid({
+        value: action.selector,
+        prependKey: prependKey
+      });
+      inputValueValid({
+        value: action.value,
+        prependKey: prependKey
+      });
+      break;
+    case "SCROLL":
+      scrollXPixelValid({
+        value: _.get(action, "distance.xPixel"),
+        prependKey: prependKey
+      });
+      scrollYPixelValid({
+        value: _.get(action, "distance.yPixel"),
         prependKey: prependKey
       });
       break;
