@@ -16,10 +16,12 @@ import {
 
 import {
   postPage,
-  putPage
-} from 'lib/page/model'
+  putPage,
+  inputPageManualCast
+} from 'lib/page/model';
 
-import _ from 'lodash';
+import { ACTION_DEVICE_TYPES } from 'lib/util/const';
+
 import * as toast from 'lib/util/toast';
 import styles from './PageForm.module.scss';
 
@@ -45,7 +47,12 @@ export default function PageForm(props = null) {
       name: "",
       description: "",
       browserSettings: {
-        deviceType: "iPhone 6"
+        deviceType: "iPhone 6",
+        userAgent: "",
+        viewport: {
+          width: 0,
+          height: 0
+        }
       },
       screenshotOptions: {
         fullPage: false
@@ -68,15 +75,7 @@ export default function PageForm(props = null) {
   // submit成功時の処理
   const onSubmit = async (inputPage) => { 
     inputPage.actions = inputPage.actions || [];
-    inputPage.actions.forEach((action) => {
-      // TODO 数値型のキャスト変換
-      // ReactHookFormで数値の自動キャストに対応していないため、手動キャスト
-      // 自動キャストを追加するかの議論は https://github.com/react-hook-form/react-hook-form/issues/615
-      // 自動キャストが実装された場合は対応して本処理を除外
-      if (action.millisecond) action.millisecond = Number(action.millisecond);
-      if (_.get(action, "distance.xPixel")) _.set(action, "distance.xPixel", Number(_.get(action, "distance.xPixel")));
-      if (_.get(action, "distance.yPixel")) _.set(action, "distance.yPixel", Number(_.get(action, "distance.yPixel")));
-    });
+    inputPage = inputPageManualCast(inputPage);
 
     let result = null;
     if (isUpdate) {
@@ -134,13 +133,7 @@ export default function PageForm(props = null) {
             })}
           />
           <Accordion text="ブラウザオプション" >
-            <BrowserOptionsForm deviceList={
-              // TODO 環境変数からデバイスリストを取得
-              [
-                "iPhone 6",
-                "iPhone 5"
-              ]
-            }/>
+            <BrowserOptionsForm deviceList={ACTION_DEVICE_TYPES}/>
           </Accordion>
           <Accordion text="スクリーンショットオプション" >
             <ScreenshotOptionsForm />

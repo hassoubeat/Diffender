@@ -82,6 +82,43 @@ describe('Pageのバリデーション処理 正常系のテスト群', () => {
     }).not.toThrow();
   });
 
+  test('ページ全体のバリデーションテスト デバイスタイプ : カスタム', async () => {
+    expect(() => {
+      const page = {
+        name: "",
+        description: "",
+        browserSettings: {
+          deviceType: "custom",
+          userAgent : `Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1`,
+          viewport : {
+            width: 1280,
+            height: 900
+          }
+        },
+        screenshotOptions: {
+          fullPage: false
+        },
+        isEnableBeforeCommonAction: true,
+        isEnableAfterCommonAction: true,
+        actions: [
+          {
+            type: "GOTO",
+            typeName: "ページ遷移",
+            name: "テストページへの移動",
+            url: "https://localhost:3000"
+          },
+          {
+            type: "WAIT",
+            typeName: "待機",
+            name: "読み込み待機",
+            millisecond: 1000
+          }
+        ]
+      }
+      pageValidator.pageValid(page);
+    }).not.toThrow();
+  });
+
 });
 
 describe('Pageのバリデーション処理 異常系のテスト群', () => {
