@@ -6,8 +6,14 @@ import Accordion from 'components/util/accordion/Accordion'
 import UtilInput from 'components/util/input/Input';
 import styles from './ActionItem.module.scss';
 
-const ACTION_TYPE_GOTO = process.env.REACT_APP_ACTION_TYPE_GOTO;
-const ACTION_TYPE_WAIT = process.env.REACT_APP_ACTION_TYPE_WAIT;
+import {
+  ACTION_TYPE_GOTO,
+  ACTION_TYPE_WAIT,
+  ACTION_TYPE_CLICK,
+  ACTION_TYPE_FOCUS,
+  ACTION_TYPE_INPUT,
+  ACTION_TYPE_SCROLL
+} from 'lib/util/const'
 
 export default function ActionItem(props = null) {
   // props展開
@@ -20,20 +26,16 @@ export default function ActionItem(props = null) {
   const {register, errors } = useFormContext();
 
   const actionDom = {};
-  actionDom[ACTION_TYPE_GOTO] = createGotoDom({
+  const actionDomParams = {
     action: action, 
     actionsName: actionsName, 
     index: index,
     errors: errors,
     register: register
-  })
-  actionDom[ACTION_TYPE_WAIT] = createWaitDom(({
-    action: action, 
-    actionsName: actionsName,
-    index: index,
-    errors: errors,
-    register: register
-  }));
+  }
+  actionDom[ACTION_TYPE_GOTO] = createGotoDom(actionDomParams)
+  actionDom[ACTION_TYPE_WAIT] = createWaitDom(actionDomParams);
+  actionDom[ACTION_TYPE_CLICK] = createClickDom(actionDomParams);
 
   return (
     <div className={styles.actionItem} data-index={index} >
@@ -44,7 +46,6 @@ export default function ActionItem(props = null) {
       </div>
       <UtilInput
         label="アクション名" 
-        placeholder="example.comへのページ遷移" 
         type="text" 
         name={`${actionsName}[${index}].name`}
         defaultValue={action.name}
@@ -74,7 +75,7 @@ export default function ActionItem(props = null) {
   )
 }
 
-// ページ遷移アクションアイテムの生成処理
+// 遷移
 function createGotoDom({action, actionsName, index, errors, register}) {
   return (
     <React.Fragment>
@@ -119,7 +120,7 @@ function createGotoDom({action, actionsName, index, errors, register}) {
   );
 }
 
-// ページアクションアイテムの生成処理
+// 待機
 function createWaitDom({action, actionsName, index, errors, register}) {
   return (
     <React.Fragment>
@@ -132,6 +133,25 @@ function createWaitDom({action, actionsName, index, errors, register}) {
         errorMessages={ _.get(errors, `${actionsName}[${index}].millisecond.message`) && [ _.get(errors, `${actionsName}[${index}].millisecond.message`) ] } 
         inputRef={ register({
           required: '待機時間(ミリ秒)は必須です'
+        }) }
+      />
+    </React.Fragment>
+  );
+}
+
+// クリック
+function createClickDom({action, actionsName, index, errors, register}) {
+  return (
+    <React.Fragment>
+      <UtilInput
+        label="クリックする要素" 
+        placeholder="#loginButton" 
+        type="text" 
+        name={`${actionsName}[${index}].selector`}
+        defaultValue={_.get(action, "selector", "")}
+        errorMessages={ _.get(errors, `${actionsName}[${index}].selector.message`) && [ _.get(errors, `${actionsName}[${index}].selector.message`) ] } 
+        inputRef={ register({
+          required: '要素の指定は必須です'
         }) }
       />
     </React.Fragment>

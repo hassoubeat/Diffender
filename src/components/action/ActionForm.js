@@ -29,15 +29,15 @@ const ACTION_TYPE_LIST = [
   },
   {
     type: ACTION_TYPE_FOCUS,
-    typeName: "クリック"
+    typeName: "フォーカス"
   },
   {
     type: ACTION_TYPE_INPUT,
-    typeName: "クリック"
+    typeName: "入力"
   },
   {
     type: ACTION_TYPE_SCROLL,
-    typeName: "クリック"
+    typeName: "スクロール"
   },
 ];
 
@@ -64,6 +64,10 @@ export default function ActionForm(props = null) {
       basicAuth: {
         user: "",
         password: ""
+      },
+      distance: {
+        xPixel: 0,
+        yPixel: 0
       },
       selector: "",
       value: ""
@@ -108,9 +112,9 @@ export default function ActionForm(props = null) {
         <div className={styles.actionCreater} >
           {/* アクションの追加ボタンを生成 */}
           {
-            ACTION_TYPE_LIST.map( (actionType) => (
+            ACTION_TYPE_LIST.map( (actionType, index) => (
               <span 
-                key={actionType.type} 
+                key={index} 
                 className={styles.button} 
                 onClick={() => {
                   addAction(actionType)

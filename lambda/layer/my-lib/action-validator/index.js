@@ -89,6 +89,20 @@ const waitMillisecondValid = ({value, prependKey="", errorMessage}) => {
 }
 module.exports.waitMillisecondValid = waitMillisecondValid;
 
+// CLICK:セレクターのバリデーション
+const clickSelectorValid = ({value, prependKey="", errorMessage}) => {
+  runValid(
+    () => { 
+      v8n()
+        .not.null()
+        .not.empty()
+        .check(value)
+    },
+    errorMessage || `[${prependKey}selector] is required.`
+  );
+}
+module.exports.clickSelectorValid = clickSelectorValid;
+
 // Actionオブジェクト全てをバリデーション
  const actionValid = ({action, prependKey=""}) => {
    
@@ -117,8 +131,14 @@ module.exports.waitMillisecondValid = waitMillisecondValid;
         prependKey: prependKey
       });
       break;
+    case "CLICK":
+      clickSelectorValid({
+        value: action.millisecond,
+        prependKey: prependKey
+      });
+      break;
     default: 
-      new Error("action type not found.");
+      const error = new Error(`action type ${action.type} not found.`);
       error.statusCode = 400;
       throw error;
   }

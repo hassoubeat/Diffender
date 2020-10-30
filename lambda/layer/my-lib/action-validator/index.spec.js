@@ -83,6 +83,21 @@ describe('Pageのバリデーション処理 正常系のテスト群', () => {
     }).not.toThrow();
   });
 
+  test('アクション全体のバリデーションテスト CLICK', async () => {
+    expect(() => {
+      const action = {
+        type: "CLICK",
+        typeName: "クリック",
+        name: "ログイン",
+        selector: "input[type='submit']"
+      }
+      actionValidator.actionValid({
+        action: action,
+        appendKey: "actions[1]"
+      });
+    }).not.toThrow();
+  });
+
 });
 
 describe('Pageのバリデーション処理 異常系のテスト群', () => {
