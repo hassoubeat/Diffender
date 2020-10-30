@@ -1,7 +1,7 @@
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
 
-const RESULT_TYPE_SS = process.env.REACT_APP_RESULT_TYPE_SS;
+import { RESULT_TYPE_SS } from 'lib/util/const'
 
 // 比較元リザルトのフィルタリング処理
 export function originResultFilter (resultList) {

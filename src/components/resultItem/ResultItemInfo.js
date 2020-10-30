@@ -15,11 +15,14 @@ import {
 } from 'lib/resultItem/model'
 
 import _ from 'lodash';
-import styles from './ResultItemInfo.module.scss';
 
-const RESULT_TYPE_SS = process.env.REACT_APP_RESULT_TYPE_SS;
-const RESULT_TYPE_DIFF = process.env.REACT_APP_RESULT_TYPE_DIFF;
-const RESULT_ITEM_STATUS_TYPE_SUCCESS = process.env.REACT_APP_RESULT_ITEM_STATUS_TYPE_SUCCESS;
+import { 
+  RESULT_TYPE_SS, 
+  RESULT_TYPE_DIFF, 
+  RESULT_ITEM_STATUS_TYPE_SUCCESS
+} from 'lib/util/const'
+
+import styles from './ResultItemInfo.module.scss';
 
 export default function ResultItemInfo(props = null) {
   // props setup

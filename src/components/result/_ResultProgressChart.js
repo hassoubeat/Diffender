@@ -10,11 +10,14 @@ import {
 
 
 import _ from "lodash";
-import styles from './_ResultProgressChart.module.scss';
 
-const RESULT_ITEM_STATUS_TYPE_SUCCESS = process.env.REACT_APP_RESULT_ITEM_STATUS_TYPE_SUCCESS;
-const RESULT_ITEM_STATUS_TYPE_ERROR = process.env.REACT_APP_RESULT_ITEM_STATUS_TYPE_ERROR;
-const RESULT_ITEM_STATUS_TYPE_WAIT = process.env.REACT_APP_RESULT_ITEM_STATUS_TYPE_WAIT;
+import { 
+  RESULT_ITEM_STATUS_TYPE_SUCCESS, 
+  RESULT_ITEM_STATUS_TYPE_ERROR, 
+  RESULT_ITEM_STATUS_TYPE_WAIT
+} from 'lib/util/const'
+
+import styles from './_ResultProgressChart.module.scss';
 
 export default function ReusltList(props = null) {
   // props setup

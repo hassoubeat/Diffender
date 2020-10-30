@@ -1,6 +1,5 @@
 import _ from 'lodash';
-
-const RESULT_ITEM_STATUS_TYPE_ERROR = process.env.REACT_APP_RESULT_ITEM_STATUS_TYPE_ERROR;
+import {  RESULT_ITEM_STATUS_TYPE_ERROR } from 'lib/util/const'
 
 // リザルトアイテム一覧をソート
 export function sort(resultList) {

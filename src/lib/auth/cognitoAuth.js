@@ -1,15 +1,21 @@
 // AWS Cognitoを利用した認証処理
 import Amplify, { Auth } from 'aws-amplify';
 
+import { 
+  AWS_REGION, 
+  AWS_COGNITO_USER_POOL_ID, 
+  AWS_COGNITO_CLIENT_ID
+} from 'lib/util/const'
+
 // Amplifyの設定
 Amplify.configure({
   Auth: {
     // リージョン
-    region: process.env.REACT_APP_AWS_REGION,
+    region: AWS_REGION,
     // ユーザプールのID
-    userPoolId: process.env.REACT_APP_AWS_COGNITO_USER_POOL_ID,
+    userPoolId: AWS_COGNITO_USER_POOL_ID,
     // アプリクライアントID
-    userPoolWebClientId: process.env.REACT_APP_AWS_COGNITO_CLIENT_ID,
+    userPoolWebClientId: AWS_COGNITO_CLIENT_ID,
   }
 });
 

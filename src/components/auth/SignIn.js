@@ -8,6 +8,7 @@ import {
   setIsUserInitializeComplete
 } from 'app/userSlice';
 import * as toast from 'lib/util/toast';
+import { PROJECT_NAME } from 'lib/util/const'
 import styles from './SignIn.module.scss';
 
 export default function SignIn(props = null) {
@@ -58,7 +59,7 @@ export default function SignIn(props = null) {
       <div className={styles.signIn}>
         <div className={styles.formArea}>
           <div className={styles.title}>
-            {process.env.REACT_APP_PROJECT_NAME}
+            {PROJECT_NAME}
           </div>
           <UtilInput 
             label="ユーザID(メールアドレス)" 

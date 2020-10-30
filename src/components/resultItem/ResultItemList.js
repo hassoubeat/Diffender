@@ -15,11 +15,12 @@ import {
   filterResultItemList,
   getDiffMisMatchPercentageClass
 } from 'lib/resultItem/model'
+
 import _ from 'lodash';
 
-import styles from './ResultItemList.module.scss';
+import {  RESULT_ITEM_STATUS_TYPE_SUCCESS} from 'lib/util/const'
 
-const RESULT_ITEM_STATUS_TYPE_SUCCESS = process.env.REACT_APP_RESULT_ITEM_STATUS_TYPE_SUCCESS;
+import styles from './ResultItemList.module.scss';
 
 export default function ResultItemList(props = null) {
   // props setup

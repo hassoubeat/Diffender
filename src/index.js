@@ -5,8 +5,9 @@ import App from './App';
 import store from 'app/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
+import { PROJECT_NAME, ENV } from 'lib/util/const'
 
-console.log(`Welcome to ${process.env.REACT_APP_PROJECT_NAME}(${process.env.REACT_APP_ENV})`)
+console.log(`Welcome to ${PROJECT_NAME}(${ENV})`)
 
 ReactDOM.render(
   <React.StrictMode>
