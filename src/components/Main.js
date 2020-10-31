@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
+import TopPage from './TopPage';
 import UserInfo from 'components/auth/UserInfo';
 import ProjectList from 'components/project/ProjectList';
 import ProjectListQuickView from 'components/project/ProjectListQuickView';
@@ -55,6 +56,9 @@ export default function Main() {
     <div className={styles.main}>
       {/* <Breadcrumbs /> */}
       <Switch>
+        <Route exact path="/" render={() => (
+          <TopPage/>
+        )} />
         <Route exact path="/user" render={() => (
           <UserInfo />
         )} />

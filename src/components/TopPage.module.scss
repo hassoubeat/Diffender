@@ -1,0 +1,28 @@
+@import 'styles/constant';
+
+.topPage {
+  padding: 12px;
+
+  .h1 {
+    margin: 6px 0px;
+    padding: 4px 0px;
+    font-size: 24px;
+    color: $MAIN_COLOR;
+    border-bottom: 1px solid $LINE_COLOR;
+  }
+
+  .message {
+    font-size: 1.1rem;
+    line-height: 2rem;
+  }
+
+  .link {
+    margin: 12px;
+    text-align: right;
+  }
+
+  .note {
+    font-size: 14px;
+  }
+}
+
