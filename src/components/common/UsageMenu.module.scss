@@ -1,0 +1,45 @@
+@import 'styles/constant';
+
+.usageMenu {
+  .usage{
+    position: relative;
+    padding: 10px 15px 10px 10px;
+    margin: 15px 0;
+    max-width: 800px;
+    border: 1px solid $LINE_COLOR;
+    border-left: 20px solid $LINK_COLOR;
+    border-radius: 8px;
+    cursor: pointer;
+
+    .title {
+      color: $MAIN_COLOR;
+      font-size: 1.2rem;
+    }
+
+    .message {
+      margin: 10px 0;
+      font-size: 1rem;
+    }
+
+    &.disable {
+      border-left: 20px solid $DARK_GRAY_COLOR;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    &::after {
+      position: absolute;
+      top: 50%;
+      right: 0px;
+      margin-top: -12px;
+      color: #65B2F5;
+      white-space: pre-wrap;
+      content: " > ";
+    }
+
+    &:hover {
+      background-color: $LIGHT_GRAY_COLOR;
+    }
+  }
+}
+
