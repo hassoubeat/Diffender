@@ -16,7 +16,7 @@ export function sort(resultList) {
 export function filterResultList(resultList, filterObj) {
   return resultList.filter((result) => { 
     return (
-      // プロジェクト名に検索ワードが含まれる要素のみフィルタリング
+      // リザルト名に検索ワードが含まれる要素のみフィルタリング
       !!result.name.match(filterObj.searchWord) &&
       (
         // スクリーンショットリザルトのフィルタリング
@@ -36,7 +36,7 @@ export async function getResultList({queryStringsObject}) {
     });
   } catch (error) {
     toast.errorToast(
-      { message: "プロジェクト一覧の取得に失敗しました" }
+      { message: "リザルト一覧の取得に失敗しました" }
     );
   }
 }

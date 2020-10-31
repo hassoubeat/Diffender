@@ -88,13 +88,13 @@ export default function ProjectForm(props = null) {
       <div className={styles.projectForm}>
         <div className={styles.inputArea}>
           <UtilInput
-            label="プロジェクト名" 
+            label="サイト名" 
             placeholder="example.com" 
             type="text" 
             name="name" 
             errorMessages={ (errors.name) && [errors.name.message] } 
             inputRef={ register({
-              required: "プロジェクト名は必須です",
+              required: "サイト名は必須です",
               maxLength : {
                 value: 30,
                 message: '最大30文字で入力してください'
@@ -102,7 +102,7 @@ export default function ProjectForm(props = null) {
             })}
           />
           <UtilInput
-            label="プロジェクトの説明" 
+            label="サイトの説明" 
             placeholder="example.comのテスト" 
             type="text" 
             name="description" 
@@ -117,8 +117,8 @@ export default function ProjectForm(props = null) {
           <Accordion className={styles.commonActionList} text="共通アクション(前処理)" >
             <div className={styles.detail}>
               <div className={styles.message}>
-                本処理は全ページのアクションの前に実行するアクションです。<br/>
-                多くの画面で共通して実行するアクション(ログインなど)は本機能に記載することをおすすめします。<br/>
+                全ページで共通実行するアクションです。<br/>
+                <b>共通して実行するログインなどのアクション</b>は本機能に記載することをおすすめします。<br/>
               </div>
               <ActionForm actionsName="beforeCommonActions" />
             </div>
@@ -126,8 +126,8 @@ export default function ProjectForm(props = null) {
           <Accordion className={styles.commonActionList} text="共通アクション(後処理)" >
             <div className={styles.detail}>
               <div className={styles.message}>
-                本処理は全ページのアクションの後に実行するアクションです。<br/>
-                多くの画面で共通して実行するアクション(ログアウトなど)は本機能に記載することをおすすめします。<br/>
+                全ページで共通実行するアクションです。<br/>
+                <b>共通して実行するログアウトなどのアクション</b>は本機能に記載することをおすすめします。<br/>
               </div>
               <ActionForm actionsName="afterCommonActions" />
             </div>

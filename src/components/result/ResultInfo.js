@@ -29,7 +29,7 @@ export default function ResultInfo(props = null) {
         <div className="sectionTitle">関連情報</div>
         <div className={styles.relationInfomation}>
           <Link to={`/projects/${result.resultTieProjectId}`}>
-            <i className="fas fa-angle-double-right"/> リザルトを発行したプロジェクト
+            <i className="fas fa-angle-double-right"/> ギャラリーを発行したサイト
           </Link>
         </div>
         <div className="sectionTitle">レポート</div>

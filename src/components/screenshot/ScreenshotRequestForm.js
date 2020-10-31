@@ -65,7 +65,7 @@ export default function ScreenshotRequest(props = null) {
         <div className={styles.inputArea}>
           <div className={styles.inputItem}>
             <label className={styles.inputLabel}>
-              スクリーンショットを取得するプロジェクト
+              スクリーンショットを取得するサイト
             </label>
             <div className={styles.inputSelect} >
               <select 
@@ -73,10 +73,10 @@ export default function ScreenshotRequest(props = null) {
                 name="projectId"
                 defaultValue={initSelectProjectId}
                 ref={ register({
-                  required: "プロジェクトを選択してください",
+                  required: "サイトを選択してください",
                 })}
               >
-                <option value=""> --プロジェクトを選択してください-- </option>
+                <option value=""> --サイトを選択してください-- </option>
                 { projectList.map( (project) => (
                   <option 
                     key={project.id} 
@@ -92,7 +92,7 @@ export default function ScreenshotRequest(props = null) {
             </div>
           </div>
           <UtilInput
-            label="リザルト名" 
+            label="ギャラリー名" 
             placeholder="20200701の定期チェック_example.com" 
             type="text" 
             name="name" 
@@ -105,7 +105,7 @@ export default function ScreenshotRequest(props = null) {
             })}
           />
           <UtilInput
-            label="リザルトの説明" 
+            label="ギャラリーの説明" 
             placeholder="2020年7月分の差分チェック用" 
             type="text" 
             name="description" 

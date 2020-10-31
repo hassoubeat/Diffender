@@ -147,7 +147,7 @@ export default function PageForm(props = null) {
           <Accordion className={styles.commonActionList} text="共通アクション(前処理)" >
             <div className={styles.detail}>
               <div className={styles.message}>
-                共通アクションとはプロジェクトの全アクションで実施するアクションです。<br/>
+                共通アクションとはサイトの全アクションで実施するアクションです。<br/>
                 共通アクションの編集は<Link to={`/projects/${projectId}`}>こちら</Link>から
               </div>
               <input 
@@ -163,7 +163,7 @@ export default function PageForm(props = null) {
           <Accordion className={styles.commonActionList} text="共通アクション(後処理)" >
             <div className={styles.detail}>
               <div className={styles.message}>
-                共通アクションとはプロジェクトの全アクションで実施するアクションです。<br/>
+                共通アクションとはサイトの全アクションで実施するアクションです。<br/>
                 共通アクションの編集は<Link to={`/projects/${projectId}`}>こちら</Link>から
               </div>
               <input 

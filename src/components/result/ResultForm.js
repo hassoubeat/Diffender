@@ -50,7 +50,7 @@ export default function ResultForm(props = null) {
       })
     } else {
       // TODO
-      throw new Error("リザルト登録処理は未実装です");
+      throw new Error("ギャラリー登録処理は未実装です");
     }
     if (resResult) dispatch( setResult(resResult) );
     if (resResult && successPostCallback) successPostCallback();
@@ -69,13 +69,13 @@ export default function ResultForm(props = null) {
       <div className={styles.resultForm}>
         <div className={styles.inputArea}>
           <UtilInput
-            label="リザルト名" 
+            label="ギャラリー名" 
             placeholder="20200701の定期チェック_example.com" 
             type="text" 
             name="name" 
             errorMessages={ (errors.name) && [errors.name.message] } 
             inputRef={ register({
-              required: "リザルト名は必須です",
+              required: "ギャラリー名は必須です",
               maxLength : {
                 value: 30,
                 message: '最大30文字で入力してください'
@@ -83,7 +83,7 @@ export default function ResultForm(props = null) {
             })}
           />
           <UtilInput
-            label="リザルトの説明" 
+            label="ギャラリーの説明" 
             placeholder="2020年7月分の差分チェック用" 
             type="text" 
             name="description" 

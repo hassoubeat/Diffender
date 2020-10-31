@@ -49,7 +49,7 @@ export default function ProjectList() {
   const [searchWord, setSearchWord] = useState("");
   const [isDisplayProjectFormModal, setDisplayProjectFormModal] = useState(false);
 
-  // プロジェクト一覧の順序入れ替え
+  // サイト一覧の順序入れ替え
   const handleSort = async (e) => {
     const updateProjectsSortMap = updateProjectListSortMap(
       arrayWrapper.moveAt(projectList, e.oldIndex, e.newIndex)
@@ -63,7 +63,7 @@ export default function ProjectList() {
 
   // 削除ボタン押下時の処理
   const handleDeleteProject = async (projectId) => {
-    if (!window.confirm(`プロジェクトを削除しますか？`)) return;
+    if (!window.confirm(`サイトを削除しますか？`)) return;
     const project = await DeleteProject(projectId)
     if (project) dispatch( deleteProject(project.id) );
   }
@@ -72,7 +72,7 @@ export default function ProjectList() {
     <React.Fragment>
       <div className={`${styles.projectList} scroll`}>
         <div className="sectionTitle">
-          <div className="main">プロジェクト一覧</div>
+          <div className="main">サイト一覧</div>
           <ProjectListCount/>
         </div>
         <input className={styles.searchBox} type="text" placeholder="search" onChange={(e) => setSearchWord(e.target.value)} />
@@ -80,7 +80,7 @@ export default function ProjectList() {
           onEnd={ async (event) => {await handleSort(event)} }
         >
           {
-            // プロジェクト一覧をフィルタリングしながら表示
+            // サイト一覧をフィルタリングしながら表示
             filterProjectList(projectList, searchWord).map( (project) => (
               <div 
                 key={project.id} id={project.id} className={styles.projectItem} onClick={() => {history.push(`/projects/${project.id}`)}}>
@@ -105,7 +105,7 @@ export default function ProjectList() {
         </ReactSortable>
         { (projectList.length === 0) &&
           <React.Fragment>
-            プロジェクトは存在しません。<br/>
+            サイトは存在しません。<br/>
             画面下部のボタンから登録を行ってください。
           </React.Fragment>
         }
@@ -116,14 +116,12 @@ export default function ProjectList() {
         className="modalContent"
         overlayClassName="modalOverray"
       >
-        <div className="modalTitle">プロジェクトを作成する</div>
+        <div className="modalTitle">サイトを登録する</div>
         <small className="modalSupportMessage">
-          プロジェクトとは「テスト」を実行する単位です。<br />
-          サイト別、テストの目的別にプロジェクトを作成することをおすすめします。
         </small>
         <ProjectForm 
           successPostCallback={ async () => {
-            // プロジェクト登録成功時にモーダルを閉じてプロジェクト一覧を更新する
+            // サイト登録成功時にモーダルを閉じてサイト一覧を更新する
             setDisplayProjectFormModal(false);
           }} 
         />

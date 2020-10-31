@@ -81,7 +81,7 @@ export default function Sidebar() {
                 history.push("/projects");
               }}
             >
-                プロジェクト
+                サイト
             </li>
             <li 
               className={`${styles.linkItem}`} 
@@ -90,7 +90,7 @@ export default function Sidebar() {
                 history.push("/results");
               }}
             >
-              リザルト
+              ギャラリー
             </li>
             <li 
               className={`${styles.linkItem}`} 
@@ -99,7 +99,7 @@ export default function Sidebar() {
                 history.push("/screenshot-request");
               }}
             >
-              スクリーンショット
+              スクリーンショットの取得
             </li>
             <li 
               className={`${styles.linkItem}`} 
@@ -108,7 +108,7 @@ export default function Sidebar() {
                 history.push("/diff-screenshot-request");
               }}
             >
-              スクリーンショット差分
+              Diffの取得
             </li>
           </ul>
         </section>
