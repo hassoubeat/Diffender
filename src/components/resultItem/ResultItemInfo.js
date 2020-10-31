@@ -26,13 +26,12 @@ import styles from './ResultItemInfo.module.scss';
 
 export default function ResultItemInfo(props = null) {
   // props setup
-  const isUpdate = !!props.resultId;
   const resultId = props.resultId;
   const resultItemId = props.resultItemId;
 
   // redux-state setup
   const isLoadedResultItem = useSelector( selectIsLoadedResultItemsByResultId(resultId) );
-  const resultItem = useSelector( selectResultItem(resultId, resultItemId, isUpdate) ) || {};
+  const resultItem = useSelector( selectResultItem(resultId, resultItemId) ) || {};
 
   if (!isLoadedResultItem) return (
     <Loading/>
