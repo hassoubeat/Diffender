@@ -23,7 +23,7 @@ export default function DivideForm(props = null) {
           </div>
           <div className={styles.description}>
             DiffenderはWebサイトのスクリーンショットを撮影し、
-            撮影したスクリーンショット同士を比較して変更点を検知するE2Eテストツールです。
+            撮影したスクリーンショット同士を比較して変更点を検出するE2Eテストツールです。
           </div>
           <div className={styles.detail}>
             <img className={styles.image} src="/img/bgSignInLandScape.png" alt="diff" />

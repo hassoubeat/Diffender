@@ -60,7 +60,7 @@ exports.lambda_handler = async (event, context) => {
       ...resultItem,
       status: {
         type: "SUCCESS",
-        message: "スクリーンショットの取得が完了しました",
+        message: "スクリーンショットの撮影が完了しました",
         screenshotUrl: `https://${DIFFENDER_S3_BUCKET_NAME}.s3.amazonaws.com/${s3ObjectKey}`,
         screenshotS3Key: s3ObjectKey
       }
@@ -74,7 +74,7 @@ exports.lambda_handler = async (event, context) => {
       ...resultItem,
       status: {
         type: "ERROR",
-        message: "スクリーンショットの取得に失敗しました",
+        message: "スクリーンショットの撮影に失敗しました",
         errorDetailMessage: error.message
       }
     });

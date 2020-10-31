@@ -99,7 +99,7 @@ export default function Sidebar() {
                 history.push("/screenshot-request");
               }}
             >
-              スクリーンショットの取得
+              スクリーンショットの撮影
             </li>
             <li 
               className={`${styles.linkItem}`} 
@@ -108,7 +108,7 @@ export default function Sidebar() {
                 history.push("/diff-screenshot-request");
               }}
             >
-              Diffの取得
+              Diffの検出
             </li>
           </ul>
         </section>

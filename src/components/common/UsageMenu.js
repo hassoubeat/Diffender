@@ -44,11 +44,17 @@ export default function UsageMenu(props = null) {
           Step2. スクリーンショットを撮影する
         </div>
         <div className={styles.message}>
-          差分を検出するために登録したサイトとページからスクリーンショットを撮影しましょう！<br/>
+          差分を検出するために登録したサイトとページからスクリーンショットを撮影しましょう！(※)<br/>
           撮影したスクリーンショットは<span className="linkButton" onClick={(e) => {
             e.stopPropagation();
             history.push("/results");
           }}>ギャラリー</span>に登録されます！
+          <p></p>
+          <div className={styles.note}>
+            ※ 差分を検出するためにスクリーンショットは<b>2回撮影</b>してください。<br/>
+            　1回目. 正常動作しているサイトのスクリーンショット<br/>
+            　2回目. 1回目からサイトに変更を加えた後のスクリーンショット
+          </div>
         </div>
       </div>
     )
@@ -60,11 +66,11 @@ export default function UsageMenu(props = null) {
         history.push("/diff-screenshot-request");
       }}>
         <div className={styles.title}>
-          Step3. DIff(差分)を検知する
+          Step3. DIff(差分)を検出する
         </div>
         <div className={styles.message}>
-          撮影したギャラリーを2つ選択してスクリーンショットの差分を検出しましょう！<br/>
-          差分を抽出した画像は<span className="linkButton" onClick={(e) => {
+          撮影したスクリーンショットから差分を検出しましょう！<br/>
+          差分を検出した画像は<span className="linkButton" onClick={(e) => {
             e.stopPropagation();
             history.push("/results");
           }}>ギャラリー</span>に登録されます！

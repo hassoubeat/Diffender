@@ -419,7 +419,7 @@ Resources:
           Properties:
             Queue: !GetAtt ScreenshotProcessDLQ.Arn
             BatchSize: 1
-  # Results間でのスクリーンショットDiff取得キューリクエスト
+  # Results間でのスクリーンショットDiff検出キューリクエスト
   DiffScreenshotQueingResultFunction:
     Type: AWS::Serverless::Function
     Properties:

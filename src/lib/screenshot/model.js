@@ -1,7 +1,7 @@
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
 
-// スクリーンショットの取得
+// スクリーンショットの撮影
 export async function requestScreenshot(projectId, inputResult) {
 
   toast.infoToast(

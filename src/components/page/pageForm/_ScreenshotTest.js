@@ -53,7 +53,7 @@ export default function ScreenshotTest(props = null) {
 
       setIsAPICalling(false);
 
-      let toastMessage = "スクリーンショットの取得に失敗しました";
+      let toastMessage = "スクリーンショットの撮影に失敗しました";
       switch (_.get(error, 'response.status')) {
         case 504: {
           toastMessage = "処理がタイムアウトしました(最大30秒)"

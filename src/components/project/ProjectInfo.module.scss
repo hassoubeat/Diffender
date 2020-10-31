@@ -9,25 +9,4 @@
     color: $MAIN_COLOR;
     border-bottom: 1px solid $LINE_COLOR;
   }
-
-  .actionArea {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    margin: 5px 0;
-
-    :global .button{
-      &:local.screenshotRequestButton {
-        margin: 2px 4px;
-        color: $WHITE_TEXT_COLOR;
-        background-color: $MAIN_COLOR;
-      }
-
-      &:local.addPageButton {
-        margin: 0px 4px;
-        color: $PLANE_TEXT_COLOR;
-        background-color: $SUB_COLOR;
-      }
-    }
-  }
 }
