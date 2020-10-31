@@ -21,6 +21,7 @@ import NotFound404 from 'components/common/NotFound';
 import styles from './Main.module.scss';
 
 import _ from 'lodash';
+import queryString from 'query-string';
 
 import { 
   selectInitialLoadState,
@@ -62,13 +63,15 @@ export default function Main() {
         <Route exact path="/user" render={() => (
           <UserInfo />
         )} />
-        <Route exact path="/projects" render={() => (
+        <Route exact path="/projects" render={({location}) => (
           <div className={styles.flex}>
             <div className={styles.quickView}>
               <ProjectListQuickView />
             </div>
             <div className={styles.content}>
-              <ProjectList />
+              <ProjectList isIntialDisplayRegisterModal={
+                !!getQueryparameter(location, "isIntialDisplayRegisterModal")
+              } />
             </div>
           </div>
         )} />
@@ -90,7 +93,7 @@ export default function Main() {
             </div>
           </React.Fragment>
         )} />
-        <Route exact path="/projects/:projectId/pages" render={({match}) => (
+        <Route exact path="/projects/:projectId/pages" render={({location, match}) => (
           <React.Fragment>
             {fetchData(match.params)}
             <div className={styles.flex}>
@@ -103,7 +106,12 @@ export default function Main() {
                 />
               </div>
               <div className={styles.content}>
-                <PageList projectId={match.params.projectId} />
+                <PageList 
+                  projectId={match.params.projectId} 
+                  isIntialDisplayRegisterModal={
+                    !!getQueryparameter(location, "isIntialDisplayRegisterModal")
+                  }
+                />
               </div>
             </div>
           </React.Fragment>
@@ -205,4 +213,9 @@ export default function Main() {
       </Switch>
     </div>
   );
+}
+
+// locationオブジェクトから指定したKeyのクエリパラメータを取得する
+function getQueryparameter(location, key) {
+  return _.get(queryString.parse(location.search), key);
 }

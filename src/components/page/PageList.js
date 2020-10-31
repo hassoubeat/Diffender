@@ -35,6 +35,7 @@ Modal.setAppElement('#root');
 export default function PageList(props = null) {
   // props setup
   const projectId = props.projectId;
+  const isIntialDisplayRegisterModal = props.isIntialDisplayRegisterModal || false;
 
   // hook setup
   const history = useHistory();
@@ -50,7 +51,7 @@ export default function PageList(props = null) {
 
   // state seteup
   const [searchWord, setSearchWord] = useState("");
-  const [isDisplayPageFormModal, setIsDisplayPageFormModal] = useState(false);
+  const [isDisplayPageFormModal, setIsDisplayPageFormModal] = useState(isIntialDisplayRegisterModal);
 
   // ページ一覧の順序入れ替えイベント
   const handleSort = async (e) => {

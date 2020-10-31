@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm, FormProvider } from "react-hook-form";
 import UtilInput from 'components/util/input/Input';
@@ -30,6 +30,9 @@ export default function ProjectForm(props = null) {
   // redux-state setup
   const project = useSelector(selectProject(projectId, isUpdate));
 
+  // state setup
+  const [isRowRegisterPage, setIsRowRegisterPage] = useState(true);
+
   // ReactHookForm setup
   const reactHookFormMethods = useForm({
     mode: 'onChange',
@@ -60,17 +63,17 @@ export default function ProjectForm(props = null) {
       if (action.millisecond) action.millisecond = Number(action.millisecond);
     });
     
-    let result = null;
+    let registedProject = null;
     if (isUpdate) {
-      result = await putProject({
+      registedProject = await putProject({
         ...project,
         ...inputProject
       })
     } else {
-      result = await postProject(inputProject)
+      registedProject = await postProject(inputProject)
     }
-    if (result) dispatch(setProject(result));
-    if (result && successPostCallback) successPostCallback();
+    if (registedProject) dispatch(setProject(registedProject));
+    if (registedProject && successPostCallback) successPostCallback(registedProject, isRowRegisterPage);
   }
 
   const onSubmitError = (error) => {
@@ -132,6 +135,18 @@ export default function ProjectForm(props = null) {
               <ActionForm actionsName="afterCommonActions" />
             </div>
           </Accordion>
+          { (!isUpdate) &&
+            <React.Fragment>
+              <input 
+                checked={isRowRegisterPage}
+                className={styles.checkBox} 
+                type="checkBox" 
+                onChange={() => {
+                  setIsRowRegisterPage(!isRowRegisterPage);
+                }}
+              />サイト登録後に続けてページを登録
+            </React.Fragment>
+          }
           <div className={styles.actionArea}>
             <span className={styles.postButton} onClick={ 
               handleSubmit(onSubmit, onSubmitError)

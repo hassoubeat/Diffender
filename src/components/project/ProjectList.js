@@ -31,7 +31,9 @@ import styles from './ProjectList.module.scss';
 // モーダルの展開先エレメントの指定
 Modal.setAppElement('#root');
 
-export default function ProjectList() {
+export default function ProjectList(props = null) {
+  // prop setup
+  const isIntialDisplayRegisterModal = props.isIntialDisplayRegisterModal || false;
 
   // hook setup
   const history = useHistory();
@@ -47,7 +49,7 @@ export default function ProjectList() {
 
   // state setup
   const [searchWord, setSearchWord] = useState("");
-  const [isDisplayProjectFormModal, setDisplayProjectFormModal] = useState(false);
+  const [isDisplayProjectFormModal, setDisplayProjectFormModal] = useState(isIntialDisplayRegisterModal);
 
   // サイト一覧の順序入れ替え
   const handleSort = async (e) => {
@@ -120,10 +122,16 @@ export default function ProjectList() {
         <small className="modalSupportMessage">
         </small>
         <ProjectForm 
-          successPostCallback={ async () => {
-            // サイト登録成功時にモーダルを閉じてサイト一覧を更新する
-            setDisplayProjectFormModal(false);
-          }} 
+          successPostCallback={ async (registedProject, isRowRegisterPage) => {
+            // 連続してページを登録するかしないか
+            if (isRowRegisterPage) {
+              // サイト登録成功時にプロジェクト登録後、ページ一覧画面に遷移してページ登録モーダルを展開
+              history.push(`/projects/${registedProject.id}/pages?isIntialDisplayRegisterModal=${isRowRegisterPage}`);
+            } else {
+              // サイト登録成功時にモーダルを閉じる
+              setDisplayProjectFormModal(false);
+            }
+          }}
         />
         <div className="closeModalButton" onClick={() => {setDisplayProjectFormModal(false)}}>✕</div>
       </Modal>
