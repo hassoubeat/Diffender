@@ -43,7 +43,7 @@ export default function ResultList(props = null) {
 
   // 削除ボタン押下時の処理
   const handleDeleteResult = async (resultId, resultName) => {
-    if (!window.confirm(`リザルト「${resultName}」を削除しますか？`)) return;
+    if (!window.confirm(`ギャラリー「${resultName}」を削除しますか？`)) return;
     const result = await DeleteResult(resultId);
     if (result) dispatch( deleteResult(result.id) );
   }
@@ -52,7 +52,7 @@ export default function ResultList(props = null) {
     <React.Fragment>
       <div className={`${styles.resultList} scroll`}>
         <div className="sectionTitle">
-          <div className="main">リザルト一覧</div>
+          <div className="main">ギャラリー</div>
           { (isDisplayListCount) && 
             <ResultListCount projectId={projectId} />
           }
@@ -70,7 +70,7 @@ export default function ResultList(props = null) {
             } />Diff
           </div>
         </div>
-        {/* フィルタリングを行いながら行いながらリザルト一覧を展開 */}
+        {/* フィルタリングを行いながら行いながらギャラリーを展開 */}
         {filterResultList(resultList, filterObj).map( (result) => (
           <div 
             key={result.id}
@@ -101,7 +101,7 @@ export default function ResultList(props = null) {
         ))}
         { (resultList.length === 0) &&
           <React.Fragment>
-            リザルトは存在しません。<br/>
+            ギャラリーは存在しません。<br/>
             <Link to={'/screenshot-request'}>スクリーンショット</Link>、<Link to={'/screenshot-request'}>スクリーンショット差分</Link>の実行結果が表示されます。
           </React.Fragment>
         }

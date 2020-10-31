@@ -30,7 +30,7 @@ export function sort(resultList) {
 export function filterResultItemList(resultItemList, filterObj) {
   return resultItemList.filter((resultItem) => { 
     return (
-      // プロジェクト名に検索ワードが含まれる要素のみフィルタリング
+      // リザルト名に検索ワードが含まれる要素のみフィルタリング
       !!resultItem.name.match(filterObj.searchWord) &&
       (
         // Itemの進行状況が「正常終了」のフィルタリング

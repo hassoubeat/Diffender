@@ -14,7 +14,7 @@ export default function ProjectInfo(props = null) {
   return (
     <React.Fragment>
       <div className={`${styles.projectInfo} scroll`}>
-        <div className="sectionTitle">プロジェクト</div>
+        <div className="sectionTitle">サイト</div>
         <div className={styles.actionArea}>
           <button className={`button ${styles.addPageButton}`} onClick={() => {history.push(`/projects/${projectId}/pages`)} }>
             ページ一覧
@@ -27,7 +27,7 @@ export default function ProjectInfo(props = null) {
           }} 
         />
         <div className={styles.relateResultArea}>
-          <div className={styles.title}>関連するリザルト</div>
+          <div className={styles.title}>関連するギャラリー</div>
           <ResultList 
             projectId={projectId} 
             isDisplayListCount={false}

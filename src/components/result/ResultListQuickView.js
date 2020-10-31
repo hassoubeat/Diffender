@@ -91,7 +91,7 @@ export default function ResultListQuickView(props = null) {
             }
           >
             <div className={styles.main}>
-              <i className="fas fa-list"/> リザルト一覧
+              <i className="fas fa-list"/> ギャラリー
             </div>
             <ResultListCount />
           </div>

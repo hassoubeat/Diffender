@@ -98,7 +98,7 @@ export default function ProjectListQuickView(props = null) {
             }
           >
             <div className={styles.main} >
-              <i className="fas fa-list"/> プロジェクト一覧
+              <i className="fas fa-list"/> サイト一覧
             </div>
             <ProjectListCount/>
           </div>

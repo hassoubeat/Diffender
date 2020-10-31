@@ -63,10 +63,10 @@ export default function DiffRequestForm(props = null) {
     <React.Fragment>
       <div className={styles.diffRequestForm}>
         <div className={styles.inputArea}>
-          {/* 比較元リザルトの入力セレクタ */}
+          {/* 比較元ギャラリーの入力セレクタ */}
           <div className={styles.inputItem}>
             <label className={styles.inputLabel}>
-              比較元のリザルト
+              比較元のギャラリー
             </label>
             <div className={styles.inputSelect} >
               <select 
@@ -74,14 +74,14 @@ export default function DiffRequestForm(props = null) {
                 name="originResultId"
                 defaultValue={selectedOriginId}
                 ref={ register({
-                  required: "比較元リザルトを選択してください",
+                  required: "比較元ギャラリーを選択してください",
                 })}
                 onChange={() => {
-                  // 比較先リザルトをクリアする
+                  // 比較先ギャラリーをクリアする
                   setValue('targetResultId', "");
                 }}
               >
-                <option value=""> --比較元リザルトを選択してください-- </option>
+                <option value=""> --比較元ギャラリーを選択してください-- </option>
                 { originResultFilter(resultList).map( (result) => (
                   <option 
                     key={result.id} 
@@ -96,10 +96,10 @@ export default function DiffRequestForm(props = null) {
               }
             </div>
           </div>
-          {/* 比較先リザルトの入力セレクタ */}
+          {/* 比較先ギャラリーの入力セレクタ */}
           <div className={styles.inputItem}>
             <label className={styles.inputLabel}>
-              比較先のリザルト
+              比較先のギャラリー
             </label>
             <div className={styles.inputSelect} >
               <select 
@@ -107,10 +107,10 @@ export default function DiffRequestForm(props = null) {
                 name="targetResultId"
                 disabled={(originResultId === "")}
                 ref={ register({
-                  required: "比較先リザルトを選択してください",
+                  required: "比較先ギャラリーを選択してください",
                 })}
               >
-                <option value=""> --比較先リザルトを選択してください-- </option>
+                <option value=""> --比較先ギャラリーを選択してください-- </option>
                 { targetResultFilter(resultList, originResultId).map( (result) => (
                   <option 
                     key={result.id} 
@@ -125,9 +125,9 @@ export default function DiffRequestForm(props = null) {
               }
             </div>
           </div>
-          {/* リザルト名の入力フォーム */}
+          {/* ギャラリー名の入力フォーム */}
           <UtilInput
-            label="リザルト名" 
+            label="ギャラリー名" 
             placeholder="20200701の定期チェック_example.com" 
             type="text" 
             name="name" 
@@ -139,9 +139,9 @@ export default function DiffRequestForm(props = null) {
               }
             })}
           />
-          {/* リザルト名の説明フォーム */}
+          {/* ギャラリー名の説明フォーム */}
           <UtilInput
-            label="リザルトの説明" 
+            label="ギャラリーの説明" 
             placeholder="2020年7月分の差分チェック用" 
             type="text" 
             name="description" 
