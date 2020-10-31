@@ -23,7 +23,7 @@ export default function UsageMenu(props = null) {
   const StepOne = () => {
     return (
       <div className={`${styles.usage}`} onClick={() => {
-        history.push("/projects");
+        history.push("/projects?isIntialDisplayRegisterModal=true");
       }}>
         <div className={styles.title}>
           Step1. サイトとページを登録する
