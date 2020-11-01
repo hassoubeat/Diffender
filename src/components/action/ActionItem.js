@@ -41,7 +41,7 @@ export default function ActionItem(props = null) {
   actionDom[ACTION_TYPE_SCROLL] = createScrollDom(actionDomParams);
 
   return (
-    <div className={styles.actionItem} data-index={index} >
+    <div className={styles.actionItem} data-index={index+1} >
       <div className={styles.inputTitle}>
         <div className={styles.title}>{action.typeName}</div>
         <div className={styles.trash} onClick={ () => {deleteAction()} }><i className="fa fa-trash-alt"></i></div>
