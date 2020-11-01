@@ -23,7 +23,7 @@ export default function TopPage(props = null) {
 
         <h1 className={styles.h1}>Diffenderの使い方</h1>
         <div className={styles.message}>
-          Diffenderでサイトの差分を検出するには<b>3つのStep</b>が必要です。
+          DiffenderでWebページの差分を検出するには<b>3つのStep</b>が必要です。
         </div>
         <UsageMenu />
       </div>
