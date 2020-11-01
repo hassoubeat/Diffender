@@ -120,6 +120,7 @@ export default function ProjectList(props = null) {
       >
         <div className="modalTitle">サイトを登録する</div>
         <small className="modalSupportMessage">
+          テストを行うサイトの情報を入力してください。
         </small>
         <ProjectForm 
           successPostCallback={ async (registedProject, isRowRegisterPage) => {

@@ -48,7 +48,7 @@ export default function ActionItem(props = null) {
         <div className="draggable"><i className="fa fa-arrows-alt"></i></div>
       </div>
       <UtilInput
-        label="アクション名" 
+        label="ブラウザ操作名称" 
         type="text" 
         name={`${actionsName}[${index}].name`}
         defaultValue={action.name}
@@ -83,14 +83,14 @@ function createGotoDom({action, actionsName, index, errors, register}) {
   return (
     <React.Fragment>
       <UtilInput
-        label="URL" 
+        label="遷移するURL" 
         placeholder="https://example.com" 
         type="text" 
         name={`${actionsName}[${index}].url`}
         defaultValue={action.url}
         errorMessages={ _.get(errors, `${actionsName}[${index}].url.message`) && [ _.get(errors, `${actionsName}[${index}].url.message`) ] } 
         inputRef={register({
-          required: 'URLは必須です',
+          required: '遷移するURLは必須です',
           pattern: {
             value: new RegExp("https?://[\\w/:%#$&?()~.=+-]+"),
             message: 'URLの形式で入力してください'

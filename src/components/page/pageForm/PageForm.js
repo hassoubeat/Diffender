@@ -138,17 +138,17 @@ export default function PageForm(props = null) {
           <Accordion text="スクリーンショットオプション" >
             <ScreenshotOptionsForm />
           </Accordion>
-          <div className="sectionTitle">アクション</div>
+          <div className="sectionTitle">ブラウザ操作</div>
           <hr className={styles.border}/>
           <small className={styles.sectionMessage}>
-            アクションとはスクリーンショットを撮影する前に行う処理です。<br/>
+            <b>ブラウザ操作はスクリーンショットを撮影する前にブラウザに対して行う操作</b>のことです。<br/>
             スクリーンショットを撮影したいページへの遷移や事前のログインなどを行うことが可能です。
           </small>
-          <Accordion className={styles.commonActionList} text="共通アクション(前処理)" >
+          <Accordion className={styles.commonActionList} text="共通ブラウザ操作(前処理)" >
             <div className={styles.detail}>
               <div className={styles.message}>
-                共通アクションとはサイトの全アクションで実施するアクションです。<br/>
-                共通アクションの編集は<Link to={`/projects/${projectId}`}>こちら</Link>から
+                共通ブラウザ操作とは全ページで共通して実施するブラウザ操作です。<br/>
+                共通ブラウザ操作の編集は<Link to={`/projects/${projectId}`}>こちら</Link>から
               </div>
               <input 
                 name="isEnableBeforeCommonAction"
@@ -156,15 +156,15 @@ export default function PageForm(props = null) {
                 type="checkBox" 
                 defaultChecked={isEnableBeforeCommonAction} 
                 ref={register()}
-              />共通アクションを実行する
+              />共通ブラウザ操作を実行する
             </div>
           </Accordion>
           <ActionForm actionsName="actions" />
-          <Accordion className={styles.commonActionList} text="共通アクション(後処理)" >
+          <Accordion className={styles.commonActionList} text="共通ブラウザ操作(後処理)" >
             <div className={styles.detail}>
               <div className={styles.message}>
-                共通アクションとはサイトの全アクションで実施するアクションです。<br/>
-                共通アクションの編集は<Link to={`/projects/${projectId}`}>こちら</Link>から
+                共通ブラウザ操作とは全ページで共通して実施するブラウザ操作です。<br/>
+                共通ブラウザ操作の編集は<Link to={`/projects/${projectId}`}>こちら</Link>から
               </div>
               <input 
                 name="isEnableAfterCommonAction"
@@ -172,7 +172,7 @@ export default function PageForm(props = null) {
                 type="checkBox" 
                 defaultChecked={isEnableAfterCommonAction} 
                 ref={register()}
-              />共通アクションを実行する
+              />共通ブラウザ操作を実行する
             </div>
           </Accordion>
           <ScreenshotTest projectId={projectId} />
