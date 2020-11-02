@@ -54,7 +54,7 @@ export async function deleteProject({projectId, request}) {
   return await API.del(AWS_APP_API_NAME, `/projects/${projectId}`, request)
 }
 
-// スクリーンショットの取得リクエスト(プロジェクト)
+// スクリーンショットの撮影リクエスト(プロジェクト)
 export async function ScreenshotQueingProject({projectId, request}) {
   request = await requestSetup(request);
   return await API.post(AWS_APP_API_NAME, `/projects/${projectId}/screenshot`, request)
@@ -130,7 +130,7 @@ export async function deleteResult({resultId, request}) {
   return await API.del(AWS_APP_API_NAME, `/results/${resultId}`, request)
 }
 
-// Diffの取得リクエスト(リザルト)
+// Diffの検出リクエスト(リザルト)
 export async function DiffScreenshotQueingProject({request}) {
   request = await requestSetup(request);
   return await API.post(AWS_APP_API_NAME, `/results/diff-screenshot`, request)

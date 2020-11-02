@@ -102,7 +102,7 @@ export default function ResultList(props = null) {
         { (resultList.length === 0) &&
           <React.Fragment>
             ギャラリーは存在しません。<br/>
-            <Link to={'/screenshot-request'}>スクリーンショット</Link>、<Link to={'/screenshot-request'}>スクリーンショット差分</Link>の実行結果が表示されます。
+            <Link to={'/screenshot-request'}>スクリーンショットの撮影</Link>、<Link to={'/screenshot-request'}>Diffの検出</Link>の実行結果が表示されます。
           </React.Fragment>
         }
       </div>

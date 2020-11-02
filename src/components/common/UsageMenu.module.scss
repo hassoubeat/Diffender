@@ -21,6 +21,10 @@
       font-size: 1rem;
     }
 
+    .note {
+      font-size: 0.8rem;
+    }
+
     &.disable {
       border-left: 20px solid $DARK_GRAY_COLOR;
       pointer-events: none;

@@ -137,8 +137,8 @@ export default function PageList(props = null) {
       >
         <div className="modalTitle">ページを作成する</div>
         <small className="modalSupportMessage">
-          ページとはスクリーンショットを撮影する単位です。<br/>
-          スクリーンショットを撮影を行いたいページ毎に作成してください。
+          1ページで1枚のスクリーンショットを撮影します。<br/>
+          テストを行いたいWebページ毎にページを登録してください。
         </small>
         <p></p>
         <PageForm

@@ -75,7 +75,7 @@ export default function ActionForm(props = null) {
   }
 
   const deleteAction = (key) => {
-    if (!window.confirm('アクションを削除しますか？')) return;
+    if (!window.confirm('ブラウザ操作を削除しますか？')) return;
     remove(key);
   }
 
@@ -83,7 +83,7 @@ export default function ActionForm(props = null) {
     <React.Fragment>
       <div className={styles.actionForm}>
         {/* アクションが定義されていない時に表示するメッセージ */}
-        {(fields.length === 0) && <div className={styles.noActionListMessage}>以下からアクションを追加してください</div>}
+        {(fields.length === 0) && <div className={styles.noActionListMessage}>以下からブラウザ操作を追加してください</div>}
 
         {/* アクションアイテムの生成 */}
         <ReactSortable 

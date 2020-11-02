@@ -117,20 +117,20 @@ export default function ProjectForm(props = null) {
               }
             })}
           />
-          <Accordion className={styles.commonActionList} text="共通アクション(前処理)" >
+          <Accordion className={styles.commonActionList} text="共通ブラウザ操作(前処理)" >
             <div className={styles.detail}>
               <div className={styles.message}>
-                全ページで共通実行するアクションです。<br/>
-                <b>共通して実行するログインなどのアクション</b>は本機能に記載することをおすすめします。<br/>
+                本サイトに登録されている全ページで実行するブラウザ操作です。<br/>
+                <b>共通して実行するログインなどのブラウザ操作</b>は本機能に記載することをおすすめします。<br/>
               </div>
               <ActionForm actionsName="beforeCommonActions" />
             </div>
           </Accordion>
-          <Accordion className={styles.commonActionList} text="共通アクション(後処理)" >
+          <Accordion className={styles.commonActionList} text="共通ブラウザ操作(後処理)" >
             <div className={styles.detail}>
               <div className={styles.message}>
-                全ページで共通実行するアクションです。<br/>
-                <b>共通して実行するログアウトなどのアクション</b>は本機能に記載することをおすすめします。<br/>
+                本サイトに登録されている全ページで実行するブラウザ操作です。<br/>
+                <b>共通して実行するログアウトなどのブラウザ操作</b>は本機能に記載することをおすすめします。<br/>
               </div>
               <ActionForm actionsName="afterCommonActions" />
             </div>

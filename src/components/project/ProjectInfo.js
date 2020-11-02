@@ -14,12 +14,15 @@ export default function ProjectInfo(props = null) {
   return (
     <React.Fragment>
       <div className={`${styles.projectInfo} scroll`}>
-        <div className="sectionTitle">サイト</div>
-        <div className={styles.actionArea}>
-          <button className={`button ${styles.addPageButton}`} onClick={() => {history.push(`/projects/${projectId}/pages`)} }>
-            ページ一覧
-          </button>
+        <div className="sectionTitle">
+          <div className="main">サイト</div>
+          <div className="linkButton" onClick={() => {history.push(`/projects/${projectId}/pages`)} }>
+            <i className="fas fa-angle-double-right"/> ページ一覧
+          </div>
         </div>
+        {/* <div className={styles.actionArea}>
+          
+        </div> */}
         <ProjectForm 
           projectId={projectId} 
           successDeleteCallback={ async  () => {
