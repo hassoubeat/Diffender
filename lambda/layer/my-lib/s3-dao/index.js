@@ -20,3 +20,12 @@ module.exports.getObject = async (request) => {
   }
   return await S3.getObject(object).promise();
 }
+
+// S3からオブジェクトを削除する
+module.exports.deleteObject = async (request) => {
+  const object = {
+    Bucket: request.Bucket || DIFFENDER_S3_BUCKET_NAME,
+    Key: request.Key,
+  }
+  return await S3.deleteObject(object).promise();
+}
