@@ -92,7 +92,7 @@ export default function ScreenshotRequest(props = null) {
             </div>
           </div>
           <UtilInput
-            label="ギャラリー名" 
+            label="テスト結果名" 
             placeholder="20200701の定期チェック_example.com" 
             type="text" 
             name="name" 
@@ -105,7 +105,7 @@ export default function ScreenshotRequest(props = null) {
             })}
           />
           <UtilInput
-            label="ギャラリーの説明" 
+            label="テスト結果の説明" 
             placeholder="2020年7月分の差分チェック用" 
             type="text" 
             name="description" 

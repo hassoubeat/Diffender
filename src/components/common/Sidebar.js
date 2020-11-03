@@ -90,7 +90,7 @@ export default function Sidebar() {
                 history.push("/results");
               }}
             >
-              ギャラリー
+              テスト結果
             </li>
             <li 
               className={`${styles.linkItem}`} 

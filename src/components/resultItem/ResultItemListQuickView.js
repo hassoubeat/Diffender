@@ -86,7 +86,7 @@ export default function ResultItemListQuickView(props = null) {
     ))
   }
 
-  // ギャラリーアイテム一覧の再読み込み
+  // テスト結果アイテム一覧の再読み込み
   const reload = () => {
     dispatch( setLoadStateResultItemList({
       resultId: resultId,

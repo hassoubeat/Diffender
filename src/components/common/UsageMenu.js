@@ -48,7 +48,7 @@ export default function UsageMenu(props = null) {
           撮影したスクリーンショットは<span className="linkButton" onClick={(e) => {
             e.stopPropagation();
             history.push("/results");
-          }}>ギャラリー</span>に登録されます！
+          }}>テスト結果</span>に登録されます！
           <p></p>
           <div className={styles.note}>
             ※ 差分を検出するためにスクリーンショットは<b>2回撮影</b>してください。<br/>
@@ -73,7 +73,7 @@ export default function UsageMenu(props = null) {
           差分を検出した画像は<span className="linkButton" onClick={(e) => {
             e.stopPropagation();
             history.push("/results");
-          }}>ギャラリー</span>に登録されます！
+          }}>テスト結果</span>に登録されます！
         </div>
       </div>
     )
