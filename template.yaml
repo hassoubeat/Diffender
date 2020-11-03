@@ -104,7 +104,12 @@ Resources:
       CodeUri: lambda/projects/DeleteProjectFunction/
       Handler: index.lambda_handler
       Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ASYNC_QUEING_LAMBDA_NAME: !Ref AsyncDeleteProjectFunction
       Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref AsyncDeleteProjectFunction
         - DynamoDBCrudPolicy:
             TableName: !Ref DiffenderDynamoDB
       Events:
@@ -114,6 +119,17 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /projects/{projectId}
             Method: delete
+  # DeleteProjectFunctionの重い処理を非同期で処理するLambda
+  AsyncDeleteProjectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Timeout: 120
+      CodeUri: lambda/projects/DeleteProjectFunction/
+      Handler: index.async_delete_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
   # Page一覧の取得
   GetPageListFunction:
     Type: AWS::Serverless::Function
