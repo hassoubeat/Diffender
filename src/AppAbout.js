@@ -91,7 +91,7 @@ export default function AppAbout(props = null) {
         <div className={`${styles.item} ${styles.right}`} onClick={() => {
             scrollToDOM("detailHighSppedTestContent");
         }}>
-          高速にテストを実行
+          テストを高速実行
         </div>
       </section>
     )
@@ -163,7 +163,7 @@ export default function AppAbout(props = null) {
   const DetailHighSppedTestContent = () => {
     return (
       <section name="detailHighSppedTestContent" className={`${styles.detailContent} ${styles.detailHighSppedTestContent}`}>
-        <h4 className={styles.title}>高速にテストを実行</h4>
+        <h4 className={styles.title}>テストを高速実行</h4>
         <small className={styles.description}>
           大量のページのスクリーンショットの撮影、差分の検出もマルチタスクですぐに終わります。
         </small>
