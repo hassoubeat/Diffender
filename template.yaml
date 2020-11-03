@@ -104,7 +104,12 @@ Resources:
       CodeUri: lambda/projects/DeleteProjectFunction/
       Handler: index.lambda_handler
       Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ASYNC_QUEING_LAMBDA_NAME: !Ref AsyncDeleteProjectFunction
       Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref AsyncDeleteProjectFunction
         - DynamoDBCrudPolicy:
             TableName: !Ref DiffenderDynamoDB
       Events:
@@ -114,6 +119,17 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /projects/{projectId}
             Method: delete
+  # DeleteProjectFunctionの重い処理を非同期で処理するLambda
+  AsyncDeleteProjectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Timeout: 120
+      CodeUri: lambda/projects/DeleteProjectFunction/
+      Handler: index.async_delete_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
   # Page一覧の取得
   GetPageListFunction:
     Type: AWS::Serverless::Function
@@ -263,7 +279,12 @@ Resources:
       CodeUri: lambda/results/DeleteResultFunction/
       Handler: index.lambda_handler
       Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ASYNC_QUEING_LAMBDA_NAME: !Ref AsyncDeleteResultFunction
       Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref AsyncDeleteResultFunction
         - DynamoDBCrudPolicy:
             TableName: !Ref DiffenderDynamoDB
       Events:
@@ -273,6 +294,19 @@ Resources:
             RestApiId: !Ref DiffenderApi
             Path: /results/{resultId}
             Method: delete
+  # DeleteResultFunctionの重い処理を非同期で処理するLambda
+  AsyncDeleteResultFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Timeout: 120
+      CodeUri: lambda/results/DeleteResultFunction/
+      Handler: index.async_delete_handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DiffenderDynamoDB
+        - S3CrudPolicy:
+            BucketName: !Ref DiffenderS3
   # ResultItemの一覧取得
   GetResultItemListFunction:
     Type: AWS::Serverless::Function
@@ -572,11 +606,11 @@ Resources:
           Prefix: test/
           Status: Enabled
           ExpirationInDays: 1
-          # resultフォルダ配下のオブジェクトは5日後に消滅
+          # resultフォルダ配下のオブジェクトは10日後に消滅
         - Id: ResultDirRotateRule
           Prefix: result/
           Status: Enabled
-          ExpirationInDays: 5
+          ExpirationInDays: 10
   DiffenderS3Policy:
     Type: "AWS::S3::BucketPolicy"
     Properties:
