@@ -96,6 +96,11 @@ export default function SignIn(props = null) {
                 パスワードを忘れた場合
               </Link>
             </div>
+            <div className={styles.action}>
+              <Link to={'/about'}>
+                詳しくDiffenderについて知る
+              </Link>
+            </div>
           </div>
         </div>
       </div>

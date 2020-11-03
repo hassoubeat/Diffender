@@ -16,8 +16,8 @@ export default function TopPage(props = null) {
           Diffender(ディフェンダー)はWebサイトの表示崩れなどの想定しない変更点を視覚的に検出するE2Eテストサービスです。<br/>
         </div>
         <div className={styles.link}>
-          <Link to={"/aaaaa"}>
-            <i className="fas fa-angle-double-right"/> もっと詳しくDiffenderについて知る</Link>
+          <Link to={"/about"}>
+            <i className="fas fa-angle-double-right"/> 詳しくDiffenderについて知る</Link>
         </div>
 
         <h1 className={styles.h1}>Diffenderの使い方</h1>
