@@ -26,6 +26,10 @@ export default function TopPage(props = null) {
           DiffenderでWebページの差分を検出するには<b>3つのStep</b>が必要です。
         </div>
         <UsageMenu />
+        <div className={styles.betaMessage}>
+          本サービスはベータ版です。以下の機能制限が存在します。<br/>
+          ・<Link to={"/results"}>テスト結果</Link>は<b>登録後5日で自動削除</b>されます
+        </div>
       </div>
     </React.Fragment>
   );
