@@ -606,11 +606,11 @@ Resources:
           Prefix: test/
           Status: Enabled
           ExpirationInDays: 1
-          # resultフォルダ配下のオブジェクトは5日後に消滅
+          # resultフォルダ配下のオブジェクトは10日後に消滅
         - Id: ResultDirRotateRule
           Prefix: result/
           Status: Enabled
-          ExpirationInDays: 5
+          ExpirationInDays: 10
   DiffenderS3Policy:
     Type: "AWS::S3::BucketPolicy"
     Properties:
