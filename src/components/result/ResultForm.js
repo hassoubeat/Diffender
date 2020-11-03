@@ -69,13 +69,13 @@ export default function ResultForm(props = null) {
       <div className={styles.resultForm}>
         <div className={styles.inputArea}>
           <UtilInput
-            label="テスト結果名" 
-            placeholder="20200701の定期チェック_example.com" 
+            label="テスト名" 
+            placeholder="202008 example.com ブラウザテスト" 
             type="text" 
             name="name" 
             errorMessages={ (errors.name) && [errors.name.message] } 
             inputRef={ register({
-              required: "テスト結果名は必須です",
+              required: "テスト名は必須です",
               maxLength : {
                 value: 30,
                 message: '最大30文字で入力してください'
@@ -83,8 +83,8 @@ export default function ResultForm(props = null) {
             })}
           />
           <UtilInput
-            label="テスト結果の説明" 
-            placeholder="2020年7月分の差分チェック用" 
+            label="テストの説明" 
+            placeholder="example.comの2020年8月分のブラウザテスト" 
             type="text" 
             name="description" 
             errorMessages={ (errors.description) && [errors.description.message] } 

@@ -14,7 +14,6 @@ export default function ScreenshotInfo(props = null) {
           スクリーンショットの撮影結果は<Link to={"/results"}>テスト結果</Link>に登録されます。<br/>
         </div>
         <div className={styles.note}>
-          ※ ページ数が多い場合、全ページの取得完了まで時間がかかります
         </div>
         <ScreenshotRequestForm />
       </div>

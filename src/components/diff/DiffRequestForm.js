@@ -81,7 +81,7 @@ export default function DiffRequestForm(props = null) {
                   setValue('targetResultId', "");
                 }}
               >
-                <option value=""> --比較元テスト結果を選択してください-- </option>
+                <option value=""> Please Select </option>
                 { originResultFilter(resultList).map( (result) => (
                   <option 
                     key={result.id} 
@@ -110,7 +110,7 @@ export default function DiffRequestForm(props = null) {
                   required: "比較先テスト結果を選択してください",
                 })}
               >
-                <option value=""> --比較先テスト結果を選択してください-- </option>
+                <option value=""> Please Select </option>
                 { targetResultFilter(resultList, originResultId).map( (result) => (
                   <option 
                     key={result.id} 
@@ -125,24 +125,25 @@ export default function DiffRequestForm(props = null) {
               }
             </div>
           </div>
-          {/* テスト結果名の入力フォーム */}
+          {/* テスト名の入力フォーム */}
           <UtilInput
-            label="テスト結果名" 
-            placeholder="20200701の定期チェック_example.com" 
+            label="テスト名" 
+            placeholder="202007-202008 example.com" 
             type="text" 
             name="name" 
             errorMessages={ (errors.name) && [errors.name.message] } 
             inputRef={ register({
+              required: "テスト名は必須です",
               maxLength : {
                 value: 30,
                 message: '最大30文字で入力してください'
               }
             })}
           />
-          {/* テスト結果名の説明フォーム */}
+          {/* テスト名の説明フォーム */}
           <UtilInput
-            label="テスト結果の説明" 
-            placeholder="2020年7月分の差分チェック用" 
+            label="テストの説明" 
+            placeholder="example.comの2020年7月と2020年8月の差分チェック" 
             type="text" 
             name="description" 
             errorMessages={ (errors.description) && [errors.description.message] } 

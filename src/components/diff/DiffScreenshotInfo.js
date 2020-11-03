@@ -14,8 +14,7 @@ export default function ScreenshotInfo(props = null) {
           差分の取得結果は<Link to={"/results"}>テスト結果</Link>に登録されます。<br/>
         </div>
         <div className={styles.note}>
-          ※ 同じページから撮影されたスクリーンショットの比較を実行します。<br/>
-          ※ 比較するスクリーンショット数が多い場合、全差分の取得完了まで時間がかかります。
+          ※ 同じページから撮影されたスクリーンショットの比較を実行します。
         </div>
         <DiffRequestForm />
       </div>
