@@ -25,6 +25,7 @@ import queryString from 'query-string';
 
 import './App.scss';
 import ErrorHandler from './ErrorHandler';
+import AppAbout from './AppAbout';
 import AuthCheck from 'components/auth/AuthCheck';
 import UnAuthCheck from 'components/auth/UnAuthCheck';
 import DivideForm from 'components/auth/DivideForm';
@@ -99,6 +100,9 @@ function App() {
         <ErrorHandler>
           <Switch>  
             <Route exact path="/404" component={NotFound404} />
+            <Route exact path="/about" render={ () => (
+              <AppAbout/>
+            )} />
             <Route exact path="/signUp" render={ () => (
               <UnAuthCheck>
                 <DivideForm>
