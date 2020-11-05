@@ -180,7 +180,7 @@ export default function AppAbout(props = null) {
 
   const UseCaseContent = () => {
     return (
-      <section name="useCaseContent" className={`${styles.useCaseContent}`}>
+      <section name="useCaseContent" className={`${styles.detailContent} ${styles.useCaseContent} ${styles.bgGray}`}>
         <h4 className={styles.title}>誰でも使えて、結果が分かる</h4>
         <div className={styles.useCase}>
           従来のE2Eテストはエンジニアのものでした。<br/>
