@@ -152,7 +152,11 @@ export default function AppAbout(props = null) {
           1ページずつテストを行う必要はありません。<br/>
           1クリックで最大100ページのスクリーンショットの撮影、差分の検出が可能です
         </small>
-        <div className={styles.visual}></div>
+        <div className={styles.visual}>
+          <div className={styles.image}>
+            <img  src={"/img/AppAbout/oneclick.png"} alt="oneclick" />
+          </div>          
+        </div>
       </section>
     )
   }
@@ -164,7 +168,11 @@ export default function AppAbout(props = null) {
         <small className={styles.description}>
           大量のページのスクリーンショットの撮影、差分の検出もマルチタスクですぐに終わります。
         </small>
-        <div className={styles.visual}></div>
+        <div className={styles.visual}>
+          <div className={styles.image}>
+            <img  src={"/img/AppAbout/multitask.png"} alt="multitask" />
+          </div>          
+        </div>
       </section>
     )
   }

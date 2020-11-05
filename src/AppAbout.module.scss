@@ -233,11 +233,17 @@ $HEADER_HEIGHT: 42px;
 
   .visual {
     max-width: 1200px;
-    margin: 20px auto;
+    margin: 30px auto;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
     align-items: flex-start;
+
+    .image {
+      img {
+        width: 100%;
+      }
+    }
   }
   @include mq(sp) {
     .visual {
