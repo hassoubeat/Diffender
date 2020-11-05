@@ -62,7 +62,7 @@ export default function ResultListQuickView(props = null) {
         }
       >
         <div className={styles.main}>
-          <span className={styles.title}>
+          <span className={`${styles.title} ${result.resultType}`}>
             {result.name}
           </span>
         </div>

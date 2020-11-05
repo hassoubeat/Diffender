@@ -39,6 +39,10 @@
       color: $MAIN_COLOR;
       margin: 6px 10px;
       font-size: 18px;
+
+      &.diff {
+        color: $ORANGE_COLOR;
+      }
     }
   }
 
@@ -57,12 +61,14 @@
       white-space: pre-wrap;
     }
 
-    // TODO 暫定版。最終的にはSVGアイコンでSSとDIFFを表現する
     &:global.SCREENSHOT:before {
-      content: " S ";
+      content: "\f03e";
+      font-family: "Font Awesome 5 Free";
     }
     &:global.DIFF:before {
-      content: " D ";
+      color: $ORANGE_COLOR;
+      content: "\f302";
+      font-family: "Font Awesome 5 Free";
     }
 
     &:after {
