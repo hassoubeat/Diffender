@@ -1,0 +1,336 @@
+@import 'styles/constant';
+
+$HEADER_HEIGHT: 42px;
+
+.topHeader{
+  height: $HEADER_HEIGHT;
+  display: flex;
+  padding: 8px;
+  background-color: $MAIN_COLOR;
+
+  .brand {
+    margin: 0px;
+    font-family: 'Nunito';
+    font-size: 2rem;
+    color:$WHITE_TEXT_COLOR;
+    cursor: pointer;
+  }
+
+  .space {
+    flex: 1 1 0;
+  }
+
+  .login {
+    color: $MAIN_COLOR;
+    margin-top: 10px;
+    margin-right: 10px;
+    padding: 4px;
+    background-color: $WHITE_COLOR;
+    border-radius: 8px;
+    cursor: pointer;
+
+    &:hover {
+      color: $LINK_COLOR;
+    }
+  }
+}
+
+.heroContent {
+  position: relative;
+  height: calc( 100vh - #{$HEADER_HEIGHT} - 16px);
+  background-color: $LIGHT_GRAY_COLOR;
+
+  .title {
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: $BLACK_TEXT_COLOR;
+    font-size: 2.5rem;
+    margin: 0px;
+    z-index: 100;
+    transform: translate(-50%);
+    white-space: nowrap;
+    background: linear-gradient(transparent 70%, $MAIN_COLOR 30%);
+    animation: diffImageMove 3s ease 2s 1 normal forwards running;
+  }
+
+  .next {
+    opacity: 0;
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%);
+    font-size: 2.5rem;
+    color: $LINK_COLOR;
+    z-index: 100;
+    cursor: pointer;
+    animation: diffImageMove 3s ease 2s 1 normal forwards running;
+  }
+
+  .diffVisual {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+
+    .image {
+      height: calc( 100vh - #{$HEADER_HEIGHT} - 16px);
+      transition: all 3s ease-in-out 3s;
+      opacity: 0.2;
+
+      img {
+        height: 100%;
+      }
+  
+      .origin {
+        animation: originImageMove 2s ease 1s 1 normal none running;
+      }
+  
+      .target {
+        animation: targetImageMove 2s ease 1s 1 normal none running;
+      }
+
+      .diff {
+        opacity: 0;
+        animation: diffImageMove 3s ease 1.5s 1 normal forwards running;
+      }
+    }
+  
+    @keyframes originImageMove {
+      0% {
+        transform: translateX(0px);
+      }
+      
+      100% {
+        transform: translateX(50%);
+        opacity: 0;
+      }
+    }
+  
+    @keyframes targetImageMove {
+      0% {
+        transform: translateX(0px);
+      }
+    
+      100% {
+        transform: translateX(-50%);
+        opacity: 0;
+      }
+    }
+
+    @keyframes diffImageMove {
+      0% {
+        opacity: 0;
+      }
+    
+      100% {
+        opacity: 1;
+      }
+    }
+  }
+
+  @include mq(sp) {
+    .title {
+      font-size: 1.5rem;
+      animation: diffImageMove 3s ease 1s 1 normal forwards running;
+    }
+
+    .next {
+      animation: diffImageMove 3s ease 1s 1 normal forwards running;
+    }
+
+    .diffVisual {
+      .image {
+        .origin {
+          display: none;
+        }
+    
+        .target {
+          display: none;
+        }
+
+        .diff {
+          width: 100vw;
+          animation: diffImageMove 3s ease 0 1 normal forwards running;
+        }
+      }
+    }
+  }
+}
+
+.descriptionContent {
+  text-align: center;
+  position: relative;
+  padding: 10px;
+  margin: 30px 0px;
+  font-size: 1.4rem;
+  color: $BLACK_TEXT_COLOR;
+
+  .main {
+    font-size: 2.2rem;
+    margin: 10px 0px;
+  }
+}
+
+@include mq(sp) {
+  .descriptionContent {
+    font-size: 1rem;
+
+    .main {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+.importantFactor {
+  color: $BLACK_TEXT_COLOR;
+  font-size: 1.5rem;
+  position: relative;
+  margin: 50px auto;
+  max-width: 800px;
+
+  .item {
+    margin: 10px 0;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+
+    &.left {
+      text-align: left;
+      border-left: 20px solid $MAIN_COLOR;
+    }
+
+    &.right {
+      text-align: right;
+      border-right: 20px solid $MAIN_COLOR;
+    }
+
+    &:hover {
+      color: $LINK_COLOR;
+    }
+  }
+}
+
+@include mq(sp) {
+  .importantFactor {
+    font-size: 1rem;
+    margin: 30px 10px;
+  }
+}
+
+.detailContent {
+  padding: 10px;
+  padding-bottom: 50px;
+  text-align: center;
+
+  .title {
+    margin: 10px 0;
+    color: $MAIN_COLOR;
+    font-size: 2rem;
+  }
+
+  .description {
+    color: $BLACK_TEXT_COLOR;
+    font-size: 1.2rem;
+  }
+
+  .visual {
+    max-width: 1200px;
+    margin: 30px auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: flex-start;
+
+    .image {
+      img {
+        width: 100%;
+      }
+    }
+  }
+  @include mq(sp) {
+    .title {
+      font-size: 1.5rem;
+    }
+
+    .visual {
+      justify-content: flex-start;
+    }
+  }
+}
+
+.detailUnnecessaryProgramContent {
+  
+  .useProgram {
+    min-width: 0px;
+    max-width: 600px;
+
+    .title {
+      font-size: 1.2rem;
+      text-align: left;
+      padding: 5px;
+      border-left: 20px solid $MAIN_COLOR;
+    }
+  }
+
+  .useDiffender {
+    max-width: 600px;
+
+    .title {
+      font-size: 1.2rem;
+      text-align: left;
+      padding: 5px;
+      border-left: 20px solid $MAIN_COLOR;
+    }
+
+    .image {
+      width :100%;
+    }
+  }
+}
+
+.detailUseCaseContent{
+  .useCase  {
+    color: $BLACK_TEXT_COLOR;
+    max-width: 800px;
+    margin: 20px auto;
+    text-align: left;
+    font-size: 1.2rem;
+    line-height: 2rem;
+  }
+
+  .button {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: $LINK_COLOR;
+  }
+}
+
+.footer {
+  border-top: 1px solid $LINE_COLOR;
+  padding: 20px 0;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;  
+  background-color: $LIGHT_GRAY_COLOR;
+  font-size: 1rem;
+}
+
+.codeEditor {
+  font-family: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,monospace;
+  color: $WHITE_COLOR;
+  background-color: $BLACK_TEXT_COLOR;
+  padding: 20px;
+  text-align: left;
+  font-size: 1rem;
+  overflow-y: scroll;
+  white-space: nowrap;
+}
+
+.bgGray {
+  background-color: $LIGHT_GRAY_COLOR;
+}
+
+.appAbout{
+
+}
