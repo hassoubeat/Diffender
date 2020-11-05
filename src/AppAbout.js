@@ -199,11 +199,13 @@ export default function AppAbout(props = null) {
 
   const Footer = () => {
     return (
-      <section name="footer" className={`${styles.footer}`}>
+      <footer name="footer" className={`${styles.footer}`} onClick={ () => {
+        moveToTopPage();
+      }}>
         <a href="https://github.com/hassoubeat/Diffender">
-          <i className="fab fa-github"/> Github
+          Copyright © Diffender 2020
         </a>
-      </section>
+      </footer>
     )
   }
 
