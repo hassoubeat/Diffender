@@ -66,7 +66,7 @@ export default function DiffRequestForm(props = null) {
           {/* 比較元テスト結果の入力セレクタ */}
           <div className={styles.inputItem}>
             <label className={styles.inputLabel}>
-              比較元のテスト結果
+              <b>比較元のテスト結果</b>
             </label>
             <div className={styles.inputSelect} >
               <select 
@@ -99,7 +99,7 @@ export default function DiffRequestForm(props = null) {
           {/* 比較先テスト結果の入力セレクタ */}
           <div className={styles.inputItem}>
             <label className={styles.inputLabel}>
-              比較先のテスト結果
+              <b>比較先のテスト結果</b>
             </label>
             <div className={styles.inputSelect} >
               <select 
