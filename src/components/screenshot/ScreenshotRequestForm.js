@@ -65,7 +65,7 @@ export default function ScreenshotRequest(props = null) {
         <div className={styles.inputArea}>
           <div className={styles.inputItem}>
             <label className={styles.inputLabel}>
-              <span className={styles.main}>スクリーンショットを取得するサイト</span>
+              <span className={styles.main}>スクリーンショットを撮影するサイト</span>
             </label>
             <div className={styles.inputSelect} >
               <select 

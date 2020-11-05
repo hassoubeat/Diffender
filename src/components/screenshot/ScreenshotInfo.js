@@ -10,7 +10,7 @@ export default function ScreenshotInfo(props = null) {
       <div className={styles.screenshotInfo}>
         <div className="sectionTitle">スクリーンショットの撮影</div>
         <div className={styles.infoMessage}>
-          <Link to={"/projects"}>サイト</Link>に登録されているページのスクリーンショットを取得します。<br/>
+          <Link to={"/projects"}>サイト</Link>に登録されているページのスクリーンショットを撮影します。<br/>
           スクリーンショットの撮影結果は<Link to={"/results"}>テスト結果</Link>に登録されます。<br/>
         </div>
         <div className={styles.note}>

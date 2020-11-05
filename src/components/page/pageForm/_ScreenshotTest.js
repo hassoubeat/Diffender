@@ -45,7 +45,7 @@ export default function ScreenshotTest(props = null) {
       setIsAPICalling(false);
 
       toast.successToast(
-        { message: `スクリーンショットを取得しました` }
+        { message: `スクリーンショットを撮影しました` }
       );
 
     } catch (error) {
