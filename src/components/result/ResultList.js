@@ -64,7 +64,7 @@ export default function ResultList(props = null) {
               (e) => setIsSearchScreenshotResultFilter(e.target.checked)
             } />SS
           </div>
-          <div className={styles.filter}>
+          <div className={`${styles.filter} ${styles.diff}`}>
             <input className={styles.checkBox} type="checkBox" checked={isSearchDiffResultFilter} onChange={
               (e) => setIsSearchDiffResultFilter(e.target.checked)
             } />Diff

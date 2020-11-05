@@ -46,6 +46,16 @@
         font-size: 14px;
         color: $LINK_COLOR;
 
+        &:global.SCREENSHOT:before {
+          color: $MAIN_COLOR;
+          content: "\f03e\0020";
+          font-family: "Font Awesome 5 Free";
+        }
+        &:global.DIFF:before {
+          color: $ORANGE_COLOR;
+          content: "\f302\0020";
+          font-family: "Font Awesome 5 Free";
+        }
         &:global.SUCCESS:before {
           color: $MAIN_COLOR;
           content: " S ";
@@ -80,6 +90,9 @@
           color: $WHITE_TEXT_COLOR;
           font-weight: bold;
 
+          &:global.SCREENSHOT:before {
+            color: $WHITE_TEXT_COLOR;
+          }
           &:global.SUCCESS:before {
             color: $WHITE_TEXT_COLOR;
           }

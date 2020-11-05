@@ -66,7 +66,7 @@ export default function DiffRequestForm(props = null) {
           {/* 比較元テスト結果の入力セレクタ */}
           <div className={styles.inputItem}>
             <label className={styles.inputLabel}>
-              比較元のテスト結果
+              <span className={styles.diff}>比較元のテスト結果</span>
             </label>
             <div className={styles.inputSelect} >
               <select 
@@ -99,7 +99,7 @@ export default function DiffRequestForm(props = null) {
           {/* 比較先テスト結果の入力セレクタ */}
           <div className={styles.inputItem}>
             <label className={styles.inputLabel}>
-              比較先のテスト結果
+              <span className={styles.diff}>比較対象のテスト結果</span>
             </label>
             <div className={styles.inputSelect} >
               <select 
@@ -107,7 +107,7 @@ export default function DiffRequestForm(props = null) {
                 name="targetResultId"
                 disabled={(originResultId === "")}
                 ref={ register({
-                  required: "比較先テスト結果を選択してください",
+                  required: "比較対象テスト結果を選択してください",
                 })}
               >
                 <option value=""> Please Select </option>

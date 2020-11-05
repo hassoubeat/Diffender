@@ -63,6 +63,8 @@ exports.lambda_handler = async (event, context) => {
     postResult.resultType = "DIFF";
     postResult.resultTieUserId = user.sub;
     postResult.resultTieProjectId = originResult.resultTieProjectId;
+    postResult.diffOriginResultId = originResult.id;
+    postResult.diffTargetResultId = targetResult.id;
     await resultDao.postResult(postResult);
 
     const result = await resultDao.getResult(postResult.id);

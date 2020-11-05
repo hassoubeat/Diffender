@@ -1,6 +1,11 @@
 import * as api from 'lib/api/api';
 import * as toast from 'lib/util/toast';
 
+import { 
+  RESULT_TYPE_SS,
+  RESULT_TYPE_DIFF
+} from 'lib/util/const'
+
 // リザルト一覧をソート
 export function sort(resultList) {
   // 降順でソート
@@ -20,12 +25,22 @@ export function filterResultList(resultList, filterObj) {
       !!result.name.match(filterObj.searchWord) &&
       (
         // スクリーンショットリザルトのフィルタリング
-        (filterObj.isSearchScreenshotResultFilter && result.resultType === "SCREENSHOT") ||
+        (filterObj.isSearchScreenshotResultFilter && result.resultType === RESULT_TYPE_SS) ||
         // Diffリザルトのフィルタリング
-        (filterObj.isSearchDiffResultFilter && result.resultType === "DIFF")
+        (filterObj.isSearchDiffResultFilter && result.resultType === RESULT_TYPE_DIFF)
       )
     );
   });
+}
+
+// リザルトタイプがSCREENSHOTか判定
+export function isResultTypeSS(resultType) {
+  return (resultType === RESULT_TYPE_SS)
+}
+
+// リザルトタイプがDIFFか判定
+export function isResultTypeDIFF(resultType) {
+  return (resultType === RESULT_TYPE_DIFF)
 }
 
 // リザルト一覧の取得

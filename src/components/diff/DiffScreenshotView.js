@@ -46,7 +46,7 @@ export default function DiffScreenshotView(props = null) {
               setLSItem('isDiffViewDisplayTarget', !isDisplayTarget);
             }}
           >
-            比較先
+            比較対象
           </div>
           <div 
             className={`${styles.item} ${isDisplayDiff ? styles.display : styles.hidden}`}

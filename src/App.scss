@@ -43,6 +43,12 @@ input[type='text'], input[type='password'] , select {
   }
 }
 
+select {
+  border: 1px solid $LINE_COLOR;
+  padding: 8px;
+  width: 300px;
+}
+
 // チェックボックスの設定
 input[type='checkbox'] {
   border: 2px solid $LINE_COLOR;
