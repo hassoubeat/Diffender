@@ -13,7 +13,7 @@ async function sendScreenshotProcessSQS(sendObject) {
 }
 module.exports.sendScreenshotProcessSQS = sendScreenshotProcessSQS;
 
-// スクリーンショット差分取得SQSにキューを登録する
+// スクリーンショット差分検出SQSにキューを登録する
 async function sendDiffScreenshotProcessSQS(sendObject) {
   return await sqs.sendMessage({
     MessageBody: JSON.stringify(sendObject),
