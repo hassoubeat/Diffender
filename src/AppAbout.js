@@ -26,6 +26,7 @@ export default function AppAbout(props = null) {
         <h1 className={styles.brand} onClick={ () => {
           moveToTopPage();
         }}>Diffender</h1>
+        <div className={styles.space}/>
         <div className={styles.login} onClick={ () => {
           moveToTopPage();
         }}>Diffenderを使う</div>

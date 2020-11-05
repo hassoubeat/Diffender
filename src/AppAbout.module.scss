@@ -9,12 +9,15 @@ $HEADER_HEIGHT: 42px;
   background-color: $MAIN_COLOR;
 
   .brand {
-    flex: 1 1 0;
     margin: 0px;
     font-family: 'Nunito';
     font-size: 2rem;
     color:$WHITE_TEXT_COLOR;
     cursor: pointer;
+  }
+
+  .space {
+    flex: 1 1 0;
   }
 
   .login {
