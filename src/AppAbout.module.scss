@@ -186,7 +186,7 @@ $HEADER_HEIGHT: 42px;
   color: $BLACK_TEXT_COLOR;
   font-size: 1.5rem;
   position: relative;
-  margin: 0 auto;
+  margin: 50px auto;
   max-width: 800px;
 
   .item {
@@ -214,7 +214,7 @@ $HEADER_HEIGHT: 42px;
 @include mq(sp) {
   .importantFactor {
     font-size: 1rem;
-    margin: 0 10px;
+    margin: 30px 10px;
   }
 }
 
@@ -289,12 +289,13 @@ $HEADER_HEIGHT: 42px;
   }
 }
 
-.useCaseContent{
+.detailUseCaseContent{
   .useCase  {
     color: $BLACK_TEXT_COLOR;
     max-width: 800px;
     margin: 20px auto;
     text-align: left;
+    font-size: 1.2rem;
     line-height: 2rem;
   }
 

@@ -91,6 +91,11 @@ export default function AppAbout(props = null) {
         }}>
           テストを高速実行
         </div>
+        <div className={`${styles.item} ${styles.left}`} onClick={() => {
+            scrollToDOM("detailUseCaseContent");
+        }}>
+          誰でも使えて、結果が分かる
+        </div>
       </section>
     )
   }
@@ -178,9 +183,9 @@ export default function AppAbout(props = null) {
     )
   }
 
-  const UseCaseContent = () => {
+  const DetailUseCaseContent = () => {
     return (
-      <section name="useCaseContent" className={`${styles.detailContent} ${styles.useCaseContent} ${styles.bgGray}`}>
+      <section name="detailUseCaseContent" className={`${styles.detailContent} ${styles.detailUseCaseContent} ${styles.bgGray}`}>
         <h4 className={styles.title}>誰でも使えて、結果が分かる</h4>
         <div className={styles.useCase}>
           従来のE2Eテストはエンジニアのものでした。<br/>
@@ -229,7 +234,7 @@ export default function AppAbout(props = null) {
         <DetailUnnecessaryProgramContent />
         <DetailOneClickTestContent />
         <DetailHighSppedTestContent />
-        <UseCaseContent />
+        <DetailUseCaseContent />
         <Footer />
       </div>
     </React.Fragment>
