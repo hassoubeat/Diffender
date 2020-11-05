@@ -114,8 +114,8 @@ export default function PageForm(props = null) {
             errorMessages={ (errors.name) && [errors.name.message] } 
             inputRef={ register({
               maxLength : {
-                value: 30,
-                message: '最大30文字で入力してください'
+                value: 100,
+                message: '最大100文字で入力してください'
               }
             })}
           />
@@ -127,8 +127,8 @@ export default function PageForm(props = null) {
             errorMessages={ (errors.description) && [errors.description.message] } 
             inputRef={ register({
               maxLength : {
-                value: 30,
-                message: '最大50文字で入力してください'
+                value: 400,
+                message: '最大400文字で入力してください'
               }
             })}
           />

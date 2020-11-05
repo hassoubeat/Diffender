@@ -27,7 +27,6 @@ exports.lambda_handler = async (event, context) => {
 
     projectValidator.projectValid(updateProject);
 
-    // ユーザオプションの更新
     await projectDao.updateProject(updateProject);
     const project = await projectDao.getProject(updateProject.id);
 

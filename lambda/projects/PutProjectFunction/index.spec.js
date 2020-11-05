@@ -15,7 +15,14 @@ describe('プロジェクト登録処理 正常系テスト', () => {
 
     // マニュアルモックの上書き
     projectDao.getProject = () => {
-      return { id:'Project-1' , name: 'プロジェクト1', description: 'example.com1のテスト', projectTieUserId: '8c32116d-5c8c-48c0-8264-1df53434b503' }
+      return { 
+        id: 'Project-1' , 
+        name: 'プロジェクト1', 
+        description: 'example.com1のテスト', 
+        beforeCommonActions: [],
+        afterCommonActions: [],
+        projectTieUserId: '8c32116d-5c8c-48c0-8264-1df53434b503'
+      }
     }
 
     // 投入データの生成
@@ -23,6 +30,8 @@ describe('プロジェクト登録処理 正常系テスト', () => {
       id:'Project-1' , 
       name: 'プロジェクト1', 
       description: 'example.com1のテスト', 
+      beforeCommonActions: [],
+      afterCommonActions: [],
       projectTieUserId: '8c32116d-5c8c-48c0-8264-1df53434b503'
     };
     const event = {
@@ -45,7 +54,7 @@ describe('プロジェクト登録処理 正常系テスト', () => {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'OPTIONS, PUT'
         },
-        body: "{\"id\":\"Project-1\",\"name\":\"プロジェクト1\",\"description\":\"example.com1のテスト\",\"projectTieUserId\":\"8c32116d-5c8c-48c0-8264-1df53434b503\"}"
+        body: "{\"id\":\"Project-1\",\"name\":\"プロジェクト1\",\"description\":\"example.com1のテスト\",\"beforeCommonActions\":[],\"afterCommonActions\":[],\"projectTieUserId\":\"8c32116d-5c8c-48c0-8264-1df53434b503\"}"
       }
     );
   });
@@ -77,7 +86,7 @@ describe('プロジェクト登録処理 異常系テスト', () => {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'OPTIONS, PUT'
         },
-        body: '{\"message\":\"Request body is empty.\"}'
+        body: '{\"message\":\"Request body is empty or Not JSON format.\"}'
       }
     );
   });
@@ -87,8 +96,10 @@ describe('プロジェクト登録処理 異常系テスト', () => {
     // 投入データの生成
     const updateData = {
       id:'Project-1' , 
-      name: '1234512345123451234512345123451', 
+      name: 'ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVW1234512345123451234512345123451', 
       description: 'example.com1のテスト', 
+      beforeCommonActions: [],
+      afterCommonActions: [],
       projectTieUserId: '8c32116d-5c8c-48c0-8264-1df53434b503'
     };
     const event = {
@@ -111,7 +122,7 @@ describe('プロジェクト登録処理 異常系テスト', () => {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'OPTIONS, PUT'
         },
-        body: '{"message":"プロジェクト名は最大30文字です"}'
+        body: '{"message":"プロジェクト名は最大100文字です"}'
       }
     );
   });
@@ -122,8 +133,10 @@ describe('プロジェクト登録処理 異常系テスト', () => {
     const updateData = {
       id:'Project-1' , 
       name: 'プロジェクト1', 
-      description: "123451234512345123451234512345123451234512345123451",
-      projectTieUserId: '8c32116d-5c8c-48c0-8264-1df53434b503'
+      description: "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJK",
+      projectTieUserId: '8c32116d-5c8c-48c0-8264-1df53434b503',
+      beforeCommonActions: [],
+      afterCommonActions: []
     };
     
     const event = {
@@ -146,7 +159,7 @@ describe('プロジェクト登録処理 異常系テスト', () => {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'OPTIONS, PUT'
         },
-        body: '{"message":"プロジェクト説明は最大50文字です"}'
+        body: '{"message":"プロジェクト説明は最大400文字です"}'
       }
     );
   });
@@ -157,6 +170,8 @@ describe('プロジェクト登録処理 異常系テスト', () => {
     const updateData = {
       id:'Project-1' , 
       name: 'プロジェクト1', 
+      beforeCommonActions: [],
+      afterCommonActions: [],
       description: "123451234512345123451234512345123451234512345123451",
       projectTieUserId: '1111111-1111-1111-1111-1111111111'
     };
@@ -190,6 +205,8 @@ describe('プロジェクト登録処理 異常系テスト', () => {
     const updateData = {
       id:'Project-1' , 
       name: 'プロジェクト1', 
+      beforeCommonActions: [],
+      afterCommonActions: [],
       description: 'example.com1のテスト', 
       projectTieUserId: '8c32116d-5c8c-48c0-8264-1df53434b503'
     };
@@ -224,7 +241,9 @@ describe('プロジェクト登録処理 異常系テスト', () => {
       id:'Project-1' , 
       name: 'プロジェクト1', 
       description: "123451234512345123451234512345123451234512345123451",
-      projectTieUserId: '8c32116d-5c8c-48c0-8264-1df53434b503'
+      projectTieUserId: '8c32116d-5c8c-48c0-8264-1df53434b503',
+      beforeCommonActions: [],
+      afterCommonActions: [],
     };
     const event = {
       body: JSON.stringify(updateData)
