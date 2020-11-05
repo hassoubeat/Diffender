@@ -35,25 +35,22 @@ export default function AppAbout(props = null) {
 
   const HeroContent = () => {
     return (
-      <section id="heroContent" className={styles.heroContent}>
-        <h2 className={styles.title}>サイトの変更点がひと目でわかる</h2>
-        <div className={styles.firstStage}>
-          <div>
-            <img className={`${styles.image} ${styles.beforeImage}`}  src={"/img/AppAbout/before.png"} alt="before" />
+      <section id="heroContent2" className={styles.heroContent2}>
+        <h2 className={styles.title}>サイトの変更点が一目でわかる</h2>
+        <div className={styles.diffVisual}>
+          <div className={styles.image}>
+            <img className={`${styles.origin}`}  src={"/img/AppAbout/origin.png"} alt="origin" />
           </div>
-          <div className={styles.space}></div>
-          <div>
-            <img className={`${styles.image} ${styles.afterImage}`} src={"/img/AppAbout/after.png"} alt="after" />
+          <div className={styles.image}>
+            <img className={`${styles.diff}`}  src={"/img/AppAbout/diff.png"} alt="diff" />
           </div>
-        </div>
-        <div>
-        </div>
-        <div className={styles.secondStage}>
-          <img className={`${styles.image} ${styles.diffImage}`} src={"/img/AppAbout/diff.png"} alt="diff" />
+          <div className={styles.image}>
+            <img className={`${styles.target}`}  src={"/img/AppAbout/target.png"} alt="target" />
+          </div>
         </div>
         <div className={styles.next}>
           <i className="fas fa-angle-double-down" onClick={() => {
-            // descriptionContentまでスクロール
+            //descriptionContentまでスクロール
             scrollToDOM("descriptionContent");
           }}/>
         </div>

@@ -28,129 +28,130 @@ $HEADER_HEIGHT: 42px;
 
     &:hover {
       color: $LINK_COLOR;
-
     }
   }
 }
 
-.heroContent {
+.heroContent2 {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 0px 10px;
-  
-  height: calc( 100vh - #{$HEADER_HEIGHT} );
+  height: calc( 100vh - #{$HEADER_HEIGHT} - 16px);
+  background-color: $LIGHT_GRAY_COLOR;
 
   .title {
-    display: flex;
-    justify-content: center;
-    color: $MAIN_COLOR;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: $BLACK_TEXT_COLOR;
     font-size: 2rem;
     margin: 0px;
+    z-index: 100;
+    transform: translate(-50%);
+    white-space: nowrap;
+    background: linear-gradient(transparent 70%, $MAIN_COLOR 30%);
+    animation: diffImageMove 3s ease 2s 1 normal forwards running;
   }
 
-  @include mq(sp) {
-    .title {
-      font-size: 1.3rem;
-    }
-  }
-  
-  .space {
-    width: 100px;
+  .next {
+    opacity: 0;
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%);
+    font-size: 2.5rem;
+    color: $LINK_COLOR;
+    z-index: 100;
+    cursor: pointer;
+    animation: diffImageMove 3s ease 2s 1 normal forwards running;
   }
 
-  .firstStage{
+  .diffVisual {
     display: flex;
     justify-content: center;
-    margin: 20px 0;
+    margin: 0 auto;
 
     .image {
-      width: 100%;
-      max-width: 300px;
+      height: calc( 100vh - #{$HEADER_HEIGHT} - 16px);
       transition: all 3s ease-in-out 3s;
+      opacity: 0.2;
 
-      &.beforeImage {
-        animation: beforeImageMove 2s ease 1s 1 normal none running;
+      img {
+        height: 100%;
+      }
+  
+      .origin {
+        animation: originImageMove 2s ease 1s 1 normal none running;
+      }
+  
+      .target {
+        animation: targetImageMove 2s ease 1s 1 normal none running;
       }
 
-      &.afterImage {
-        animation: afterImageMove 2s ease 1s 1 normal none running;
+      .diff {
+        opacity: 0;
+        animation: diffImageMove 3s ease 1.5s 1 normal forwards running;
       }
     }
-
-    @keyframes beforeImageMove {
+  
+    @keyframes originImageMove {
       0% {
         transform: translateX(0px);
-        opacity: 1;
       }
       
       100% {
-        // transform: translateX(calc(100% - 100px));
         transform: translateX(50%);
         opacity: 0;
       }
     }
-
-    @keyframes afterImageMove {
+  
+    @keyframes targetImageMove {
       0% {
         transform: translateX(0px);
-        opacity: 1;
       }
     
       100% {
-        // transform: translateX(calc(-100% + 100px));
-        // transform: translateX(calc(-50% - 100px));
         transform: translateX(-50%);
         opacity: 0;
       }
     }
-    .space {
-      width: 100px;
-    }
 
-    @include mq(sp) {
-      .space {
-        width: 20px;
-      }
-    }
-  }
-
-  .secondStage{
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
-
-    .image {
-      width: 100%;
-      max-width: 300px;
-      transition: all 3s ease-in-out 3s;
-
-      &.diffImage {
+    @keyframes diffImageMove {
+      0% {
         opacity: 0;
-        animation: diffImageMove 3s ease 1.5s 1 normal forwards running;
       }
-
-      @keyframes diffImageMove {
-        0% {
-          display: block;
-          opacity: 0;
-        }
-      
-        100% {
-          display: block;
-          opacity: 1;
-        }
+    
+      100% {
+        opacity: 1;
       }
     }
   }
 
-  .next {
-    text-align: center;
-    margin: 20px 0;
-    font-size: 2rem;
-    color: $LINK_COLOR;
-    cursor: pointer;
+  @include mq(sp) {
+    .title {
+      font-size: 1.5rem;
+      animation: diffImageMove 3s ease 1s 1 normal forwards running;
+    }
+
+    .next {
+      animation: diffImageMove 3s ease 1s 1 normal forwards running;
+    }
+
+    .diffVisual {
+      .image {
+        .origin {
+          display: none;
+        }
+    
+        .target {
+          display: none;
+        }
+
+        .diff {
+          width: 100vw;
+          animation: diffImageMove 3s ease 0 1 normal forwards running;
+        }
+      }
+    }
   }
 }
 
