@@ -8,7 +8,7 @@ exports.lambda_handler = async (event, context) => {
     ...resultItem,
     status: {
       type: "ERROR",
-      message: "スクリーンショットの差分取得に失敗しました",
+      message: "スクリーンショットの差分検出に失敗しました",
       errorDetailMessage: "Lambda run time exceeded."
     }
   });

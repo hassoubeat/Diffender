@@ -50,7 +50,7 @@ exports.lambda_handler = async (event, context) => {
       status: {
         ...resultItem.status,
         type: "SUCCESS",
-        message: "スクリーンショットの差分取得が完了しました",
+        message: "スクリーンショットの差分検出が完了しました",
         screenshotUrl: `https://${DIFFENDER_S3_BUCKET_NAME}.s3.amazonaws.com/${s3ObjectKey}`,
         screenshotS3Key: s3ObjectKey,
         misMatchPercentage: Number(diffData.misMatchPercentage)
@@ -66,7 +66,7 @@ exports.lambda_handler = async (event, context) => {
       status: {
         ...resultItem.status,
         type: "ERROR",
-        message: "スクリーンショットの差分取得に失敗しました",
+        message: "スクリーンショットの差分検出に失敗しました",
         errorDetailMessage: error.message
       }
     });

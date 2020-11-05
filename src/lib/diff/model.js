@@ -41,7 +41,7 @@ export function targetResultFilter (resultList, originResultId) {
 export async function requestDiffScreenshot(inputResult) {
 
   toast.infoToast(
-    { message: `差分取得リクエストを送信しました` }
+    { message: `リクエストを送信しました` }
   );
 
   try {
@@ -52,11 +52,11 @@ export async function requestDiffScreenshot(inputResult) {
     })
 
     toast.successToast(
-      { message: `差分取得リクエストが完了しました` }
+      { message: `テストを開始しました` }
     );
 
     return result;
   } catch (error) {
-    api.utilErrorProcess(error, "差分取得リクエストに失敗しました");
+    api.utilErrorProcess(error, "リクエストに失敗しました");
   }
 }

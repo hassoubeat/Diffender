@@ -5,7 +5,7 @@ import * as toast from 'lib/util/toast';
 export async function requestScreenshot(projectId, inputResult) {
 
   toast.infoToast(
-    { message: `スクリーンショット取得リクエストを送信しました` }
+    { message: `リクエストを送信しました` }
   );
 
   try {
@@ -17,11 +17,11 @@ export async function requestScreenshot(projectId, inputResult) {
     })
 
     toast.successToast(
-      { message: `スクリーンショット取得リクエストが完了しました` }
+      { message: `テストを開始しました` }
     );
 
     return result;
   } catch (error) {
-    api.utilErrorProcess(error, "スクリーンショット取得リクエストに失敗しました");
+    api.utilErrorProcess(error, "リクエストに失敗しました");
   }
 }

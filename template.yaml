@@ -489,7 +489,7 @@ Resources:
         - SQSSendMessagePolicy:
             QueueName:
               !GetAtt DiffScreenshotProcessSQS.QueueName
-  # スクリーンショット差分取得処理
+  # スクリーンショット差分検出処理
   DiffScreenshotProcessFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -757,7 +757,7 @@ Resources:
       # メッセージをキューに貯めておく期間
       MessageRetentionPeriod: 86400
       
-  # スクリーンショットの差分取得処理のキュー
+  # スクリーンショットの差分検出処理のキュー
   DiffScreenshotProcessSQS:
     Type: AWS::SQS::Queue
     Properties:
@@ -769,7 +769,7 @@ Resources:
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt DiffScreenshotProcessDLQ.Arn
         maxReceiveCount: 1
-  # スクリーンショット差分取得処理のデッドレターキュー
+  # スクリーンショット差分検出処理のデッドレターキュー
   DiffScreenshotProcessDLQ:
     Type: AWS::SQS::Queue
     Properties:
