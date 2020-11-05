@@ -36,7 +36,7 @@ export default function AppAbout(props = null) {
 
   const HeroContent = () => {
     return (
-      <section id="heroContent2" className={styles.heroContent2}>
+      <section id="heroContent" className={styles.heroContent}>
         <h2 className={styles.title}>サイトの変更点が一目でわかる</h2>
         <div className={styles.diffVisual}>
           <div className={styles.image}>
