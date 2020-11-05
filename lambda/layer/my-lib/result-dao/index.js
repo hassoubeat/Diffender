@@ -90,6 +90,9 @@ async function postResult(postObject) {
         resultType: postObject.resultType,
         resultTieProjectId: postObject.resultTieProjectId,
         resultTieUserId: postObject.resultTieUserId,
+        diffOriginResultId: postObject.diffOriginResultId,
+        diffTargetResultId: postObject.diffTargetResultId,
+        resultTieUserId: postObject.resultTieUserId,
         ttlDtUnix: ttlDtUnix,
         ttlDt: ttlDt,
       }

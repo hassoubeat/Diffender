@@ -7,6 +7,8 @@ import ResultItemList from 'components/resultItem/ResultItemList';
 
 import { selectResult } from 'app/domainSlice';
 
+import { isResultTypeDIFF } from 'lib/result/model';
+
 import styles from './ResultInfo.module.scss';
 
 export default function ResultInfo(props = null) {
@@ -28,9 +30,25 @@ export default function ResultInfo(props = null) {
         />
         <div className="sectionTitle">関連情報</div>
         <div className={styles.relationInfomation}>
-          <Link to={`/projects/${result.resultTieProjectId}`}>
-            <i className="fas fa-angle-double-right"/> テスト結果を発行したサイト
-          </Link>
+          <div>
+            <Link to={`/projects/${result.resultTieProjectId}`}>
+              <i className="fas fa-angle-double-right"/> テスト結果を発行したサイト
+            </Link>
+          </div>
+          { isResultTypeDIFF(result.resultType) &&
+            <React.Fragment>
+              <div>
+                <Link to={`/results/${result.diffOriginResultId}`}>
+                  <i className="fas fa-angle-double-right"/> 比較元のテスト結果
+                </Link>
+              </div>
+              <div>
+                <Link to={`/results/${result.diffTargetResultId}`}>
+                  <i className="fas fa-angle-double-right"/> 比較対象のテスト結果
+                </Link>
+              </div>
+            </React.Fragment>
+          }
         </div>
         <div className="sectionTitle">レポート</div>
         <div className={styles.chartArea}>
