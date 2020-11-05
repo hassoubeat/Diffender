@@ -53,10 +53,10 @@ const actionNameValid = ({value, prependKey="", errorMessage}) => {
     () => {
       v8n()
         .string()
-        .length(0, 30)
+        .length(0, 100)
         .check(value)
     },
-    errorMessage || `[${prependKey}name] is max 30 characters.`
+    errorMessage || `[${prependKey}name] is max 100 characters.`
   );
 }
 module.exports.actionNameValid = actionNameValid;

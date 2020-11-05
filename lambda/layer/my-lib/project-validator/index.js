@@ -6,13 +6,13 @@ const projectNameValid = (projectName, validErrorMessage) => {
   try {
     v8n()
       .string()
-      .length(0, 30)
+      .length(0, 100)
       .check(projectName);
   } catch (error) {
     console.error(error);
 
     // エラーメッセージのセット
-    error.message = validErrorMessage || "プロジェクト名は最大30文字です";
+    error.message = validErrorMessage || "プロジェクト名は最大100文字です";
     error.statusCode = 400;
     throw error;
   }
@@ -24,13 +24,13 @@ const projectDescriptionValid = (projectDescription, validErrorMessage) => {
   try {
     v8n()
       .string()
-      .length(0, 50)
+      .length(0, 400)
       .check(projectDescription);
   } catch (error) {
     console.error(error);
 
     // エラーメッセージのセット
-    error.message = validErrorMessage || "プロジェクト説明は最大50文字です";
+    error.message = validErrorMessage || "プロジェクト説明は最大400文字です";
     error.statusCode = 400;
     throw error;
   }

@@ -23,10 +23,10 @@ const pageNameValid = ({value, prependKey="", errorMessage}) => {
     () => {
       v8n()
         .string()
-        .length(0, 30)
+        .length(0, 100)
         .check(value)
     },
-    errorMessage || `[${prependKey}name] is max 30 characters.`
+    errorMessage || `[${prependKey}name] is max 100 characters.`
   );
 }
 module.exports.pageNameValid = pageNameValid;
@@ -37,10 +37,10 @@ const pageDescriptionValid = ({value, prependKey="", errorMessage}) => {
     () => { 
       v8n()
         .string()
-        .length(0, 50)
+        .length(0, 400)
         .check(value)
     },
-    errorMessage || `[${prependKey}description] max 50 characters.`
+    errorMessage || `[${prependKey}description] max 400 characters.`
   );
 }
 module.exports.pageDescriptionValid = pageDescriptionValid;

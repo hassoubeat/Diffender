@@ -86,17 +86,17 @@ describe('ページ登録処理 異常系テスト', () => {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'OPTIONS, PUT'
         },
-        body: '{\"message\":\"Request body is empty.\"}'
+        body: '{\"message\":\"Request body is empty or Not JSON format.\"}'
       }
     );
   });
 
-  test('Lambdaハンドラのテスト バリデーションエラー ページ名の最大文字長(31文字)', async () => {
+  test('Lambdaハンドラのテスト バリデーションエラー ページ名の最大文字長(101文字)', async () => {
 
     // 投入データの生成
     const updateData = {
       id:'Page-1' , 
-      name: '1234512345123451234512345123451', 
+      name: 'ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVW', 
       description: 'example.com1のテスト', 
       pageTieUserId: '8c32116d-5c8c-48c0-8264-1df53434b503'
     };
@@ -120,18 +120,18 @@ describe('ページ登録処理 異常系テスト', () => {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'OPTIONS, PUT'
         },
-        body: '{"message":"[name] is max 30 characters."}'
+        body: '{"message":"[name] is max 100 characters."}'
       }
     );
   });
 
-  test('Lambdaハンドラのテスト バリデーションエラー ページ説明の最大文字長(51文字)', async () => {
+  test('Lambdaハンドラのテスト バリデーションエラー ページ説明の最大文字長(401文字)', async () => {
 
     // 投入データの生成
     const updateData = {
       id:'Page-1' , 
       name: 'ページ1', 
-      description: "123451234512345123451234512345123451234512345123451",
+      description: "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJK",
       pageTieUserId: '8c32116d-5c8c-48c0-8264-1df53434b503'
     };
     
@@ -155,7 +155,7 @@ describe('ページ登録処理 異常系テスト', () => {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'OPTIONS, PUT'
         },
-        body: '{"message":"[description] max 50 characters."}'
+        body: '{"message":"[description] max 400 characters."}'
       }
     );
   });

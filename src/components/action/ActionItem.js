@@ -55,8 +55,8 @@ export default function ActionItem(props = null) {
         errorMessages={ _.get(errors, `${actionsName}[${index}].name.message`) && [ _.get(errors, `${actionsName}[${index}].name.message`) ] } 
         inputRef={register({
           maxLength : {
-            value: 30,
-            message: '最大30文字で入力してください'
+            value: 100,
+            message: '最大100文字で入力してください'
           }
         })}
       />
