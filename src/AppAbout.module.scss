@@ -216,14 +216,14 @@ $HEADER_HEIGHT: 42px;
 }
 
 .detailContent {
-  margin-top: 70px;
   padding: 10px;
+  padding-bottom: 50px;
   text-align: center;
 
   .title {
     margin: 10px 0;
     color: $MAIN_COLOR;
-    font-size: 1.5rem;
+    font-size: 2rem;
   }
 
   .description {
@@ -246,6 +246,10 @@ $HEADER_HEIGHT: 42px;
     }
   }
   @include mq(sp) {
+    .title {
+      font-size: 1.5rem;
+    }
+
     .visual {
       justify-content: flex-start;
     }
