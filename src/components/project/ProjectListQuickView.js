@@ -111,7 +111,7 @@ export default function ProjectListQuickView(props = null) {
         }}>
           <i className="fas fa-angle-double-right" />
           <div className={styles.label}>
-            Projects
+            Sites
           </div>
         </div>
       }

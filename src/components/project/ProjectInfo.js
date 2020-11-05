@@ -30,7 +30,7 @@ export default function ProjectInfo(props = null) {
           }} 
         />
         <div className={styles.relateResultArea}>
-          <div className={styles.title}>関連するギャラリー</div>
+          <div className={styles.title}>関連するテスト結果</div>
           <ResultList 
             projectId={projectId} 
             isDisplayListCount={false}

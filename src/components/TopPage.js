@@ -13,8 +13,7 @@ export default function TopPage(props = null) {
 
         <h1 className={styles.h1}>Diffenderへようこそ！</h1>
         <div className={styles.message}>
-          Diffender(ディフェンダー)はWebサイトの表示崩れなどの想定しない変更を視覚的に検出するE2Eテストサービスです。<br/>
-          あなたのサイトの想定しないDiff(差分)を検出して品質を守るのに役立ててください。<br/>
+          Diffender(ディフェンダー)はWebサイトの表示崩れなどの想定しない変更点を視覚的に検出するE2Eテストサービスです。<br/>
         </div>
         <div className={styles.link}>
           <Link to={"/aaaaa"}>

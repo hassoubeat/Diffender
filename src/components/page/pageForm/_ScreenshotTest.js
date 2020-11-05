@@ -88,7 +88,7 @@ export default function ScreenshotTest(props = null) {
           onClick={
             handleSubmit(onSubmit, onSubmitError)
           }
-        >スクリーンショット取得(テスト)</button>
+        >スクリーンショット取得テスト</button>
         {screenshotUrl &&
           <button 
             type="button"

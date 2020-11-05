@@ -43,7 +43,7 @@ export default function ResultList(props = null) {
 
   // 削除ボタン押下時の処理
   const handleDeleteResult = async (resultId, resultName) => {
-    if (!window.confirm(`ギャラリー「${resultName}」を削除しますか？`)) return;
+    if (!window.confirm(`テスト結果「${resultName}」を削除しますか？`)) return;
     const result = await DeleteResult(resultId);
     if (result) dispatch( deleteResult(result.id) );
   }
@@ -52,7 +52,7 @@ export default function ResultList(props = null) {
     <React.Fragment>
       <div className={`${styles.resultList} scroll`}>
         <div className="sectionTitle">
-          <div className="main">ギャラリー</div>
+          <div className="main">テスト結果一覧</div>
           { (isDisplayListCount) && 
             <ResultListCount projectId={projectId} />
           }
@@ -70,7 +70,7 @@ export default function ResultList(props = null) {
             } />Diff
           </div>
         </div>
-        {/* フィルタリングを行いながら行いながらギャラリーを展開 */}
+        {/* フィルタリングを行いながら行いながらテスト結果を展開 */}
         {filterResultList(resultList, filterObj).map( (result) => (
           <div 
             key={result.id}
@@ -101,7 +101,7 @@ export default function ResultList(props = null) {
         ))}
         { (resultList.length === 0) &&
           <React.Fragment>
-            ギャラリーは存在しません。<br/>
+            テスト結果は存在しません。<br/>
             <Link to={'/screenshot-request'}>スクリーンショットの撮影</Link>、<Link to={'/screenshot-request'}>Diffの検出</Link>の実行結果が表示されます。
           </React.Fragment>
         }

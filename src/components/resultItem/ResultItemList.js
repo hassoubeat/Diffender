@@ -54,11 +54,11 @@ export default function ResultItemList(props = null) {
     if (resultItemList.length === 0) {
       return (
         <React.Fragment>
-          ギャラリーアイテムは存在しません。
+          テスト結果アイテムは存在しません。
         </React.Fragment>
       )
     }
-    // フィルタリングを行いながら行いながらギャラリーアイテム一覧を展開
+    // フィルタリングを行いながら行いながらテスト結果アイテム一覧を展開
     return filterResultItemList(resultItemList, filterObj).map( (resultItem) => (
       <Link key={resultItem.id} to={`/results/${resultItem.resultItemTieResultId}/result-items/${resultItem.id}`}>
         <div className={`${styles.resultItem} ${resultItem.status.type}`}>
@@ -86,7 +86,7 @@ export default function ResultItemList(props = null) {
     ))
   }
 
-  // ギャラリーアイテム一覧の再読み込み
+  // テスト結果アイテム一覧の再読み込み
   const reload = () => {
     dispatch( setLoadStateResultItemList({
       resultId: resultId,
