@@ -1,7 +1,7 @@
 // ローカルストレージから要素の取得
 export const getLSItem = (key, notfoundReturnParam) => {
   const value = localStorage.getItem(key);
-  return (value === undefined) ? notfoundReturnParam : value;
+  return (value === null) ? notfoundReturnParam : toBoolean(value);
 }
 
 // ローカルストレージに要素の設定

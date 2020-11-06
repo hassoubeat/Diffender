@@ -17,8 +17,7 @@ import {
 
 import {
   getLSItem,
-  setLSItem,
-  toBoolean
+  setLSItem
 } from 'lib/util/localStorage'
 
 import _ from 'lodash';
@@ -42,7 +41,7 @@ export default function ResultItemListQuickView(props = null) {
 
   // state setup
   const [isDisplayMenu, setIsDisplayMenu] = useState(
-    toBoolean(getLSItem('isDisplayResultItemQuickMenu', false)) 
+    getLSItem('isDisplayResultItemQuickMenu', true)
   );
 
   // メニュー表示切り替え
