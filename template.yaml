@@ -531,6 +531,19 @@ Resources:
           Properties:
             Queue: !GetAtt DiffScreenshotProcessDLQ.Arn
             BatchSize: 1
+  # Cognitoから送信されるメッセージをカスタマイズするLambda
+  CognitoEmailMessageCustomTriggerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/cognito/CognitoEmailMessageCustomTriggerFunction/
+      Handler: index.lambda_handler
+      Runtime: nodejs12.x
+      Events:
+        CognitoUserPoolCustomMessage:
+          Type: Cognito
+          Properties:
+            UserPool: !Ref DiffenderUserPool
+            Trigger: CustomMessage
     
   # Puppeteer(chrome-aws-lambda)の関連ライブラリのレイヤー
   PuppeteerLayer:

@@ -13,8 +13,7 @@ import {
 } from 'lib/result/model';
 import {
   getLSItem,
-  setLSItem,
-  toBoolean
+  setLSItem
 } from 'lib/util/localStorage'
 import styles from 'styles/QuickView.module.scss';
 
@@ -32,7 +31,7 @@ export default function ResultListQuickView(props = null) {
 
   // state setup
   const [isDisplayMenu, setIsDisplayMenu] = useState(
-    toBoolean(getLSItem('isDisplayResultQuickMenu', false)) 
+    getLSItem('isDisplayResultQuickMenu', true) 
   );
 
   // メニュー表示切り替え

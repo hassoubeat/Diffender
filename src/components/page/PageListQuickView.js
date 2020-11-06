@@ -15,8 +15,7 @@ import {
 } from 'lib/page/model';
 import {
   getLSItem,
-  setLSItem,
-  toBoolean
+  setLSItem
 } from 'lib/util/localStorage'
 import styles from 'styles/QuickView.module.scss';
 
@@ -38,7 +37,7 @@ export default function ProjectListQuickView(props = null) {
 
   // state setup
   const [isDisplayMenu, setIsDisplayMenu] = useState(
-    toBoolean(getLSItem('isDisplayPageQuickMenu', false)) 
+    getLSItem('isDisplayPageQuickMenu', true)
   );
 
   // メニュー表示切り替え

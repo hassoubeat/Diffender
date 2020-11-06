@@ -3,8 +3,7 @@ import ScreenshotView from 'components/screenshot/ScreenshotView';
 
 import {
   getLSItem,
-  setLSItem,
-  toBoolean
+  setLSItem
 } from 'lib/util/localStorage'
 
 import styles from './DiffScreenshotView.module.scss';
@@ -17,13 +16,13 @@ export default function DiffScreenshotView(props = null) {
 
   // state setup
   const [isDisplayOrigin, setIsDisplayOrigin] = useState(
-    toBoolean(getLSItem('isDiffViewDisplayOrigin', true))
+    getLSItem('isDiffViewDisplayOrigin', true)
   );
   const [isDisplayTarget, setIsDisplayTarget] = useState(
-    toBoolean(getLSItem('isDiffViewDisplayTarget', true))
+    getLSItem('isDiffViewDisplayTarget', true)
   );
   const [isDisplayDiff, setIsDisplayDiff] = useState(
-    toBoolean(getLSItem('isDiffViewDisplayDiff', true))
+    getLSItem('isDiffViewDisplayDiff', true)
   );
 
   return (

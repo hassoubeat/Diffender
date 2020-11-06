@@ -26,8 +26,9 @@ export default function TopPage(props = null) {
         </div>
         <UsageMenu />
         <div className={styles.betaMessage}>
-          本サービスはベータ版です。以下の機能制限が存在します。<br/>
-          ・<Link to={"/results"}>テスト結果</Link>は<b>登録後5日で自動削除</b>されます
+          本サービスはベータ版です。以下の注意事項がございます。<br/>
+          ・仕様は変更になる場合があります<br/>
+          ・<Link to={"/results"}>テスト結果</Link>は<b>登録後5日で自動削除</b>されます<br/>
         </div>
       </div>
     </React.Fragment>
