@@ -3,8 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from "react-hook-form";
 import UtilInput from 'components/util/input/Input';
 
+import { 
+  selectCurrentUserOption
+} from 'app/userSlice';
+
 import {  
   setResult,
+  selectProjects,
   selectResults
 } from 'app/domainSlice';
 
@@ -17,17 +22,25 @@ import {
 
 import _ from 'lodash';
 import * as toast from 'lib/util/toast';
+import { sortProjectList } from 'lib/project/model';
 
 import styles from './DiffRequestForm.module.scss';
 
 export default function DiffRequestForm(props = null) {
   // props setup
+  const initSelectProjectId = props.initSelectProjectId;
   const selectedOriginId = props.selectedOriginId;
 
   // hook setup
   const dispatch = useDispatch();
 
   // redux-state setup
+  const userOption = _.cloneDeep(useSelector(selectCurrentUserOption));
+  const projectsSortMap = userOption.projectsSortMap || {};
+  const projectList = sortProjectList(
+    _.cloneDeep(useSelector(selectProjects)),
+    projectsSortMap
+  );
   const resultList = sort(
     _.cloneDeep(useSelector(selectResults({})
   )));
@@ -38,10 +51,12 @@ export default function DiffRequestForm(props = null) {
     defaultValues: {
       name: "",
       description: "",
+      diffProjectId: initSelectProjectId,
       originResultId: "",
       targetResultId: "",
     }
   });
+  const diffProjectId = watch("diffProjectId");
   const originResultId = watch("originResultId");
 
   // submit hander
@@ -63,68 +78,109 @@ export default function DiffRequestForm(props = null) {
     <React.Fragment>
       <div className={styles.diffRequestForm}>
         <div className={styles.inputArea}>
-          {/* 比較元テスト結果の入力セレクタ */}
+          {/* サイト選択 */}
           <div className={styles.inputItem}>
             <label className={styles.inputLabel}>
-              <span className={styles.diff}>比較元のテスト結果</span>
+              <span className={styles.diff}>差分を検出するサイト</span>
             </label>
             <div className={styles.inputSelect} >
               <select 
                 type="select"
-                name="originResultId"
-                defaultValue={selectedOriginId}
+                name="diffProjectId"
                 ref={ register({
-                  required: "比較元テスト結果を選択してください",
+                  required: "差分を検出するサイトを選択してください",
                 })}
                 onChange={() => {
-                  // 比較先テスト結果をクリアする
+                  // 比較元、比較対象テスト結果をクリアする
+                  setValue('originResultId', "");
                   setValue('targetResultId', "");
                 }}
               >
                 <option value=""> Please Select </option>
-                { originResultFilter(resultList).map( (result) => (
+                { projectList.map( (project) => (
                   <option 
-                    key={result.id} 
-                    value={result.id}
-                  >{result.name}</option>　  
+                    key={project.id} 
+                    value={project.id}
+                  >{project.name}</option>
                 ))}
               </select>
-              { errors.originResultId && 
+              { errors.diffProjectId && 
                 <div className={styles.error}>
-                  {errors.originResultId.message}
+                  {errors.diffProjectId.message}
                 </div>
               }
             </div>
           </div>
-          {/* 比較先テスト結果の入力セレクタ */}
-          <div className={styles.inputItem}>
-            <label className={styles.inputLabel}>
-              <span className={styles.diff}>比較対象のテスト結果</span>
-            </label>
-            <div className={styles.inputSelect} >
-              <select 
-                type="select"
-                name="targetResultId"
-                disabled={(originResultId === "")}
-                ref={ register({
-                  required: "比較対象テスト結果を選択してください",
-                })}
-              >
-                <option value=""> Please Select </option>
-                { targetResultFilter(resultList, originResultId).map( (result) => (
-                  <option 
-                    key={result.id} 
-                    value={result.id}
-                  >{result.name}</option>　  
-                ))}
-              </select>
-              { errors.targetResultId && 
-                <div className={styles.error}>
-                  {errors.targetResultId.message}
+          {/* 比較元テスト結果の入力セレクタ */}
+          { (diffProjectId) &&
+            <React.Fragment>
+              <div className={styles.diffResultArea}>
+                <div className={styles.flex}>
+                  <div className={styles.inputItem}>
+                    <label className={styles.inputLabel}>
+                      <span className={styles.diff}>比較元のテスト結果</span>
+                    </label>
+                    <div className={styles.inputSelect} >
+                      <select 
+                        type="select"
+                        name="originResultId"
+                        defaultValue={selectedOriginId}
+                        ref={ register({
+                          required: "比較元テスト結果を選択してください",
+                        })}
+                        onChange={() => {
+                          // 比較先テスト結果をクリアする
+                          setValue('targetResultId', "");
+                        }}
+                      >
+                        <option value=""> Please Select </option>
+                        { originResultFilter(resultList, diffProjectId).map( (result) => (
+                          <option 
+                            key={result.id} 
+                            value={result.id}
+                          >{result.name}</option>　  
+                        ))}
+                      </select>
+                      { errors.originResultId && 
+                        <div className={styles.error}>
+                          {errors.originResultId.message}
+                        </div>
+                      }
+                    </div>
+                  </div>
+                  {/* 比較先テスト結果の入力セレクタ */}
+                  <div className={styles.inputItem}>
+                    <label className={styles.inputLabel}>
+                      <span className={styles.diff}>比較対象のテスト結果</span>
+                    </label>
+                    <div className={styles.inputSelect} >
+                      <select 
+                        type="select"
+                        name="targetResultId"
+                        disabled={(originResultId === "")}
+                        ref={ register({
+                          required: "比較対象テスト結果を選択してください",
+                        })}
+                      >
+                        <option value=""> Please Select </option>
+                        { targetResultFilter(resultList, originResultId).map( (result) => (
+                          <option 
+                            key={result.id} 
+                            value={result.id}
+                          >{result.name}</option>　  
+                        ))}
+                      </select>
+                      { errors.targetResultId && 
+                        <div className={styles.error}>
+                          {errors.targetResultId.message}
+                        </div>
+                      }
+                    </div>
+                  </div>
                 </div>
-              }
-            </div>
-          </div>
+              </div>
+            </React.Fragment>
+          }
           {/* テスト名の入力フォーム */}
           <UtilInput
             label="テスト名" 

@@ -4,14 +4,15 @@ import * as toast from 'lib/util/toast';
 import { RESULT_TYPE_SS } from 'lib/util/const'
 
 // 比較元リザルトのフィルタリング処理
-export function originResultFilter (resultList) {
+export function originResultFilter (resultList, projectId) {
 
   return resultList.filter((originResult) => {
     // resultTypeがSCREENSHOTの時のみ
     const isResultTypeSS = (originResult.resultType === RESULT_TYPE_SS);
-
+    // 同じプロジェクトから出力されたリザルトのみ
+    const isSameProject = (originResult.resultTieProjectId === projectId);
     // 上記の条件すべてを満たすとき正(フィルターから除外しない)
-    return (isResultTypeSS);
+    return (isResultTypeSS && isSameProject);
   });
 }
 
