@@ -97,3 +97,21 @@ export async function deleteProject(projectId) {
     api.utilErrorProcess(error, "プロジェクトの削除に失敗しました");
   }
 }
+
+// 入力ページの手動キャスト
+export function inputProjectManualCast (inputProject) {
+  // TODO 数値型のキャスト変換
+  // ReactHookFormで数値の自動キャストに対応していないため、手動キャスト
+  // 自動キャストを追加するかの議論は https://github.com/react-hook-form/react-hook-form/issues/615
+  // 自動キャストが実装された場合は対応して本処理を除外
+  inputProject.beforeCommonActions = inputProject.beforeCommonActions || [];
+  inputProject.beforeCommonActions.forEach((action) => {
+    if (action.millisecond) action.millisecond = Number(action.millisecond);
+  });
+  inputProject.afterCommonActions = inputProject.afterCommonActions || [];
+  inputProject.afterCommonActions.forEach((action) => {
+    if (action.millisecond) action.millisecond = Number(action.millisecond);
+  });
+
+  return inputProject;
+}

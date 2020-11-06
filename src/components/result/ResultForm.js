@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from "react-hook-form";
 import UtilInput from 'components/util/input/Input';
@@ -27,6 +27,9 @@ export default function ResultForm(props = null) {
   // redux-state setup
   const result = useSelector(selectResult(resultId, isUpdate));
 
+  // state setup
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // ReactHookForm setup
   const reactHookFormMethods = useForm({
     mode: 'onChange',
@@ -42,6 +45,10 @@ export default function ResultForm(props = null) {
   }, [isUpdate, result, reset]);
 
   const onSubmit = async (inputResult) => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     let resResult = null;
     if (isUpdate){
       resResult = await putResult({
@@ -53,6 +60,9 @@ export default function ResultForm(props = null) {
       throw new Error("テスト結果登録処理は未実装です");
     }
     if (resResult) dispatch( setResult(resResult) );
+
+    setIsSubmitting(false);
+
     if (resResult && successPostCallback) successPostCallback();
   }
 
@@ -65,7 +75,8 @@ export default function ResultForm(props = null) {
   }
 
   return (
-    <React.Fragment>
+    <form onSubmit={ handleSubmit(onSubmit, onSubmitError)}>
+      <input type="submit" className="hidden" />
       <div className={styles.resultForm}>
         <div className={styles.inputArea}>
           <UtilInput
@@ -104,6 +115,6 @@ export default function ResultForm(props = null) {
           </div>
         </div>
       </div>
-    </React.Fragment>
+    </form>
   );
 }

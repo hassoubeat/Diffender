@@ -12,7 +12,8 @@ import {
 
 import {
   postProject,
-  putProject
+  putProject,
+  inputProjectManualCast
 } from 'lib/project/model'
 
 import * as toast from 'lib/util/toast';
@@ -31,6 +32,7 @@ export default function ProjectForm(props = null) {
   const project = useSelector(selectProject(projectId, isUpdate));
 
   // state setup
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRowRegisterPage, setIsRowRegisterPage] = useState(true);
 
   // ReactHookForm setup
@@ -50,18 +52,10 @@ export default function ProjectForm(props = null) {
   }, [isUpdate, project, reset]);
 
   const onSubmit = async (inputProject) => {
-    // TODO 数値型のキャスト変換
-    // ReactHookFormで数値の自動キャストに対応していないため、手動キャスト
-    // 自動キャストを追加するかの議論は https://github.com/react-hook-form/react-hook-form/issues/615
-    // 自動キャストが実装された場合は対応して本処理を除外
-    inputProject.beforeCommonActions = inputProject.beforeCommonActions || [];
-    inputProject.beforeCommonActions.forEach((action) => {
-      if (action.millisecond) action.millisecond = Number(action.millisecond);
-    });
-    inputProject.afterCommonActions = inputProject.afterCommonActions || [];
-    inputProject.afterCommonActions.forEach((action) => {
-      if (action.millisecond) action.millisecond = Number(action.millisecond);
-    });
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
+    inputProject = inputProjectManualCast(inputProject);
     
     let registedProject = null;
     if (isUpdate) {
@@ -73,6 +67,9 @@ export default function ProjectForm(props = null) {
       registedProject = await postProject(inputProject)
     }
     if (registedProject) dispatch(setProject(registedProject));
+
+    setIsSubmitting(false);
+
     if (registedProject && successPostCallback) successPostCallback(registedProject, isRowRegisterPage);
   }
 
@@ -85,9 +82,9 @@ export default function ProjectForm(props = null) {
   }
 
   return (
-    <React.Fragment>
-      <form>
+    <form onSubmit={ handleSubmit(onSubmit, onSubmitError)}>
       <FormProvider {...reactHookFormMethods} >
+      <input type="submit" className="hidden" />
       <div className={styles.projectForm}>
         <div className={styles.inputArea}>
           <UtilInput
@@ -157,7 +154,6 @@ export default function ProjectForm(props = null) {
         </div>
       </div>
       </FormProvider>
-      </form>
-    </React.Fragment>
+    </form>
   );
 }

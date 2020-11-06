@@ -10,7 +10,9 @@ export default function Input(props = null) {
   const value = props.value;
   const defaultValue = props.defaultValue;
   const ref = props.inputRef || (() => {});
-  const onChangeFunc = props.onChangeFunc || (() => {});  
+  const onChangeFunc = props.onChangeFunc || (() => {});
+  const onKeyPressFunc = props.onKeyPressFunc || (() => {});  
+  const onKeyDownFunc = props.onKeyDownFunc || (() => {});
   const errorMessages = props.errorMessages || [];
   const labelClass = props.labelClass || "";
   const inputClass = props.inputClass || "";
@@ -33,6 +35,8 @@ export default function Input(props = null) {
           name={name} 
           placeholder={placeholder} 
           onChange={ (e) => onChangeFunc(e) } 
+          onKeyPress={ (e) => onKeyPressFunc(e) }
+          onKeyDown={ (e) => onKeyDownFunc(e) }
           value={value}
           defaultValue={defaultValue}
           ref={ref}

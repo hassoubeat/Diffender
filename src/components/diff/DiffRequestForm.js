@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from "react-hook-form";
 import UtilInput from 'components/util/input/Input';
@@ -45,8 +45,11 @@ export default function DiffRequestForm(props = null) {
     _.cloneDeep(useSelector(selectResults({})
   )));
 
+  // state setup
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // ReactHookForm setup
-  const {register, errors, watch, setValue, handleSubmit} = useForm({
+  const {register, errors, watch, setValue, handleSubmit, reset} = useForm({
     mode: 'onChange',
     defaultValues: {
       name: "",
@@ -58,11 +61,17 @@ export default function DiffRequestForm(props = null) {
   });
   const diffProjectId = watch("diffProjectId");
   const originResultId = watch("originResultId");
-
+  
   // submit hander
   const onSubmit = async (data) => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
     const result = await requestDiffScreenshot(data);
     if (result) dispatch( setResult(result) );
+    reset();
+
+    setIsSubmitting(false);
   }
 
   // submit error hander
@@ -75,7 +84,8 @@ export default function DiffRequestForm(props = null) {
   }
 
   return (
-    <React.Fragment>
+    <form onSubmit={ handleSubmit(onSubmit, onSubmitError) }>
+      <input type="submit" className="hidden" />
       <div className={styles.diffRequestForm}>
         <div className={styles.inputArea}>
           {/* サイト選択 */}
@@ -220,6 +230,6 @@ export default function DiffRequestForm(props = null) {
           </div>
         </div>
       </div>
-    </React.Fragment>
+    </form>
   );
 }
