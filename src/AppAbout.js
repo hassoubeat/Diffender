@@ -216,9 +216,7 @@ export default function AppAbout(props = null) {
       <footer name="footer" className={`${styles.footer}`} onClick={ () => {
         moveToTopPage();
       }}>
-        <a href="https://github.com/hassoubeat/Diffender">
-          Copyright © Diffender 2020
-        </a>
+        Copyright © Diffender 2020
       </footer>
     )
   }
