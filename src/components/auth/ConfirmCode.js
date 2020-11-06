@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import UtilInput from 'components/util/input/Input';
 import { confirmSignUp, resendSignUp } from 'lib/auth/cognitoAuth';
+import Loading from 'components/common/Loading';
+
 import {
   handleChangeUserParams,
   isErrorsCheck
@@ -22,12 +24,14 @@ export default function ConfirmCode(props = null) {
     userId: [],
     confirmCode: []
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const history = useHistory();
 
   // 認証コード再発行ボタン押下時のイベント
   const handleVerifiyConfirmCode = async () => {
     try {
+      setIsSubmitting(true);
       await confirmSignUp(
         user.userId,
         user.confirmCode
@@ -44,6 +48,7 @@ export default function ConfirmCode(props = null) {
       toast.errorToast({
         message: message
       });
+      setIsSubmitting(false);
     }
   }
 
@@ -68,8 +73,11 @@ export default function ConfirmCode(props = null) {
   }
 
   return (
-    <React.Fragment>
-      <div className={styles.confirmCode}>
+    <form className={styles.confirmCode} onSubmit={ (e) => { 
+      handleVerifiyConfirmCode()   
+      e.preventDefault()
+    }}>
+      <input type="submit" className="hidden" />
         <div className={styles.formArea}>
           <div className={styles.title}>
             認証コードの確認
@@ -97,8 +105,19 @@ export default function ConfirmCode(props = null) {
             errorMessages={ errors.confirmCode }
           />
           <div className={styles.actions}>
-            <button className={styles.inputButton} disabled={!isErrorsCheck(errors)} onClick={ async() => { handleVerifiyConfirmCode() }
-            }>認証コードの確認</button>
+            {/* ログイン試行中はローディングを表示 */}
+            { (isSubmitting) ?
+              <Loading/> 
+              :
+              <button 
+                className={styles.inputButton} 
+                disabled={!isErrorsCheck(errors)} 
+                onClick={ async() => { handleVerifiyConfirmCode() }
+              }>
+                認証コードの確認
+              </button>
+            }
+            
           </div>
           <div className={styles.subMenu}>
             <div className={`${styles.item} linkButton`} onClick={ async() => { handleResendConfirmCode() } }>
@@ -111,8 +130,7 @@ export default function ConfirmCode(props = null) {
             </div>
           </div>
         </div>
-      </div>
-    </React.Fragment>
+    </form>
   )
 }
 

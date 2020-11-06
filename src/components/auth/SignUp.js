@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { signUp } from 'lib/auth/cognitoAuth';
 import UtilInput from 'components/util/input/Input';
+import Loading from 'components/common/Loading';
+
 import {
   handleChangeUserParams,
   isErrorsCheck
@@ -13,7 +15,7 @@ import styles from './SignUp.module.scss';
 export default function SignUp(props = null) {
   const history = useHistory();
 
-  // Stateの定義
+  // state setup
   const [user, setUser] = useState({
     userId: "",
     password: "",
@@ -26,10 +28,12 @@ export default function SignUp(props = null) {
     confirmPassword: [],
     nickname: []
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // サインアップボタン押下時のイベント
   const handleSignUp = async () => {
     try {
+      setIsSubmitting(true);
       const result = await signUp(
         user.userId,
         user.password,
@@ -48,12 +52,16 @@ export default function SignUp(props = null) {
       toast.errorToast({
         message: message
       });
+      setIsSubmitting(false);
     }
   }
 
   return (
-    <React.Fragment>
-      <div className={styles.signUp}>
+    <form className={styles.signUp} onSubmit={ (e) => { 
+      handleSignUp()   
+      e.preventDefault()
+    }}>
+      <input type="submit" className="hidden" />
         <div className={styles.formArea}>
           <div className={styles.title}>
             アカウント作成
@@ -99,8 +107,17 @@ export default function SignUp(props = null) {
             } } 
             errorMessages={ errors.nickname }
           />
-          <button className={styles.inputButton} disabled={!isErrorsCheck(errors)} onClick={ async () => { handleSignUp() }
-          }>サインアップ</button>
+          { (isSubmitting) ?
+            <Loading/> 
+            :
+            <button 
+              className={styles.inputButton} 
+              disabled={!isErrorsCheck(errors)} 
+              onClick={ async () => { handleSignUp() }
+            }>
+              サインアップ
+            </button>
+          }
           <div className={styles.actions}>
             <div className={styles.action}>
               <Link to={'/signIn'}>
@@ -114,7 +131,6 @@ export default function SignUp(props = null) {
             </div>
           </div>
         </div>
-      </div>
-    </React.Fragment>
+    </form>
   );
 }

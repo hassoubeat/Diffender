@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { forgotPassword } from 'lib/auth/cognitoAuth';
 import UtilInput from 'components/util/input/Input';
+import Loading from 'components/common/Loading';
+
 import {
   handleChangeUserParams,
   isErrorsCheck
@@ -12,17 +14,20 @@ import styles from './ForgotPassword.module.scss';
 export default function ForgotPassword(props = null) {
   const history = useHistory();
 
-  // Stateの定義
+  // state setup
   const [user, setUser] = useState({
     userId: "",
   });
   const [errors, setErrors] = useState({
     userId: [],
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // パスワードリマインドボタン押下時のイベント
   const handleforgotPassword = async () => {
     try {
+      setIsSubmitting(true);
+
       await forgotPassword(
         user.userId,
       );
@@ -36,12 +41,17 @@ export default function ForgotPassword(props = null) {
       toast.errorToast({
         message: message
       });
+
+      setIsSubmitting(false);
     }
   }
 
   return (
-    <React.Fragment>
-      <div className={styles.forgotPassword}>
+    <form className={styles.forgotPassword} onSubmit={ (e) => { 
+      handleforgotPassword()   
+      e.preventDefault()
+    }}>
+      <input type="submit" className="hidden" />
         <div className={styles.formArea}>
           <div className={styles.title}>
             パスワードリマインド
@@ -57,8 +67,17 @@ export default function ForgotPassword(props = null) {
             } } 
             errorMessages={ errors.userId }
           />
-          <button className={styles.inputButton}　disabled={!isErrorsCheck(errors)} onClick={ async () => { handleforgotPassword() }
-          }>確認コード送信</button>
+          { (isSubmitting) ?
+            <Loading/> 
+            :
+            <button 
+              className={styles.inputButton}　
+              disabled={!isErrorsCheck(errors)} 
+              onClick={ async () => { handleforgotPassword() }
+            }>
+              確認コード送信
+            </button>
+          }
           <div className={styles.subMenu}>
             <div className={styles.item}>
               <Link to={'/signIn'}>
@@ -72,7 +91,6 @@ export default function ForgotPassword(props = null) {
             </div>
           </div>
         </div>
-      </div>
-    </React.Fragment>
+    </form>
   );
 }
