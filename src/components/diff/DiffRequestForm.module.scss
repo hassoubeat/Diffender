@@ -29,6 +29,19 @@
         margin: 0 10px;
       }
     }
+
+    .diffResultArea {
+      display: inline-block;
+      padding: 8px;
+      background-color: $LIGHT_GRAY_COLOR;
+      border: 1px solid $LINE_COLOR;
+      border-radius: 8px;
+
+      .flex {
+        display: flex;
+        flex-wrap: wrap;
+      }
+    }
   }
 
   .diff {
