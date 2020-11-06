@@ -4,6 +4,8 @@ import * as api from 'lib/api/api';
 import UtilInput from 'components/util/input/Input';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
+import Loading from 'components/common/Loading';
+
 import { 
   setIsUserInitializeComplete
 } from 'app/userSlice';
@@ -15,15 +17,17 @@ export default function SignIn(props = null) {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  // Stateの定義
+  // state setup
   const [user, setUser] = useState({
     userId: "",
     password: ""
   });
+  const [isLoginTrying, setIsLoginTrying] = useState(false);
 
   // サインインボタン押下時のイベント
   const handleSignIn = async () => {
     try {
+      setIsLoginTrying(true);
       await signIn(
         user.userId,
         user.password
@@ -51,6 +55,7 @@ export default function SignIn(props = null) {
       toast.errorToast({
         message: message
       });
+      setIsLoginTrying(false);
     }
   }
 
@@ -82,9 +87,14 @@ export default function SignIn(props = null) {
               setUser(Object.assign({}, user));
             } } 
           />
-          <button className={styles.inputButton} onClick={ async () => { 
-            handleSignIn()
-          }}>サインイン</button>
+          {/* ログイン試行中はローディングを表示 */}
+          { (isLoginTrying) ?
+            <Loading/> 
+            :
+            <button className={styles.inputButton} onClick={ async () => { 
+              handleSignIn()
+            }}>サインイン</button>
+          }
           <div className={styles.actions}>
             <div className={styles.action}>
               <Link to={'/signUp'}>
