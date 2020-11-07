@@ -647,8 +647,6 @@ Resources:
           AttributeType: S
         - AttributeName: createDtUnix
           AttributeType: N
-        - AttributeName: ttlDtUnix
-          AttributeType: N
         - AttributeName: projectTieUserId
           AttributeType: S
         - AttributeName: resultTieUserId
