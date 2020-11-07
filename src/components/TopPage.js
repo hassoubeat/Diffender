@@ -27,7 +27,7 @@ export default function TopPage(props = null) {
         <UsageMenu />
         <div className={styles.betaMessage}>
           本サービスはベータ版です。以下の注意事項がございます。<br/>
-          ・仕様は変更になる場合があります<br/>
+          ・予告なく仕様が変更になる場合があります<br/>
           ・<Link to={"/results"}>テスト結果</Link>は<b>登録後5日で自動削除</b>されます<br/>
         </div>
       </div>

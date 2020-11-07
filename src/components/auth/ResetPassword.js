@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import UtilInput from 'components/util/input/Input';
 import { forgotPasswordSubmit } from 'lib/auth/cognitoAuth';
+import Loading from 'components/common/Loading';
+
 import {
   handleChangeUserParams,
   isErrorsCheck
@@ -13,7 +15,7 @@ export default function ResetPassword(props = null) {
   // propsの展開
   const queryString = props.queryString;
 
-  // Stateの定義
+  // state setup
   const [user, setUser] = useState({
     userId: queryString.userId || "",
     confirmCode: "",
@@ -24,12 +26,15 @@ export default function ResetPassword(props = null) {
     confirmCode: [],
     password: []
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const history = useHistory();
 
   // パスワードリセットボタン押下時のイベント
   const handleResetPassword = async () => {
     try {
+      setIsSubmitting(true);
+
       await forgotPasswordSubmit(
         user.userId,
         user.confirmCode,
@@ -48,12 +53,17 @@ export default function ResetPassword(props = null) {
       toast.errorToast({
         message: message
       });
+
+      setIsSubmitting(false);
     }
   }
 
   return (
-    <React.Fragment>
-      <div className={styles.resetPassword}>
+    <form className={styles.resetPassword} onSubmit={ (e) => { 
+      handleResetPassword()   
+      e.preventDefault()
+    }}>
+        <input type="submit" className="hidden" />
         <div className={styles.formArea}>
           <div className={styles.title}>
             パスワード再設定
@@ -90,10 +100,17 @@ export default function ResetPassword(props = null) {
             } } 
             errorMessages={ errors.confirmCode }
           />
-          <div className={styles.actions}>
-            <button className={styles.inputButton} disabled={!isErrorsCheck(errors)} onClick={ async() => { handleResetPassword() }
-            }>パスワードの再設定</button>
-          </div>
+          { (isSubmitting) ?
+            <Loading/> 
+            :
+            <button 
+              className={styles.inputButton} 
+              disabled={!isErrorsCheck(errors)} 
+              onClick={ async() => { handleResetPassword() }
+            }>
+              パスワードの再設定
+            </button>
+          }
           <div className={styles.subMenu}>
             <div className={styles.item}>
               <Link to={'/signIn'}>
@@ -107,8 +124,7 @@ export default function ResetPassword(props = null) {
             </div>
           </div>
         </div>
-      </div>
-    </React.Fragment>
+    </form>
   )
 }
 

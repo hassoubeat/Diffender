@@ -22,12 +22,12 @@ export default function SignIn(props = null) {
     userId: "",
     password: ""
   });
-  const [isLoginTrying, setIsLoginTrying] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // サインインボタン押下時のイベント
   const handleSignIn = async () => {
     try {
-      setIsLoginTrying(true);
+      setIsSubmitting(true);
       await signIn(
         user.userId,
         user.password
@@ -55,12 +55,16 @@ export default function SignIn(props = null) {
       toast.errorToast({
         message: message
       });
-      setIsLoginTrying(false);
+      setIsSubmitting(false);
     }
   }
 
   return (
-    <React.Fragment>
+    <form onSubmit={ (e) => { 
+      handleSignIn()   
+      e.preventDefault()
+    }}>
+      <input type="submit" className="hidden" />
       <div className={styles.signIn}>
         <div className={styles.formArea}>
           <div className={styles.title}>
@@ -88,7 +92,7 @@ export default function SignIn(props = null) {
             } } 
           />
           {/* ログイン試行中はローディングを表示 */}
-          { (isLoginTrying) ?
+          { (isSubmitting) ?
             <Loading/> 
             :
             <button className={styles.inputButton} onClick={ async () => { 
@@ -114,7 +118,7 @@ export default function SignIn(props = null) {
           </div>
         </div>
       </div>
-    </React.Fragment>
+    </form>
   );
 }
 

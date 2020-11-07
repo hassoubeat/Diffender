@@ -1,4 +1,4 @@
-import React, { useEffect, createContext } from 'react';
+import React, { useEffect, useState, createContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FormProvider, useForm } from "react-hook-form";
@@ -40,6 +40,9 @@ export default function PageForm(props = null) {
   // redux-state setup
   const page = useSelector(selectPage(projectId, pageId, isUpdate));
 
+  // state setup
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // ReactHookForm setup
   const reactHookFormMethods = useForm({
     mode: 'onChange',
@@ -74,6 +77,10 @@ export default function PageForm(props = null) {
 
   // submit成功時の処理
   const onSubmit = async (inputPage) => { 
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    
     inputPage.actions = inputPage.actions || [];
     inputPage = inputPageManualCast(inputPage);
 
@@ -87,6 +94,9 @@ export default function PageForm(props = null) {
       result = await postPage(projectId, inputPage);
     }
     if (result) dispatch( setPage(result) ); 
+
+    setIsSubmitting(false);
+
     if (result && postSuccessCallback) postSuccessCallback();
   };
 
@@ -100,9 +110,9 @@ export default function PageForm(props = null) {
   };
 
   return (
-    <React.Fragment>
-      <form>
+    <form onSubmit={ handleSubmit(onSubmit, onSubmitError)}>
       <FormProvider {...reactHookFormMethods} >
+      <input type="submit" className="hidden" />
       <div className={styles.pageForm}>
         <div className={styles.inputArea}>
           <div className="sectionTitle">ページ</div>
@@ -186,7 +196,6 @@ export default function PageForm(props = null) {
         </div>
       </div>
       </FormProvider>
-      </form>
-    </React.Fragment>
+    </form>
   );
 }

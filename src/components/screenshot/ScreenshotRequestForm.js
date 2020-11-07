@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from "react-hook-form";
 import UtilInput from 'components/util/input/Input';
@@ -34,8 +34,11 @@ export default function ScreenshotRequest(props = null) {
     projectsSortMap
   );
 
+  // state setup
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // ReactHookForm setup
-  const {register, errors, handleSubmit} = useForm({
+  const {register, errors, handleSubmit, reset} = useForm({
     mode: 'onChange',
     defaultValues: {
       name: "",
@@ -46,8 +49,14 @@ export default function ScreenshotRequest(props = null) {
 
   // submit hander
   const onSubmit = async (data) => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
     const result = await requestScreenshot(data.projectId, data);
     if (result) dispatch( setResult(result) );
+    reset();
+
+    setIsSubmitting(false);
   }
 
   // submit error hander
@@ -60,7 +69,8 @@ export default function ScreenshotRequest(props = null) {
   }
 
   return (
-    <React.Fragment>
+    <form onSubmit={ handleSubmit(onSubmit, onSubmitError)}>
+      <input type="submit" className="hidden" />
       <div className={styles.screenshotRequestForm}>
         <div className={styles.inputArea}>
           <div className={styles.inputItem}>
@@ -128,6 +138,6 @@ export default function ScreenshotRequest(props = null) {
           </div>
         </div>
       </div>
-    </React.Fragment>
+    </form>
   );
 }
