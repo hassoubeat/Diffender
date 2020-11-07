@@ -1,68 +1,83 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
+# Diffender
 
-## Available Scripts
+Diffender(ディフェンダー)はWebサイトの変更点を視覚的に検出するE2Eテストサービスです。
 
-In the project directory, you can run:
+## Architecture(アーキテクチャ)
+**React + Redux + AWSのサーバレスSPA構成**
 
-### `npm start`
+**TODO**
+アーキテクチャの一枚絵を載せる
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## DeployProcess(デプロイ手順)
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+### 事前準備
+・Node.jsのインストール
+・AWS SAM CLIの導入・及び設定
 
-### `npm test`
+### AWS SAMのビルド
+AWS SAM(※)のtemplate.yamlの内容に基づいてビルドする。
+※ Infrastructure as CodeのAWS CloudFormationをサーバレス用途にカスタマイズしたサービス
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+`sam build`
 
-### `npm run build`
+### AWS SAMのデプロイ
+ビルドしたAWS SAMの内容をAWSにデプロイする。
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+`sam deploy --guided`
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+**TODO**
+質問に対する返答を記載
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+デプロイ後表示される情報は次の手順で必要になるため控える。
 
-### `npm run eject`
+### 環境変数の設定
+上記手順で控えた情報を以下のファイルに展開する。
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+.env.development ... 開発時に適用される環境変数ファイル  
+.env.production ... 本番ビルドに適用される環境変数ファイル  
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### npm依存パッケージのインストール
+フロントエンド側の依存パッケージをインストールする。
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+`npm install`
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### 開発環境の起動
+設定内容が正しく動作するか開発モードで確認する。
 
-## Learn More
+```
+npm run start
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Compiled successfully!
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+You can now view diffender in the browser.
 
-### Code Splitting
+  Local:            http://localhost:3000
+  On Your Network:  http://192.168.0.xxx:3000
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+開発モード起動後、localhost:3000にアクセスして問題なく動作することを確認する。
 
-### Analyzing the Bundle Size
+### 本番環境用のビルド
+本番用のファイルをビルドして生成する。
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+`npm run build`
 
-### Making a Progressive Web App
+/buildディレクトリに結果が出力される。  
+後は好みの環境にデプロイを行う。
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
 
-### Advanced Configuration
+ここまでデプロイして利用するまでの最小限の設定は以上。
+本格運用の際は後述する「推奨設定について」も要確認。
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+## 推奨設定について
+デフォルトの設定は即利用できる最小限のシステム構成となっている。  
+本番運用の際は、以下の推奨設定も追加で実施することを推奨する。  
 
-### Deployment
+### AWS Cognitoの通知メールサービスをAWS SESに変更
+本サービスではユーザ管理にAWS Cognitoを利用している。  
+Cognitoはデフォルトでは**1日に最大50件のメールしか送信**できない。  
+上限を超えるとメールを送信できなくなる(※)  
+※ サインアップ通知などのメールが送信されない  
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+そのため不特定多数にアクセスされる場合は上限が更に大きいメール送信用のAWS SES設定を作成することを推奨する。  
+https://docs.aws.amazon.com/ja_jp/cognito/latest/developerguide/user-pool-email.html
