@@ -5,18 +5,17 @@ Diffender(ディフェンダー)はWebサイトの変更点を視覚的に検出
 ## Architecture(アーキテクチャ)
 **React + Redux + AWSのサーバレスSPA構成**
 
-**TODO**
-アーキテクチャの一枚絵を載せる
+![architecture](https://user-images.githubusercontent.com/42881127/98458607-e180d700-21d5-11eb-8e83-dc4e002465c3.png)
 
 ## DeployProcess(デプロイ手順)
 
 ### 事前準備
-・Node.jsのインストール
-・AWS SAM CLIの導入・及び設定
+・Node.jsのインストール  
+・AWS SAM CLIの導入・及び設定  
 
 ### AWS SAMのビルド
-AWS SAM(※)のtemplate.yamlの内容に基づいてビルドする。
-※ Infrastructure as CodeのAWS CloudFormationをサーバレス用途にカスタマイズしたサービス
+AWS SAM(※)のtemplate.yamlの内容に基づいてビルドする。  
+※ Infrastructure as Codeを提供するAWS CloudFormationをサーバレス用途に拡張されたサービス
 
 `sam build`
 
@@ -25,8 +24,19 @@ AWS SAM(※)のtemplate.yamlの内容に基づいてビルドする。
 
 `sam deploy --guided`
 
-**TODO**
-質問に対する返答を記載
+デプロイ時は以下の質問に回答して、デプロイ設定を行う。
+
+**本デプロイをCloudFormation上で管理するスタック名**  
+Stack Name :  
+**リソースをデプロイするAWSリージョン**  
+AWS Region :  
+**デプロイ時の環境(local, stg, prodのいずれかを選択)**  
+Parameter Env :  
+**デプロイ時の必要なIAMロールを生成してよいか？**  
+Allow SAM CLI IAM role creation :  
+**ここまで回答した内容をsamconfig.tomlに保存するか否か(※)**  
+**※ 以降は`sam deploy`でここまでの質問に回答せずデプロイが実施できる**  
+Save arguments to samconfig.toml :  
 
 デプロイ後表示される情報は次の手順で必要になるため控える。
 
@@ -66,12 +76,16 @@ You can now view diffender in the browser.
 後は好みの環境にデプロイを行う。
 
 
-ここまでデプロイして利用するまでの最小限の設定は以上。
+ここまでデプロイして利用するまでの最小限の設定は以上。  
 本格運用の際は後述する「推奨設定について」も要確認。
 
 ## 推奨設定について
 デフォルトの設定は即利用できる最小限のシステム構成となっている。  
 本番運用の際は、以下の推奨設定も追加で実施することを推奨する。  
+
+### API Gatewayのドメインを独自ドメインに変更
+上記手順でデプロイした時点では時点ではユーザリーダブルなドメインではないため、独自ドメインの適用を推奨する。
+https://docs.aws.amazon.com/ja_jp/apigateway/latest/developerguide/how-to-custom-domains.html
 
 ### AWS Cognitoの通知メールサービスをAWS SESに変更
 本サービスではユーザ管理にAWS Cognitoを利用している。  
