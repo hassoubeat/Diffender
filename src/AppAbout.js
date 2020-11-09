@@ -105,8 +105,11 @@ export default function AppAbout(props = null) {
       <section name="detailDiffScreenshotContent" className={`${styles.detailContent} ${styles.bgGray} `}>
         <h4 className={styles.title}>2つのスクリーンショットから差分を検出</h4>
         <small className={styles.description}>ブラウザに表示されるWebページのスクリーンショットを撮影、差分の検出をすることで変更点を見つけます</small>
-        <div className={styles.visual}></div>
-        <div className={styles.note}></div>
+        <div className={styles.visual}>
+          <div className={styles.image}>
+            <img src={"/img/AppAbout/appVisual.png"} alt="appVisual" />
+          </div>
+        </div>
       </section>
     )
   }
