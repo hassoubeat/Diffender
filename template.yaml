@@ -599,12 +599,12 @@ Resources:
               Access-Control-Allow-Origin: "'*'"
               Access-Control-Allow-Headers: "'*'"
           StatusCode: 504
-      # Auth:
-      #   AddDefaultAuthorizerToCorsPreflight: false
-      #   DefaultAuthorizer: CognitoAuthorizer
-      #   Authorizers:
-      #     CognitoAuthorizer:
-      #       UserPoolArn: !GetAtt DiffenderUserPool.Arn
+      Auth:
+        AddDefaultAuthorizerToCorsPreflight: false
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt DiffenderUserPool.Arn
 
   # 本アプリで利用するS3バケット
   DiffenderS3:
