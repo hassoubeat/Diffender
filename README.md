@@ -14,13 +14,14 @@ Diffender(ディフェンダー)はWebサイトの変更点を視覚的に検出
 ・AWS SAM CLIの導入・及び設定  
 
 ### AWS SAMのビルド
-AWS SAM(※)のtemplate.yamlの内容に基づいてビルドする。  
-※ Infrastructure as Codeを提供するAWS CloudFormationをサーバレス用途に拡張されたサービス
+AWS SAM(※1)のtemplate.yaml(※2)の内容に基づいてビルドする。  
+※1 Infrastructure as Codeを提供するAWS CloudFormationをサーバレス用途に拡張されたサービス  
+※2 本サービスの実行に必要なAWSリソースの情報が定義されている。
 
 `sam build`
 
 ### AWS SAMのデプロイ
-ビルドしたAWS SAMの内容をAWSにデプロイする。
+ビルドしたAWSリソースをAWSにデプロイする。
 
 `sam deploy --guided`
 
@@ -84,7 +85,7 @@ You can now view diffender in the browser.
 本番運用の際は、以下の推奨設定も追加で実施することを推奨する。  
 
 ### API Gatewayのドメインを独自ドメインに変更
-上記手順でデプロイした時点では時点ではユーザリーダブルなドメインではないため、独自ドメインの適用を推奨する。
+上記手順でデプロイした時点では時点ではユーザリーダブルなドメインではないため、独自ドメインの適用を推奨する。  
 https://docs.aws.amazon.com/ja_jp/apigateway/latest/developerguide/how-to-custom-domains.html
 
 ### AWS Cognitoの通知メールサービスをAWS SESに変更
