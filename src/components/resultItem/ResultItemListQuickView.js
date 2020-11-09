@@ -28,6 +28,8 @@ export default function ResultItemListQuickView(props = null) {
   // props setup
   const resultId = props.resultId;
   const selectedResultItemId = props.selectedResultItemId;
+  const isDisplayListCount = props.isDisplayListCount === undefined ? true : props.isDisplayListCount;
+  const toResultItemInfoLink = props.toResultItemInfoLink || `/results/${resultId}/result-items`;
 
   // hook setup
   const history = useHistory();
@@ -67,7 +69,7 @@ export default function ResultItemListQuickView(props = null) {
           ${(resultItem.id === selectedResultItemId) && styles.selected}
         `}
         onClick={() => { 
-          history.push(`/results/${resultId}/result-items/${resultItem.id}`)}
+          history.push(`${toResultItemInfoLink}/${resultItem.id}`)}
         }
       >
         <div className={styles.main}>
@@ -110,13 +112,15 @@ export default function ResultItemListQuickView(props = null) {
           <div 
             className={styles.gotoListMenuItem}
             onClick={ () => { 
-              history.push(`/results/${resultId}/result-items`)}
+              history.push(toResultItemInfoLink)}
             }
           >
             <div className={styles.main}>
               <i className="fas fa-list"/> アイテム一覧
             </div>
-            <ResultItemListCount resultId={resultId} />
+            { isDisplayListCount &&
+              <ResultItemListCount resultId={resultId} />
+            }
           </div>
           <div 
             className={styles.reloadListMenuItem}

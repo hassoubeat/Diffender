@@ -25,6 +25,7 @@ import styles from './ResultItemList.module.scss';
 export default function ResultItemList(props = null) {
   // props setup
   const resultId = props.resultId;
+  const toResultItemInfoLink = props.toResultItemInfoLink || `/results/${resultId}/result-items`;
 
   // hook setup
   const dispatch = useDispatch();
@@ -60,7 +61,7 @@ export default function ResultItemList(props = null) {
     }
     // フィルタリングを行いながら行いながらテスト結果アイテム一覧を展開
     return filterResultItemList(resultItemList, filterObj).map( (resultItem) => (
-      <Link key={resultItem.id} to={`/results/${resultItem.resultItemTieResultId}/result-items/${resultItem.id}`}>
+      <Link key={resultItem.id} to={`${toResultItemInfoLink}/${resultItem.id}`}>
         <div className={`${styles.resultItem} ${resultItem.status.type}`}>
           {resultItem.name}
           {/* ステータスが完了していなければメッセージを表示する */}

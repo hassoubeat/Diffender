@@ -9,7 +9,8 @@ import {
 
 import _ from 'lodash';
 import {
-  sort
+  sort,
+  filterResultList
 } from 'lib/result/model';
 import {
   getLSItem,
@@ -19,14 +20,25 @@ import styles from 'styles/QuickView.module.scss';
 
 export default function ResultListQuickView(props = null) {
   // props setup
+  const projectId = props.projectId;
   const selectedResultId = props.selectedResultId;
+  const isDisplayListCount = props.isDisplayListCount === undefined ? true : props.isDisplayListCount;
+  const isSearchScreenshotResultFilter = props.isSearchScreenshotResultFilter  === undefined ? true : props.isSearchScreenshotResultFilter;
+  const isSearchDiffResultFilter = props.isSearchDiffResultFilter  === undefined ? true : props.isSearchDiffResultFilter;
+  const toResultInfoLink = props.toResultInfoLink || "/results";
+
+  const filterObj = {
+    searchWord: "",
+    isSearchScreenshotResultFilter: isSearchScreenshotResultFilter,
+    isSearchDiffResultFilter: isSearchDiffResultFilter
+  }
 
   // hook setup
   const history = useHistory();
 
   // redux-state setup
   const resultList = sort(
-    _.cloneDeep(useSelector(selectResults({})
+    _.cloneDeep(useSelector(selectResults({projectId: projectId})
   )));
 
   // state setup
@@ -48,7 +60,7 @@ export default function ResultListQuickView(props = null) {
         <div className={styles.noData}> No Data </div>
       )
     }
-    return resultList.map( (result) => (
+    return filterResultList(resultList, filterObj).map( (result) => (
       <div 
         key={result.id}
         id={result.id} 
@@ -57,7 +69,7 @@ export default function ResultListQuickView(props = null) {
           ${(result.id === selectedResultId) && styles.selected}
         `}
         onClick={() => { 
-          history.push(`/results/${result.id}`)}
+          history.push(`${toResultInfoLink}/${result.id}`)}
         }
       >
         <div className={styles.main}>
@@ -86,13 +98,15 @@ export default function ResultListQuickView(props = null) {
           <div 
             className={styles.gotoListMenuItem}
             onClick={ () => { 
-              history.push(`/results`)}
+              history.push(toResultInfoLink)}
             }
           >
             <div className={styles.main}>
               <i className="fas fa-list"/> テスト結果一覧
             </div>
-            <ResultListCount />
+            { isDisplayListCount &&
+              <ResultListCount />
+            }
           </div>
           <ResultList />
         </div>
