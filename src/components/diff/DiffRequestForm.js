@@ -29,7 +29,8 @@ import styles from './DiffRequestForm.module.scss';
 export default function DiffRequestForm(props = null) {
   // props setup
   const initSelectProjectId = props.initSelectProjectId;
-  const selectedOriginId = props.selectedOriginId;
+  const initSelectOriginId = props.initSelectOriginId;
+  const successPostCallback = props.successPostCallback;
 
   // hook setup
   const dispatch = useDispatch();
@@ -55,7 +56,7 @@ export default function DiffRequestForm(props = null) {
       name: "",
       description: "",
       diffProjectId: initSelectProjectId,
-      originResultId: "",
+      originResultId: initSelectOriginId,
       targetResultId: "",
     }
   });
@@ -72,6 +73,8 @@ export default function DiffRequestForm(props = null) {
     reset();
 
     setIsSubmitting(false);
+
+    if (successPostCallback) successPostCallback(result);
   }
 
   // submit error hander
@@ -134,7 +137,6 @@ export default function DiffRequestForm(props = null) {
                       <select 
                         type="select"
                         name="originResultId"
-                        defaultValue={selectedOriginId}
                         ref={ register({
                           required: "比較元テスト結果を選択してください",
                         })}

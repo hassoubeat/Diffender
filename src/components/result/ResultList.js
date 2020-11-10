@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import ResultListCount from './ResultListCount';
@@ -20,7 +20,13 @@ import styles from './ResultList.module.scss';
 export default function ResultList(props = null) {
   // props setup
   const projectId = props.projectId;
+  const sectionTitle = props.sectionTitle || "テスト結果一覧";
   const isDisplayListCount = props.isDisplayListCount === undefined ? true : props.isDisplayListCount;
+  const isDisplaySSFilter = props.isDisplaySSFilter === undefined ? true : props.isDisplaySSFilter;
+  const isDisplayDiffFilter = props.isDisplayDiffFilter === undefined ? true : props.isDisplayDiffFilter;
+  const isInitSearchScreenshotResultFilter = props.isInitSearchScreenshotResultFilter  === undefined ? true : props.isInitSearchScreenshotResultFilter;
+  const isInitSearchDiffResultFilter = props.isInitSearchDiffResultFilter  === undefined ? true : props.isInitSearchDiffResultFilter;
+  const toResultInfoLink = props.toResultInfoLink || "/results";
 
   // hook setup
   const history = useHistory();
@@ -32,8 +38,8 @@ export default function ResultList(props = null) {
   )));
 
   const [searchWord, setSearchWord] = useState("");
-  const [isSearchScreenshotResultFilter, setIsSearchScreenshotResultFilter] = useState(true);
-  const [isSearchDiffResultFilter, setIsSearchDiffResultFilter] = useState(true);
+  const [isSearchScreenshotResultFilter, setIsSearchScreenshotResultFilter] = useState(isInitSearchScreenshotResultFilter);
+  const [isSearchDiffResultFilter, setIsSearchDiffResultFilter] = useState(isInitSearchDiffResultFilter);
 
   const filterObj = {
     searchWord: searchWord,
@@ -48,34 +54,45 @@ export default function ResultList(props = null) {
     if (result) dispatch( deleteResult(result.id) );
   }
 
+  useEffect( () => {
+    setIsSearchScreenshotResultFilter(isInitSearchScreenshotResultFilter);
+    setIsSearchDiffResultFilter(isInitSearchDiffResultFilter);
+  }, [isInitSearchScreenshotResultFilter, isInitSearchDiffResultFilter]);
+
   return (
     <React.Fragment>
       <div className={`${styles.resultList} scroll`}>
         <div className="sectionTitle">
-          <div className="main">テスト結果一覧</div>
+          <div className="main">{sectionTitle}</div>
           { (isDisplayListCount) && 
             <ResultListCount projectId={projectId} />
           }
         </div>
         <div className={styles.filters}>
           <input className={styles.searchBox} type="text" placeholder="search" onChange={(e) => setSearchWord(e.target.value)} />
-          <div className={styles.filter}>
-            <input className={styles.checkBox} type="checkBox" checked={isSearchScreenshotResultFilter} onChange={
-              (e) => setIsSearchScreenshotResultFilter(e.target.checked)
-            } />SS
-          </div>
-          <div className={`${styles.filter} ${styles.diff}`}>
-            <input className={styles.checkBox} type="checkBox" checked={isSearchDiffResultFilter} onChange={
-              (e) => setIsSearchDiffResultFilter(e.target.checked)
-            } />Diff
-          </div>
+          { isDisplaySSFilter && 
+            <div className={styles.filter}>
+              <input className={styles.checkBox} type="checkBox" checked={isSearchScreenshotResultFilter} onChange={
+                (e) => setIsSearchScreenshotResultFilter(e.target.checked)
+              } />SS
+            </div>
+          }
+          { isDisplayDiffFilter && 
+            <div className={`${styles.filter} ${styles.diff}`}>
+              <input className={styles.checkBox} type="checkBox" checked={isSearchDiffResultFilter} onChange={
+                (e) => setIsSearchDiffResultFilter(e.target.checked)
+              } />Diff
+            </div>
+          }
         </div>
         {/* フィルタリングを行いながら行いながらテスト結果を展開 */}
         {filterResultList(resultList, filterObj).map( (result) => (
           <div 
             key={result.id}
             className={`${styles.resultItem} ${result.resultType}`}
-            onClick={() => history.push(`/results/${result.id}`) }
+            onClick={() => {
+              history.push(`${toResultInfoLink}/${result.id}`) 
+            }}
           >
             <div className={styles.name}>
               {result.name}

@@ -49,7 +49,7 @@ export default function PageList(props = null) {
     project.pagesSortMap || {}
   );
 
-  // state seteup
+  // state setup
   const [searchWord, setSearchWord] = useState("");
   const [isDisplayPageFormModal, setIsDisplayPageFormModal] = useState(isIntialDisplayRegisterModal);
 

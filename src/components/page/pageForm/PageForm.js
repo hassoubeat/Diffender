@@ -115,7 +115,6 @@ export default function PageForm(props = null) {
       <input type="submit" className="hidden" />
       <div className={styles.pageForm}>
         <div className={styles.inputArea}>
-          <div className="sectionTitle">ページ</div>
           <UtilInput
             label="ページ名" 
             placeholder="TOPページ" 

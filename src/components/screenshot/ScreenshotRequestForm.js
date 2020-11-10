@@ -21,7 +21,8 @@ import * as toast from 'lib/util/toast';
 
 export default function ScreenshotRequest(props = null) {
   // props setup
-  const initSelectProjectId = props.initSelectProjectId;
+  const initSelectProjectId = props.initSelectProjectId || "";
+  const successPostCallback = props.successPostCallback;
 
   // hook setup
   const dispatch = useDispatch();
@@ -43,7 +44,7 @@ export default function ScreenshotRequest(props = null) {
     defaultValues: {
       name: "",
       description: "",
-      projectId: ""
+      projectId: initSelectProjectId
     }
   });
 
@@ -57,6 +58,8 @@ export default function ScreenshotRequest(props = null) {
     reset();
 
     setIsSubmitting(false);
+
+    if (successPostCallback) successPostCallback(result);
   }
 
   // submit error hander
