@@ -116,12 +116,13 @@ input[type='checkbox'] {
 }
 
 .modalContent {
-  position: absolute;
-  top: 40px;
-  left: 40px;
-  right: 40px;
-  bottom: 40px;
-  border: 1px solid rgb(204, 204, 204);
+  position: relative;
+  max-height: 90vh;
+  margin: 20px auto;
+  max-width: 800px;
+  right: unset;
+  bottom: unset;
+  border: 1px solid #cccccc;
   background: white;
   overflow: auto;
   border-radius: 4px;
@@ -136,6 +137,12 @@ input[type='checkbox'] {
   .modalSupportMessage {
     font-size: 14px;
     color: $PLANE_TEXT_COLOR;
+  }
+}
+
+@include mq(sp) {
+  .modalContent {
+    margin: 10px;
   }
 }
 

@@ -10,7 +10,7 @@ export default function ScreenshotInfo(props = null) {
       <div className={styles.diffScreenshotInfo}>
         <div className="sectionTitle">Diffの検出</div>
         <div className={styles.infoMessage}>
-          ２つの<Link to={"/results"}>テスト結果</Link>を指定して登録されているスクリーンショットを比較、差分を検出します。<br/>
+          スクリーンショットを比較してDiff(差分)を検出します。<br/>
           差分の検出結果は<Link to={"/results"}>テスト結果</Link>に登録されます。<br/>
         </div>
         <div className={styles.note}>

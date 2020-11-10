@@ -12,6 +12,8 @@ import ResultListQuickView from 'components/result/ResultListQuickView';
 import ResultItemList from 'components/resultItem/ResultItemList';
 import ResultItemListQuickView from 'components/resultItem/ResultItemListQuickView';
 import ResultItemInfo from 'components/resultItem/ResultItemInfo';
+import ScreenshotFormModal from 'components/screenshot/ScreenshotFormModal';
+import DiffFormModal from 'components/diff/DiffFormModal';
 import NotFound404 from 'components/common/NotFound';
 import styles from './ProjectView.module.scss';
 
@@ -65,7 +67,7 @@ export default function ProjectView(props = null) {
                     </div>
                   </React.Fragment>
                 )} />
-                {/* プロジェクトに紐づくリザルト(スクリーンショット) */}
+                {/* プロジェクトに紐づくリザルト一覧(スクリーンショット) */}
                 <Route exact path="/projects/:projectId/screenshots" render={({match}) => (
                   <React.Fragment>
                     {fetchData(match.params)}
@@ -79,6 +81,7 @@ export default function ProjectView(props = null) {
                       isDisplayDiffFilter={false}
                       toResultInfoLink={`/projects/${match.params.projectId}/screenshots`}
                     />
+                    <ScreenshotFormModal initSelectProjectId={match.params.projectId} />
                   </React.Fragment>
                 )} />
                 {/* リザルト(スクリーンショット)の詳細 */}
@@ -135,7 +138,7 @@ export default function ProjectView(props = null) {
                     </div>
                   </React.Fragment>
                 )} />
-                {/* プロジェクトに紐づくリザルト(Diff) */}
+                {/* プロジェクトに紐づくリザルト一覧(Diff) */}
                 <Route exact path="/projects/:projectId/diffs" render={({match}) => (
                   <React.Fragment>
                     {fetchData(match.params)}
@@ -149,6 +152,7 @@ export default function ProjectView(props = null) {
                       isDisplayDiffFilter={false}
                       toResultInfoLink={`/projects/${match.params.projectId}/diffs`}
                     />
+                    <DiffFormModal initSelectProjectId={match.params.projectId} />
                   </React.Fragment>
                 )} />
                 {/* リザルト(Diff)の詳細 */}
