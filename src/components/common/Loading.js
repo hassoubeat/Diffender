@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './Loading.module.scss';
 
-export default function Input(props = null) {
+export default function Loading(props = null) {
   return (
     <React.Fragment>
       <div className={styles.loading}>
