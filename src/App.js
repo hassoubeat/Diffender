@@ -37,7 +37,7 @@ import ResetPassword from 'components/auth/ResetPassword';
 import Sidebar from 'components/common/Sidebar';
 import NotFound404 from 'components/common/NotFound';
 import Main from 'components/Main';
-import Loading from 'components/common/Loading';
+import LoadingTitleLogo from 'components/common/LoadingTitleLogo';
 
 import * as api from 'lib/api/api';
 
@@ -91,7 +91,7 @@ function App() {
 
   // ログイン状態の初期化中はレンダリングを行わない
   if (!isUserInitializeComplete) return (
-    <Loading/>
+    <LoadingTitleLogo/>
   );
 
   return (
