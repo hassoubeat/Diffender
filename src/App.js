@@ -27,7 +27,6 @@ import './App.scss';
 import ErrorHandler from './ErrorHandler';
 import AppAbout from './AppAbout';
 import AuthCheck from 'components/auth/AuthCheck';
-import UnAuthCheck from 'components/auth/UnAuthCheck';
 import DivideForm from 'components/auth/DivideForm';
 import SignUp from 'components/auth/SignUp';
 import ConfirmCode from 'components/auth/ConfirmCode';
@@ -104,41 +103,31 @@ function App() {
               <AppAbout/>
             )} />
             <Route exact path="/signUp" render={ () => (
-              <UnAuthCheck>
-                <DivideForm>
-                  <SignUp/>
-                </DivideForm>
-              </UnAuthCheck>
+              <DivideForm>
+                <SignUp/>
+              </DivideForm>
             )} />
             <Route exact path="/code" render={ ({location}) => (
-              <UnAuthCheck>
-                <DivideForm>
-                  <ConfirmCode
-                    queryString={queryString.parse(location.search)}
-                  />
-                </DivideForm>
-              </UnAuthCheck>
+              <DivideForm>
+                <ConfirmCode
+                  queryString={queryString.parse(location.search)}
+                />
+              </DivideForm>
             )} />
             <Route exact path="/forgotPassword" render={ () => (
-              <UnAuthCheck>
-                <DivideForm position="left" >
-                  <ForgotPassword/>
-                </DivideForm>
-              </UnAuthCheck>
+              <DivideForm position="left" >
+                <ForgotPassword/>
+              </DivideForm>
             )} />
             <Route exact path="/resetPassword" render={ ({location}) => (
-              <UnAuthCheck>
-                <DivideForm position="left" >
-                  <ResetPassword
-                    queryString={queryString.parse(location.search)}
-                  />
-                </DivideForm>
-              </UnAuthCheck>
+              <DivideForm position="left" >
+                <ResetPassword
+                  queryString={queryString.parse(location.search)}
+                />
+              </DivideForm>
             )} />
             <Route exact path="/signIn" render={ () => (
-              <UnAuthCheck>
-                <SignIn/>
-              </UnAuthCheck>
+              <SignIn/>
             )} />
             <Route>
               <AuthCheck>
