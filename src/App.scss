@@ -206,6 +206,26 @@ input[type='checkbox'] {
   overflow: scroll;
 }
 
+::-webkit-scrollbar {
+  width: calc(.6rem + 2px);
+  height: 1px;
+}
+
+::-webkit-scrollbar-track {
+  margin: 1px;
+}
+::-webkit-scrollbar-corner {
+  display: none;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.5);
+  border-radius: 100px;
+  border: solid transparent;
+  background-clip: content-box;
+  border-width: 1px 2px;
+}
+
 // 非表示
 .hidden {
   display: none;
